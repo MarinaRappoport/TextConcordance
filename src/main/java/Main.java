@@ -1,3 +1,6 @@
+import gui.MainMenu;
+import service.FilesManager;
+
 import javax.swing.*;
 
 public class Main {

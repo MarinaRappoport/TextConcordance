@@ -1,3 +1,8 @@
+package gui;
+
+import model.FileDetails;
+import service.FilesManager;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
