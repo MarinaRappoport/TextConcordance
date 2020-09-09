@@ -1,8 +1,8 @@
+package service;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import gui.MainMenu;
+import model.FileDetails;
+
 import java.util.ArrayList;
 
 //Singleton class for handling files

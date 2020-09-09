@@ -1,3 +1,5 @@
+package model;
+
 public class WordLocation {
     int line;
     int paragraph;
