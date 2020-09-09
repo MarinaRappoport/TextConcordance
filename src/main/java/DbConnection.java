@@ -3,7 +3,7 @@ import java.sql.*;
 public class DbConnection {
 	// JDBC driver name and database URL
 	private static final String JDBC_DRIVER = "org.postgresql.Driver";
-	private static final String DB_URL = "jdbc:postgresql://localhost:5433/";
+	private static final String DB_URL = "jdbc:postgresql://localhost:5432/";
 
 	//  Database credentials
 	private static final String USER = "postgres";
