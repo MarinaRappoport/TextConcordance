@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.university</groupId>
-    <artifactId>text_corcondance</artifactId>
+    <artifactId>text_concordance</artifactId>
     <version>1.0</version>
 
     <dependencies>
