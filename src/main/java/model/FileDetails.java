@@ -10,7 +10,7 @@ public class FileDetails {
     LinkedList<Word> words;
     public String name, date;
     public String author, path;
-    int countWord, lineCount, sentenceCount, paragraphCount, characterCount;
+    public int countWord, lineCount, sentenceCount, paragraphCount, characterCount;
 
     public FileDetails(String name, String author, String date, String path){
         words = new LinkedList<>();
@@ -20,12 +20,14 @@ public class FileDetails {
         this.path = path;
 
         // Initializing counters
-        int countWord = 0;
-        int lineCount = 0;
-        int sentenceCount = 0;
-        int characterCount = 0;
-        int paragraphCount = 1;
+        countWord = 0;
+        lineCount = 0;
+        sentenceCount = 0;
+        characterCount = 0;
+        paragraphCount = 1;
     }
+
+
 
     //Comparing two files by name
     @Override
@@ -34,12 +36,17 @@ public class FileDetails {
         return name.equals(other.name);
     }
 
+    //TODO
+    //This class doesn't do anything
+    //I'm not sure yet which data structure to use with WORDS
     public void addWord(Word curr, Word prev) {
         if ( words.contains(curr) ) {
                 Word word = words.get(words.indexOf(curr));
         }
     }
 
+    //Parse file to words
+    //Counting words, lines, sentences and paragraph
     public void parseFile(){
         BufferedReader reader = null;
 
@@ -65,7 +72,7 @@ public class FileDetails {
                     // \\s+ is the space delimiter in java
                     String[] wordList = line.split("\\s+");
 
-                    // Add words
+                    // Add words to data base
                     for (int i = 0 ; i < wordList.length ; i++ ) {
                         if ( i == 0 ) {
                             Word current = new Word(wordList[i], sentenceCount, paragraphCount);
@@ -93,15 +100,6 @@ public class FileDetails {
         System.out.println("Total number of characters = " + characterCount+ "\n");
         System.out.println("Total number of lines = " + lineCount+ "\n");
         System.out.println("Number of paragraphs = " + paragraphCount+ "\n");
-
-        /*
-        menu.updateDetails(countWord, sentenceCount , characterCount, lineCount, paragraphCount);
-        menu.statTextArea.append("Total word count = " + countWord + "\n");
-        menu.statTextArea.append("Total number of sentences = " + sentenceCount+ "\n");
-        menu.statTextArea.append("Total number of characters = " + characterCount+ "\n");
-        menu.statTextArea.append("Total number of lines = " + lineCount+ "\n");
-        menu.statTextArea.append("Number of paragraphs = " + paragraphCount+ "\n");
-         */
 
     }
 }

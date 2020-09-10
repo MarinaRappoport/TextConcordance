@@ -4,6 +4,7 @@ import gui.MainMenu;
 import model.FileDetails;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 //Singleton class for handling files
 public class FilesManager {
@@ -36,11 +37,28 @@ public class FilesManager {
             file.parseFile();
             files.add(file);
         }
-        menu.updateFileDetails(files);
+        menu.updateFileList(files);
     }
 
     public boolean isEmpty(){
         return files.isEmpty();
+    }
+
+    public FileDetails getFile(String name){
+        FileDetails file;
+
+        Iterator<FileDetails> iter = files.iterator();
+        while (iter.hasNext()) {
+            FileDetails current = iter.next();
+            if ( current.name.equals(name)) {
+                file = current;
+                return file;
+            }
+        }
+
+        //if file name not found
+        return null;
+
     }
 
 }
