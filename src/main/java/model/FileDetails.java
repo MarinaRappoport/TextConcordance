@@ -57,20 +57,21 @@ public class FileDetails {
             System.out.println("Error with buffer reader of " + name);
             System.exit(1);
         }
-        String line;
+        String currentLine;
+        String prevLine = "";
 
         // Reading line by line from the
         // file until a null is returned
         try {
-            while ((line = reader.readLine()) != null) {
+            while ((currentLine = reader.readLine()) != null) {
                 lineCount += 1;
-                if (line.equals("")) {
+                if (currentLine.equals("")) {
                     paragraphCount++;
                 } else {
-                    characterCount += line.length();
+                    characterCount += currentLine.length();
 
                     // \\s+ is the space delimiter in java
-                    String[] wordList = line.split("\\s+");
+                    String[] wordList = currentLine.split("\\s+");
 
                     // Add words to data base
                     for (int i = 0 ; i < wordList.length ; i++ ) {
@@ -83,9 +84,15 @@ public class FileDetails {
                     countWord += wordList.length;
 
                     // [!?.:]+ is the sentence delimiter in java
-                    String[] sentenceList = line.split("[!?.:]+");
+                    String[] sentenceList = currentLine.split("[!?.:]+");
 
-                    sentenceCount += sentenceList.length;
+                    // if there is continue of previous line's sentence in current line
+                    if ( !prevLine.endsWith(".") && !prevLine.equals("") )
+                        sentenceCount += ( sentenceList.length - 1 );
+                    else
+                        sentenceCount += sentenceList.length ;
+
+                    prevLine = currentLine;
                 }
             }
         } catch (IOException e){
