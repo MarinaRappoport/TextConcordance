@@ -13,6 +13,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -24,7 +25,8 @@ public class MainMenu extends JFrame {
     JButton loadFile, showWords, showExp, showGroups;
     FilesManager filesManager;
     ArrayList<String> allFiles;
-    ArrayList<String > selectedFiles;
+    ArrayList<String > selectedNames;
+    ArrayList<FileDetails> selectedFiles;
 
     final Color PRIMARY_COLOR = new Color(18, 163, 134, 99);
     final Color SECONDARY_COLOR = new Color(18, 163, 134, 190);
@@ -33,6 +35,8 @@ public class MainMenu extends JFrame {
     final Border MATT_BORDER = new MatteBorder(0,0,1,0,PRIMARY_COLOR);
 
     public MainMenu(){
+
+        selectedFiles = new ArrayList<>();
 
         //Create an instance of the files data base
         filesManager = FilesManager.getInstance();
@@ -47,12 +51,22 @@ public class MainMenu extends JFrame {
         filesList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if ( !filesList.getSelectedValuesList().isEmpty() && (e.getValueIsAdjusting())) {
-                    selectedFiles = (ArrayList<String>) filesList.getSelectedValuesList();
-                    System.out.println(selectedFiles);
+                if (e.getValueIsAdjusting()) {
+                    selectedFiles.clear();
+                    if (!filesList.getSelectedValuesList().isEmpty()) {
+                        selectedNames = (ArrayList<String>) filesList.getSelectedValuesList();
+
+                        for (String name : selectedNames) {
+                            selectedFiles.add(filesManager.getFile(name));
+                        }
+                        System.out.println(selectedFiles);
+                    }
+                    updateFileDetails();
+                    updateStatistics();
                 }
             }
         });
+
 
         filesDetailsAndList = new JPanel();
         filesDetailsAndList.setBackground(Color.WHITE);
@@ -80,7 +94,7 @@ public class MainMenu extends JFrame {
         buttons = new JPanel();
         buttons.setLayout( new GridLayout(4, 1, 4, 12) );
         buttons.setBackground(PRIMARY_COLOR);
-        buttons.setBorder(BorderFactory.createMatteBorder(100, 7, 100, 7, PRIMARY_COLOR));
+        buttons.setBorder(BorderFactory.createMatteBorder(100, 7, 430, 7, PRIMARY_COLOR));
 
         //create buttons
         loadFile = new JButton("Load New File");
@@ -127,14 +141,56 @@ public class MainMenu extends JFrame {
 
     public void updateStatistics() {
 
+        int sumOfCharacters = 0;
+        int sumOfWords = 0;
+        int sumOfSentences = 0;
+        int sumOfLines = 0;
+        int sumOfParagraphs = 0;
+
+        //Remove previous statistics
+        statTextArea.setText("");
+
+        //Iterating on files ArrayList and add all details to filesDetailsPanel
+        Iterator<FileDetails> iter = selectedFiles.iterator();
+        while (iter.hasNext()){
+            FileDetails current = iter.next();
+
+            sumOfCharacters += current.characterCount;
+            sumOfWords += current.countWord;
+            sumOfSentences += current.sentenceCount;
+            sumOfLines += current.lineCount;
+            sumOfParagraphs += current.paragraphCount;
+
+        }
+
+        statTextArea.append("Total number of characters = " + sumOfCharacters+ "\n");
+        statTextArea.append("Total word count = " + sumOfWords + "\n");
+        statTextArea.append("Total number of sentences = " + sumOfSentences+ "\n");
+        statTextArea.append("Total number of lines = " + sumOfLines + "\n");
+        statTextArea.append("Number of paragraphs = " + sumOfParagraphs + "\n");
+        statTextArea.append("*" + "\n");
+
+        if (sumOfWords > 0) {
+            statTextArea.append("Average characters in word = " + (sumOfCharacters / sumOfWords) + "\n");
+            statTextArea.append("Average characters in sentence = " + (sumOfCharacters / sumOfSentences) + "\n");
+            statTextArea.append("Average characters in paragraph  = " + (sumOfCharacters / sumOfParagraphs) + "\n");
+            statTextArea.append("*" + "\n");
+
+            statTextArea.append("Average words in sentence = " + (sumOfWords / sumOfSentences) + "\n");
+            statTextArea.append("Average words in paragraph = " + (sumOfWords / sumOfParagraphs) + "\n");
+            statTextArea.append("Average sentences in paragrph = " + (sumOfSentences / sumOfParagraphs) + "\n");
+        }
+        else
+            statTextArea.append("No statistics to show");
+
     }
 
     //Create files details panels titles
     public void createFilesDetailsTitles(){
-        JLabel nameT = new JLabel("File Name");
-        JLabel authorT = new JLabel("Author Name");
-        JLabel dateT = new JLabel("Date Of Release");
-        JLabel pathT = new JLabel("Path");
+        JLabel nameT = new JLabel("File Name            ");
+        JLabel authorT = new JLabel("Author Name         ");
+        JLabel dateT = new JLabel("Date Of Release    ");
+        JLabel pathT = new JLabel("Path                  ");
 
         nameT.setBorder(MATT_BORDER);
         authorT.setBorder(MATT_BORDER);
@@ -165,7 +221,21 @@ public class MainMenu extends JFrame {
             filesDetailsPanel.add( new JLabel("No files to show"));
     }
 
-    public void updateFileDetails(ArrayList<FileDetails> files) {
+    public void updateFileList(ArrayList<FileDetails> files) {
+        allFiles.clear();
+        filesList.removeAll();
+
+        Iterator<FileDetails> iter = files.iterator();
+        while (iter.hasNext()) {
+            FileDetails current = iter.next();
+
+            allFiles.add(current.name);
+
+        }
+        filesList.setListData(allFiles.toArray());
+    }
+
+    public void updateFileDetails() {
 
         //Remove previous details and recreate all
         allFiles.clear();
@@ -173,12 +243,9 @@ public class MainMenu extends JFrame {
         createFilesDetailsTitles();
 
         //Iterating on files ArrayList and add all details to filesDetailsPanel
-        Iterator<FileDetails> iter = files.iterator();
+        Iterator<FileDetails> iter = selectedFiles.iterator();
         while (iter.hasNext()){
             FileDetails current = iter.next();
-
-            allFiles.add(current.name);
-            filesList.setListData(allFiles.toArray());
 
             JLabel name = new JLabel(current.name);
             name.setBorder(MATT_BORDER);
@@ -212,6 +279,5 @@ public class MainMenu extends JFrame {
     }
 
 
-    public void updateDetails(int countWord, int sentenceCount, int characterCount, int lineCount, int paragraphCount) {
-    }
+
 }
