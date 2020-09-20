@@ -1,19 +1,28 @@
 package model;
 
-import java.util.ArrayList;
-
 public class Word {
-    String thisWord;
-    ArrayList<WordLocation> wordLocations;
+	private long id;
+    private String value;
 
-    public Word(String thisWord, int line, int paragraph){
-        this.thisWord = thisWord;
-
+    public Word(String value, int line, int paragraph){
+        this.value = value;
     }
 
-    @Override
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	@Override
     public boolean equals(Object obj) {
         Word other = (Word)obj;
-        return thisWord.equals(other.thisWord);
+        return value.equals(other.value);
     }
 }
