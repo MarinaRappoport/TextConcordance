@@ -38,8 +38,12 @@ public class DbConnection {
 			Class.forName(JDBC_DRIVER);
 			System.out.println("Connecting to database...");
 			Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+
 			Statement stm = connection.createStatement();
-			stm.executeUpdate("CREATE DATABASE " + DB_NAME);
+			try {
+				stm.executeUpdate("CREATE DATABASE " + DB_NAME);
+			} catch (Exception e) {
+			}
 			stm.close();
 			connection.close();
 

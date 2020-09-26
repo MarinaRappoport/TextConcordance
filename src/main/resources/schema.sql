@@ -15,3 +15,16 @@ CREATE TABLE IF NOT EXISTS word (
     length INTEGER DEFAULT 0,
     CHECK(value <> '')
 );
+
+CREATE TABLE IF NOT EXISTS word_in_book (
+    word_id INTEGER,
+    book_id INTEGER,
+    index INTEGER NOT NULL,
+    line INTEGER NOT NULL,
+    index_in_line INTEGER NOT NULL,
+    sentence INTEGER NOT NULL,
+    paragraph INTEGER NOT NULL,
+    PRIMARY KEY(index, book_id, word_id),
+    FOREIGN KEY(book_id) REFERENCES book,
+    FOREIGN KEY(word_id) REFERENCES word
+);
