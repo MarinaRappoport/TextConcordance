@@ -1,6 +1,6 @@
 package gui;
 
-import model.FileDetails;
+import model.Book;
 import service.FilesManager;
 
 import javax.swing.*;
@@ -71,7 +71,7 @@ public class AddFileFrame extends JFrame {
         ok.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FileDetails newFile = new FileDetails(fileName, authorTF.getText(), dateTF.getText(), filePath);
+                Book newFile = new Book(fileName, authorTF.getText(), dateTF.getText(), filePath);
                 filesManager.addFile(newFile);
             }
         });

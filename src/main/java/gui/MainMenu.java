@@ -1,7 +1,6 @@
 package gui;
 
-import gui.AddFileFrame;
-import model.FileDetails;
+import model.Book;
 import service.FilesManager;
 
 import javax.swing.*;
@@ -13,7 +12,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -26,7 +24,7 @@ public class MainMenu extends JFrame {
     FilesManager filesManager;
     ArrayList<String> allFiles;
     ArrayList<String > selectedNames;
-    ArrayList<FileDetails> selectedFiles;
+    ArrayList<Book> selectedFiles;
 
     final Color PRIMARY_COLOR = new Color(18, 163, 134, 99);
     final Color SECONDARY_COLOR = new Color(18, 163, 134, 190);
@@ -151,9 +149,9 @@ public class MainMenu extends JFrame {
         statTextArea.setText("");
 
         //Iterating on files ArrayList and add all details to filesDetailsPanel
-        Iterator<FileDetails> iter = selectedFiles.iterator();
+        Iterator<Book> iter = selectedFiles.iterator();
         while (iter.hasNext()){
-            FileDetails current = iter.next();
+            Book current = iter.next();
 
             sumOfCharacters += current.characterCount;
             sumOfWords += current.countWord;
@@ -221,15 +219,15 @@ public class MainMenu extends JFrame {
             filesDetailsPanel.add( new JLabel("No files to show"));
     }
 
-    public void updateFileList(ArrayList<FileDetails> files) {
+    public void updateFileList(ArrayList<Book> files) {
         allFiles.clear();
         filesList.removeAll();
 
-        Iterator<FileDetails> iter = files.iterator();
+        Iterator<Book> iter = files.iterator();
         while (iter.hasNext()) {
-            FileDetails current = iter.next();
+            Book current = iter.next();
 
-            allFiles.add(current.name);
+            allFiles.add(current.getTitle());
 
         }
         filesList.setListData(allFiles.toArray());
@@ -243,17 +241,17 @@ public class MainMenu extends JFrame {
         createFilesDetailsTitles();
 
         //Iterating on files ArrayList and add all details to filesDetailsPanel
-        Iterator<FileDetails> iter = selectedFiles.iterator();
+        Iterator<Book> iter = selectedFiles.iterator();
         while (iter.hasNext()){
-            FileDetails current = iter.next();
+            Book current = iter.next();
 
-            JLabel name = new JLabel(current.name);
+            JLabel name = new JLabel(current.getTitle());
             name.setBorder(MATT_BORDER);
-            JLabel author = new JLabel(current.author);
+            JLabel author = new JLabel(current.getAuthor());
             author.setBorder(MATT_BORDER);
-            JLabel date = new JLabel(current.date);
+            JLabel date = new JLabel(current.getDate());
             date.setBorder(MATT_BORDER);
-            JLabel path = new JLabel(current.path);
+            JLabel path = new JLabel(current.getPath());
             path.setBorder(MATT_BORDER);
 
             filesDetailsPanel.add(name);
