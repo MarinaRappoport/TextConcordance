@@ -33,10 +33,17 @@ public class DbConnection {
 	}
 
 
-	private void initSchema() throws SQLException {
+	public static void initSchema() {
 		try {
 			Class.forName(JDBC_DRIVER);
-			connection = DriverManager.getConnection(DB_URL, USER, PASS);
+			System.out.println("Connecting to database...");
+			Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+			Statement stm = connection.createStatement();
+			stm.executeUpdate("CREATE DATABASE " + DB_NAME);
+			stm.close();
+			connection.close();
+
+			connection = DriverManager.getConnection(DB_URL + DB_NAME, USER, PASS);
 			//Initialize the script runner
 			ScriptRunner sr = new ScriptRunner(connection);
 			//Creating a reader object
@@ -44,14 +51,14 @@ public class DbConnection {
 			Reader reader = null;
 			try {
 				reader = new BufferedReader(new FileReader
-						(new File(getClass().getClassLoader().getResource("schema.sql").toURI())));
+						(new File(DbConnection.class.getClassLoader().getResource("schema.sql").toURI())));
 				//Running the script
 				sr.runScript(reader);
 			} catch (Exception e) {
 				System.out.println("Sql script not found! : " + e.getMessage());
 			}
-			closeConnection();
-		} catch (ClassNotFoundException ex) {
+			connection.close();
+		} catch (Exception ex) {
 			System.out.println("Database Initialization Failed : " + ex.getMessage());
 		}
 	}
@@ -59,6 +66,7 @@ public class DbConnection {
 	public Connection getConnection() {
 		return connection;
 	}
+
 
 	public static DbConnection getInstance() {
 		if (instance == null) {

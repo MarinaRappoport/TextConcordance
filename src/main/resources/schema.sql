@@ -1,8 +1,3 @@
-SELECT 'CREATE DATABASE concordance'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'concordance')\gexec
-
-use concordance
-
 CREATE TABLE IF NOT EXISTS book (
     book_id SERIAL PRIMARY KEY ,
     title VARCHAR NOT NULL,

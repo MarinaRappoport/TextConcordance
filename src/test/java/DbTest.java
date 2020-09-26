@@ -1,12 +1,20 @@
 import model.Book;
 import org.junit.jupiter.api.Test;
 import service.BookService;
+import service.DbConnection;
 import service.WordService;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
 public class DbTest {
+
+	@Test
+	public void init() throws SQLException {
+		//to init the schema
+		DbConnection.initSchema();
+	}
 
 	@Test
 	public void testWordService(){
