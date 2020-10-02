@@ -14,7 +14,7 @@ public class DbTest {
 	@Test
 	public void wordLoadTest(){
 		FileParser parser = new FileParser();
-		List<WordLocation> wordLocationList = parser.parseFile(new Book("D:\\uni\\sql_seminar\\text_books\\pg5200.txt"));
+		List<WordLocation> wordLocationList = parser.parseFile(new Book("C:\\Users\\Kurbet\\Thirty Strange Stories.txt"));
 		Date start = new Date();
 		for (WordLocation wordLocation: wordLocationList) {
 			long bookId = WordService.insertWord(wordLocation.getWord());

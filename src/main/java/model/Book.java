@@ -11,11 +11,21 @@ public class Book {
 	private Date releaseDate;
 	public int countWord, lineCount, sentenceCount, paragraphCount, characterCount;
 
-	public Book(String title, String author, String date, String path) {
+	//This is too many constructors - We'll deal with this later.
+
+	public Book(String title, String author, String translator, String releaseDate, String path) {
 		this.title = title;
 		this.author = author;
-		this.date = date; //TODO string date to Date
+		this.translator = translator;
+		this.date = releaseDate; //TODO string date to Date
 		this.path = path;
+	}
+
+	public Book(String title, String author, String translator, String releaseDate) {
+		this.title = title;
+		this.author = author;
+		this.translator = translator;
+		this.date = releaseDate;
 	}
 
 	public Book(String title, String author, String translator, Date releaseDate) {

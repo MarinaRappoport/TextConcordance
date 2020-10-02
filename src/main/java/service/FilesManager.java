@@ -37,11 +37,13 @@ public class FilesManager {
     public void addFile(Book file){
         if ( !files.contains(file)) {
 	        List<WordLocation> wordLocationList = new FileParser().parseFile(file);
+	        /*
 	        for (WordLocation wordLocation: wordLocationList) {
 		        long wordId = WordService.insertWord(wordLocation.getWord());
 		        wordLocation.setWordId(wordId);
 		        WordService.addWordPosition(wordLocation);
 	        }
+	         */
             files.add(file);
         }
         menu.updateFileList(files);
