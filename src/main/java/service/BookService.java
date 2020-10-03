@@ -9,8 +9,9 @@ import java.util.List;
 public class BookService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
-	private final static String SQL_INSERT = "INSERT INTO book (title,author,translator, release_date) " +
-			"VALUES (?,?,?,?)";
+	private final static String SQL_INSERT = "INSERT INTO book (title,author,translator,release_date," +
+			"chars_count,words_count,sentence_count,paragraph_count) " +
+			"VALUES (?,?,?,?,?,?,?,?)";
 
 	private final static String SQL_FIND_BY_DETAILS_PREFIX = "SELECT book_id, title,author,translator, " +
 			"release_date FROM book WHERE ";
@@ -23,6 +24,10 @@ public class BookService {
 			statement.setString(2, book.getAuthor());
 			statement.setString(3, book.getTranslator());
 			statement.setDate(4, new Date(book.getReleaseDate().getTime()));
+			statement.setInt(5, book.characterCount);
+			statement.setInt(6, book.wordCount);
+			statement.setInt(7, book.sentenceCount);
+			statement.setInt(8, book.paragraphCount);
 
 			System.out.println(statement.toString());
 
@@ -84,6 +89,10 @@ public class BookService {
 		String translator = rs.getString("translator");
 		Date releaseDate = new Date(rs.getTimestamp("release_date").getTime());
 		Book book = new Book(title, author, translator, releaseDate);
+		book.characterCount = rs.getInt("chars_count");
+		book.wordCount = rs.getInt("words_count");
+		book.sentenceCount = rs.getInt("sentence_count");
+		book.paragraphCount = rs.getInt("paragraph_count");
 		book.setId(id);
 		return book;
 	}

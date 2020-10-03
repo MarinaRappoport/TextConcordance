@@ -45,7 +45,7 @@ public class FileParser {
 
 					// Add words to data base
 					for (int i = 0; i < wordList.length; i++) {
-						WordLocation current = new WordLocation(wordList[i], 1, ++book.countWord,
+						WordLocation current = new WordLocation(wordList[i], 2, ++book.wordCount,
 								book.lineCount, i + 1, book.sentenceCount, book.paragraphCount);
 						wordLocationList.add(current);
 					}
@@ -69,7 +69,7 @@ public class FileParser {
 
 
 		//TEST
-		System.out.println("Total word count = " + book.countWord + "\n");
+		System.out.println("Total word count = " + book.wordCount + "\n");
 		System.out.println("Total number of sentences = " + book.sentenceCount + "\n");
 		System.out.println("Total number of characters = " + book.characterCount + "\n");
 		System.out.println("Total number of lines = " + book.lineCount + "\n");

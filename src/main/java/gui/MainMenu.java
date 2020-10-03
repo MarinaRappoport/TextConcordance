@@ -154,7 +154,7 @@ public class MainMenu extends JFrame {
             Book current = iter.next();
 
             sumOfCharacters += current.characterCount;
-            sumOfWords += current.countWord;
+            sumOfWords += current.wordCount;
             sumOfSentences += current.sentenceCount;
             sumOfLines += current.lineCount;
             sumOfParagraphs += current.paragraphCount;

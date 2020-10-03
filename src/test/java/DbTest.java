@@ -6,23 +6,31 @@ import service.DbConnection;
 import service.FileParser;
 import service.WordService;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DbTest {
 
 	@Test
-	public void wordLoadTest(){
+	public void wordLoadTest() {
+		String bookPath = "D:\\uni\\sql_seminar\\text_books\\59774-0.txt";
 		FileParser parser = new FileParser();
-		List<WordLocation> wordLocationList = parser.parseFile(new Book("C:\\Users\\Kurbet\\Thirty Strange Stories.txt"));
+		List<WordLocation> wordLocationList = parser.parseFile(new Book(bookPath));
 		Date start = new Date();
-		for (WordLocation wordLocation: wordLocationList) {
-			long bookId = WordService.insertWord(wordLocation.getWord());
-			wordLocation.setWordId(bookId);
-			WordService.addWordPosition(wordLocation);
+//		Map<String, Long> words = WordService.getAllWordsId();
+		List<WordLocation> wordLocationListCopy = new LinkedList<>();
+		for (WordLocation wordLocation : wordLocationList) {
+			if(!wordLocation.getWord().isEmpty())
+//			Long wordId = words.get(wordLocation.getWord());
+//			if (wordId == null)
+//				wordId = WordService.insertWord(wordLocation.getWord());
+//			if (wordId > 0) {
+//				wordLocation.setWordId(wordId);
+				wordLocationListCopy.add(wordLocation);
+//			}
 		}
+		WordService.addWordLocationList(wordLocationListCopy);
 		Date end = new Date();
-		long seconds = (end.getTime() - start.getTime())/(1000);
+		long seconds = (end.getTime() - start.getTime()) / (1000);
 		System.out.println(seconds + " secs");
 	}
 
@@ -33,7 +41,7 @@ public class DbTest {
 	}
 
 	@Test
-	public void testWordService(){
+	public void testWordService() {
 		System.out.println(WordService.insertWord("am"));
 		System.out.println(WordService.insertWord("but"));
 		System.out.println(WordService.insertWord("buy"));
@@ -44,8 +52,8 @@ public class DbTest {
 		System.out.println(WordService.findWordByValue("no"));
 	}
 
-	public void testBookService(){
-		Book book = new Book("Book2", "Author2", "", "");
+	public void testBookService() {
+		Book book = new Book("Book2", "Author2", "", new Date());
 		BookService.insertBook(book);
 
 		List<Book> books = BookService.findBookByDetails("Book", null, null, null, null);
