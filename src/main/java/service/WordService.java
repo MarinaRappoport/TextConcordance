@@ -77,12 +77,12 @@ public class WordService {
 		return words;
 	}
 
-	public static void addWordLocationList(List<WordLocation> wordLocationList) {
+	public static void addWordLocationList(List<WordLocation> wordLocationList, long bookId) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_LOCATION);
 			for (WordLocation wordLocation : wordLocationList) {
 				statement.setString(1, wordLocation.getWord());
-				statement.setInt(2, wordLocation.getBookId());
+				statement.setLong(2, bookId);
 				statement.setInt(3, wordLocation.getIndex());
 				statement.setInt(4, wordLocation.getLine());
 				statement.setInt(5, wordLocation.getIndexInLine());

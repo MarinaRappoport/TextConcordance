@@ -23,7 +23,8 @@ public class BookService {
 			statement.setString(1, book.getTitle());
 			statement.setString(2, book.getAuthor());
 			statement.setString(3, book.getTranslator());
-			statement.setDate(4, new Date(book.getReleaseDate().getTime()));
+			if (book.getReleaseDate() == null) statement.setDate(4, null);
+			else statement.setDate(4, new Date(book.getReleaseDate().getTime()));
 			statement.setInt(5, book.characterCount);
 			statement.setInt(6, book.wordCount);
 			statement.setInt(7, book.sentenceCount);

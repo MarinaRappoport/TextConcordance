@@ -28,14 +28,14 @@ CREATE TABLE IF NOT EXISTS word_in_book (
     index_in_line INTEGER NOT NULL,
     sentence INTEGER NOT NULL,
     paragraph INTEGER NOT NULL,
-    is_quote_before BOOLEAN
-    is_quote_after BOOLEAN
-    punctuation_mark VARCHAR(5)
+    is_quote_before BOOLEAN,
+    is_quote_after BOOLEAN,
+    punctuation_mark VARCHAR(5),
     PRIMARY KEY(index, book_id, word),
     FOREIGN KEY(book_id) REFERENCES book
 );
 
-CREATE TABLE IF NOT EXISTS group (
+CREATE TABLE IF NOT EXISTS groupp (
     group_id SERIAL PRIMARY KEY,
     group_name VARCHAR NOT NULL UNIQUE
 );
@@ -43,13 +43,13 @@ CREATE TABLE IF NOT EXISTS group (
 CREATE TABLE IF NOT EXISTS word_in_group (
     group_id INTEGER,
     word VARCHAR,
-    PRIMARY KEY(group_id, word)
-    FOREIGN KEY(group_id) REFERENCES group
+    PRIMARY KEY(group_id, word),
+    FOREIGN KEY(group_id) REFERENCES groupp
 );
 
 CREATE TABLE IF NOT EXISTS word_in_phrase (
     phrase_id INTEGER,
     word VARCHAR,
-    index_in_phrase INTEGER
+    index_in_phrase INTEGER,
     PRIMARY KEY(phrase_id, word, index_in_phrase)
 );

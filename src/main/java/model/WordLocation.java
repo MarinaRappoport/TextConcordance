@@ -13,9 +13,8 @@ public class WordLocation {
 	private boolean isQuoteAfter;
 	private String punctuationMark;
 
-	public WordLocation(String word, int bookId, int index, int line, int indexInLine, int sentence, int paragraph) {
+	public WordLocation(String word, int index, int line, int indexInLine, int sentence, int paragraph) {
 		this.word = word;
-		this.bookId = bookId;
 		this.index = index;
 		this.line = line;
 		this.indexInLine = indexInLine;

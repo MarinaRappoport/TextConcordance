@@ -44,6 +44,23 @@ public class Book {
 		return title;
 	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public void setTranslator(String translator) {
+		if(translator.equals("")) translator = null;
+		else this.translator = translator;
+	}
+
 	public String getDate() {
 		return date;
 	}

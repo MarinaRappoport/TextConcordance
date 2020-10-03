@@ -28,7 +28,7 @@ public class DbTest {
 				wordLocationListCopy.add(wordLocation);
 //			}
 		}
-		WordService.addWordLocationList(wordLocationListCopy);
+		WordService.addWordLocationList(wordLocationListCopy, 1);
 		Date end = new Date();
 		long seconds = (end.getTime() - start.getTime()) / (1000);
 		System.out.println(seconds + " secs");

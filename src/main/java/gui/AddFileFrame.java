@@ -1,6 +1,8 @@
 package gui;
 
 import model.Book;
+import model.WordLocation;
+import service.FileParser;
 import service.FilesManager;
 
 import javax.swing.*;
@@ -10,9 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
+import java.util.List;
 
 //GUI of adding file window
 public class AddFileFrame extends JFrame {
@@ -21,9 +22,12 @@ public class AddFileFrame extends JFrame {
     JLabel title, releaseDate, author, translator, chooseFile, currPage;
     JPanel mainPanel, pagesPanel, bottomPanel, okPanel;
     JTextField dateTF, authorTF, titleTF, translatorTF;
+	//TODO need to add listener in order to update values when user changed it
     FilesManager filesManager;
     String fileName, filePath;
     ArrayList <Book> books;
+    //TODO replace arrayList with map or add WordLocation to Book object
+	private Map<Book, List<WordLocation>> bookMap;
 
     //final Font TITLE_FONT = new Font("Title", Font.TRUETYPE_FONT,22);
     final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,20);
@@ -34,6 +38,7 @@ public class AddFileFrame extends JFrame {
 
     public AddFileFrame(){
         books = new ArrayList<>();
+	    bookMap = new HashMap<>();
         filesManager = FilesManager.getInstance();
         currentBookIndex = 0;
 
@@ -80,14 +85,10 @@ public class AddFileFrame extends JFrame {
                     File[] files = jfc.getSelectedFiles();
 
                     Arrays.asList(files).forEach(x -> {
-
-                        String bookTitle = x.getName();
-                        String bookAuthor = "";
-                        String bookTranslator = "";
-                        String bookRDate = "";
-
-                        Book newBook = new Book(bookTitle, bookAuthor, bookTranslator, bookRDate, x.getAbsolutePath());
+	                    Book newBook = new Book(x.getAbsolutePath());
+	                    List<WordLocation> list = new FileParser().parseFile(newBook);
                         books.add(newBook);
+	                    bookMap.put(newBook, list);
                     });
 
                     updateBookDetails();
@@ -134,10 +135,11 @@ public class AddFileFrame extends JFrame {
         ok.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 Iterator<Book> iter = books.iterator();
                 while (iter.hasNext()) {
-                    filesManager.addFile(iter.next()); //TODO
+                	//TODO alert for waiting and for DONE
+                	Book book = iter.next();
+                    filesManager.addFile(book, bookMap.get(book));
                 }
             }
 
@@ -178,6 +180,8 @@ public class AddFileFrame extends JFrame {
 
         currPage.setText(currentBookIndex + "/" + books.size() );
         titleTF.setText(books.get(currentBookIndex-1).getTitle());
-
+	    authorTF.setText(books.get(currentBookIndex-1).getAuthor());
+	    translatorTF.setText(books.get(currentBookIndex-1).getTranslator());
+		dateTF.setText(books.get(currentBookIndex-1).getDate());
     }
 }
