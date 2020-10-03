@@ -3,14 +3,18 @@ package service;
 import model.WordLocation;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class WordService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
 	private final static String SQL_INSERT_WORD = "INSERT INTO word (value) VALUES (?)";
+	private final static String SQL_SELECT_ALL_WORDS = "SELECT value,word_id from word";
 	private final static String SQL_SELECT_BY_VALUE = "SELECT word_id from word WHERE value = ?";
 	private final static String SQL_INSERT_WORD_LOCATION = "INSERT INTO word_in_book " +
-			"(word_id,book_id,index,line,index_in_line,sentence,paragraph) VALUES (?,?,?,?,?,?,?)";
+			"(word,book_id,index,line,index_in_line,sentence,paragraph) VALUES (?,?,?,?,?,?,?)";
 
 	public static long insertWord(String word) {
 		long id = findWordByValue(word);
@@ -20,7 +24,7 @@ public class WordService {
 					Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, word);
 
-			System.out.println(statement.toString());
+//			System.out.println(statement.toString());
 
 			int affectedRows = statement.executeUpdate();
 
@@ -58,17 +62,37 @@ public class WordService {
 		return id;
 	}
 
-	public static void addWordPosition(WordLocation wordLocation) {
+	public static Map<String, Long> getAllWordsId(){
+		Map<String, Long> words = new HashMap<>();
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(SQL_SELECT_ALL_WORDS);
+			while (rs.next())
+				words.put(rs.getString(1), rs.getLong(2));
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return words;
+	}
+
+	public static void addWordLocationList(List<WordLocation> wordLocationList, long bookId) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_LOCATION);
-			statement.setLong(1, wordLocation.getWordId());
-			statement.setInt(2, wordLocation.getBookId());
-			statement.setInt(3, wordLocation.getIndex());
-			statement.setInt(4, wordLocation.getLine());
-			statement.setInt(5, wordLocation.getIndexInLine());
-			statement.setInt(6, wordLocation.getSentence());
-			statement.setInt(7, wordLocation.getParagraph());
-			statement.executeUpdate();
+			for (WordLocation wordLocation : wordLocationList) {
+				statement.setString(1, wordLocation.getWord());
+				statement.setLong(2, bookId);
+				statement.setInt(3, wordLocation.getIndex());
+				statement.setInt(4, wordLocation.getLine());
+				statement.setInt(5, wordLocation.getIndexInLine());
+				statement.setInt(6, wordLocation.getSentence());
+				statement.setInt(7, wordLocation.getParagraph());
+				statement.addBatch();
+				statement.clearParameters();
+			}
+			int[] results = statement.executeBatch();
+			System.out.println("Loaded " + results.length + " word locations");
 			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

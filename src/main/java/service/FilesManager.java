@@ -34,17 +34,12 @@ public class FilesManager {
     }
 
     //Add only new file. We cannot add the same file twice.
-    public void addFile(Book file){
-        if ( !files.contains(file)) {
-	        List<WordLocation> wordLocationList = new FileParser().parseFile(file);
-	        /*
-	        for (WordLocation wordLocation: wordLocationList) {
-		        long wordId = WordService.insertWord(wordLocation.getWord());
-		        wordLocation.setWordId(wordId);
-		        WordService.addWordPosition(wordLocation);
-	        }
-	         */
-            files.add(file);
+    public void addFile(Book book, List<WordLocation> wordLocationList){
+        if ( !files.contains(book)) {
+        	//TODO check if book already in DB - alert
+	        long id = BookService.insertBook(book);
+	        WordService.addWordLocationList(wordLocationList, id);
+            files.add(book);
         }
         menu.updateFileList(files);
     }

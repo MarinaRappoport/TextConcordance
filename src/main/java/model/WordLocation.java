@@ -9,10 +9,12 @@ public class WordLocation {
     private int indexInLine;
 	private int sentence;
 	private int paragraph;
+	private boolean isQuoteBefore;
+	private boolean isQuoteAfter;
+	private String punctuationMark;
 
-	public WordLocation(String word, int bookId, int index, int line, int indexInLine, int sentence, int paragraph) {
+	public WordLocation(String word, int index, int line, int indexInLine, int sentence, int paragraph) {
 		this.word = word;
-		this.bookId = bookId;
 		this.index = index;
 		this.line = line;
 		this.indexInLine = indexInLine;
@@ -54,5 +56,29 @@ public class WordLocation {
 
 	public int getParagraph() {
 		return paragraph;
+	}
+
+	public boolean isQuoteBefore() {
+		return isQuoteBefore;
+	}
+
+	public void setQuoteBefore(boolean quoteBefore) {
+		isQuoteBefore = quoteBefore;
+	}
+
+	public boolean isQuoteAfter() {
+		return isQuoteAfter;
+	}
+
+	public void setQuoteAfter(boolean quoteAfter) {
+		isQuoteAfter = quoteAfter;
+	}
+
+	public String getPunctuationMark() {
+		return punctuationMark;
+	}
+
+	public void setPunctuationMark(String punctuationMark) {
+		this.punctuationMark = punctuationMark;
 	}
 }
