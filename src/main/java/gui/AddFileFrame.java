@@ -99,15 +99,11 @@ public class AddFileFrame extends JFrame {
 
                 Object[] books = bookMap.keySet().toArray();
 
-                if ( e.getSource() == titleTF ){
-                    ((Book)books[currBook -1]).setTitle(titleTF.getText());
-                } else if ( e.getSource() == translatorTF ){
-                    ((Book)books[currBook -1]).setTranslator(translatorTF.getText());
-                } else if ( e.getSource() == dateTF ) {
-                    ((Book)books[currBook -1]).setDate(dateTF.getText());
-                } else if ( e.getSource() == authorTF ){
-                    ((Book)books[currBook -1]).setAuthor(authorTF.getText());
-                }
+                ((Book)books[currBook -1]).setTitle(titleTF.getText());
+                ((Book)books[currBook -1]).setTranslator(translatorTF.getText());
+                ((Book)books[currBook -1]).setDate(dateTF.getText());
+                ((Book)books[currBook -1]).setAuthor(authorTF.getText());
+
             }
         };
 

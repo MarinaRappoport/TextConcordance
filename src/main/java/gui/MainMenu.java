@@ -105,7 +105,7 @@ public class MainMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 AddFileFrame addFileFrame = new AddFileFrame();
-                addFileFrame.setSize(700, 560);
+                addFileFrame.setSize(700, 580);
                 addFileFrame.setVisible(true);
                 addFileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
