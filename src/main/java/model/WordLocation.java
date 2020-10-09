@@ -13,13 +13,40 @@ public class WordLocation {
 	private boolean isQuoteAfter;
 	private String punctuationMark;
 
-	public WordLocation(String word, int index, int line, int indexInLine, int sentence, int paragraph) {
-		this.word = word;
+
+	public WordLocation(String wrd, int index, int line, int indexInLine, int sentence, int paragraph) {
+		this.word = wrd;
 		this.index = index;
 		this.line = line;
 		this.indexInLine = indexInLine;
 		this.sentence = sentence;
 		this.paragraph = paragraph;
+
+		if ( '\"' == (word.charAt(0)) ){
+			isQuoteBefore = true;
+			word = word.substring(1);
+		} else
+			isQuoteBefore = false;
+
+		findPunctuation();
+
+		if ( '\"' == (word.charAt(word.length()-1)) ){
+			isQuoteAfter = true;
+			word = word.substring(0, word.length()-2);
+		} else
+			isQuoteAfter = false;
+
+		findPunctuation();
+
+	}
+
+	public void findPunctuation(){
+		String punctuations = ".,:;?";
+
+		if ( punctuations.contains(String.valueOf(word.charAt(word.length()-1)) ) ){
+			punctuationMark = String.valueOf(word.charAt(word.length()-1));
+			word = word.substring(0, word.length()-1);
+		}
 	}
 
 	public String getWord() {

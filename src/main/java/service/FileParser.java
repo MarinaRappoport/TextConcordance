@@ -57,9 +57,11 @@ public class FileParser {
 
 						// Add words to data base
 						for (int i = 0; i < wordList.length; i++) {
-							WordLocation current = new WordLocation(wordList[i], ++book.wordCount,
-									book.lineCount, i + 1, book.sentenceCount, book.paragraphCount);
-							wordLocationList.add(current);
+							if ( !wordList[i].isEmpty() ) {
+								WordLocation current = new WordLocation(wordList[i], ++book.wordCount,
+										book.lineCount, i + 1, book.sentenceCount, book.paragraphCount);
+								wordLocationList.add(current);
+							}
 						}
 
 						// [!?.:]+ is the sentence delimiter in java

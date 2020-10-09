@@ -1,4 +1,5 @@
 import gui.MainMenu;
+import service.DbConnection;
 import service.FilesManager;
 
 import javax.swing.*;
@@ -7,7 +8,7 @@ public class Main {
     static FilesManager filesManager;
 
     public static void main(String[] args) {
-
+        DbConnection.initSchema();
 
         //start main menu
         MainMenu menu = new MainMenu();
