@@ -1,12 +1,15 @@
 package model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class WordLocation {
 	private long wordId;
 	private String word;
-	private int bookId;
+	private long bookId;
 	private int index;
-    private int line;
-    private int indexInLine;
+	private int line;
+	private int indexInLine;
 	private int sentence;
 	private int paragraph;
 	private boolean isQuoteBefore;
@@ -22,30 +25,18 @@ public class WordLocation {
 		this.sentence = sentence;
 		this.paragraph = paragraph;
 
-		if ( '\"' == (word.charAt(0)) ){
-			isQuoteBefore = true;
-			word = word.substring(1);
-		} else
-			isQuoteBefore = false;
 
-		findPunctuation();
-
-		if ( '\"' == (word.charAt(word.length()-1)) ){
-			isQuoteAfter = true;
-			word = word.substring(0, word.length()-2);
-		} else
-			isQuoteAfter = false;
-
-		findPunctuation();
-
-	}
-
-	public void findPunctuation(){
-		String punctuations = ".,:;?";
-
-		if ( punctuations.contains(String.valueOf(word.charAt(word.length()-1)) ) ){
-			punctuationMark = String.valueOf(word.charAt(word.length()-1));
-			word = word.substring(0, word.length()-1);
+		Matcher matcher = Pattern.compile("(\\W*)?(\\w+)(\\W*)").matcher(word);
+		if (matcher.find() && matcher.groupCount() == 3) {
+			if (!matcher.group(1).isEmpty())
+				isQuoteBefore = "\"“\'".contains(matcher.group(1));
+			word = matcher.group(2);
+			String after = matcher.group(3);
+			if (!after.isEmpty()) {
+				isQuoteAfter = "\"”\'".contains(String.valueOf(after.charAt(0)));
+				if (isQuoteAfter) after = after.substring(1);
+				if (!after.isEmpty()) punctuationMark = after;
+			}
 		}
 	}
 
@@ -61,7 +52,7 @@ public class WordLocation {
 		return wordId;
 	}
 
-	public int getBookId() {
+	public long getBookId() {
 		return bookId;
 	}
 
@@ -107,5 +98,9 @@ public class WordLocation {
 
 	public void setPunctuationMark(String punctuationMark) {
 		this.punctuationMark = punctuationMark;
+	}
+
+	public void setBookId(long bookId) {
+		this.bookId = bookId;
 	}
 }

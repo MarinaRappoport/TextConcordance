@@ -7,19 +7,23 @@ import service.FileParser;
 import service.WordService;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DbTest {
 
 	@Test
 	public void wordLoadTest() {
+		DbConnection.initSchema();
 		String bookPath = "D:\\uni\\sql_seminar\\text_books\\59774-0.txt";
-		FileParser parser = new FileParser();
-		List<WordLocation> wordLocationList = parser.parseFile(new Book(bookPath));
+		Book b = new Book(bookPath);
+		List<WordLocation> wordLocationList = new FileParser().parseFile(b);
+		BookService.insertBook(b);
 		Date start = new Date();
 //		Map<String, Long> words = WordService.getAllWordsId();
 		List<WordLocation> wordLocationListCopy = new LinkedList<>();
 		for (WordLocation wordLocation : wordLocationList) {
-			if(!wordLocation.getWord().isEmpty())
+			if (!wordLocation.getWord().isEmpty())
 //			Long wordId = words.get(wordLocation.getWord());
 //			if (wordId == null)
 //				wordId = WordService.insertWord(wordLocation.getWord());
@@ -58,6 +62,21 @@ public class DbTest {
 
 		List<Book> books = BookService.findBookByDetails("Book", null, null, null, null);
 		System.out.println("Found " + books.size() + " books");
+	}
+
+	@Test
+	public void testWordParsing() {
+		String word = "Johnsmithia!\"..";
+		WordLocation w = new WordLocation(word, 0, 0, 0, 0, 0);
+		System.out.println((w.isQuoteBefore() ? "\"" : "") + w.getWord() + (w.isQuoteAfter() ? "\"" : "") +
+				(w.getPunctuationMark() == null ? "" : w.getPunctuationMark()));
+	}
+
+	@Test
+	public void testPreview() {
+		List<WordLocation> wordLocations = WordService.findWordInBooks("Johnsmithia",null);
+
+		System.out.println(WordService.buildPreview(wordLocations.get(0).getBookId(), wordLocations.get(0).getParagraph()));
 	}
 
 

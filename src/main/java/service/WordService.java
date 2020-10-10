@@ -4,6 +4,7 @@ import model.WordLocation;
 
 import java.sql.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,12 @@ public class WordService {
 	private final static String SQL_SELECT_ALL_WORDS = "SELECT value,word_id from word";
 	private final static String SQL_SELECT_BY_VALUE = "SELECT word_id from word WHERE value = ?";
 	private final static String SQL_INSERT_WORD_LOCATION = "INSERT INTO word_in_book " +
-			"(word,book_id,index,line,index_in_line,sentence,paragraph) VALUES (?,?,?,?,?,?,?)";
+			"(word,book_id,index,line,index_in_line,sentence,paragraph,is_quote_before,is_quote_after,punctuation_mark)" +
+			" VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word = ? ORDER by book_id, index";
+	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word = ? AND book_id = ? ORDER by index";
+	private final static String SQL_PREVIEW = "SELECT word, is_quote_before, is_quote_after, punctuation_mark from word_in_book where book_id = ? AND paragraph = ? ORDER by index";
 
 	public static long insertWord(String word) {
 		long id = findWordByValue(word);
@@ -62,7 +68,7 @@ public class WordService {
 		return id;
 	}
 
-	public static Map<String, Long> getAllWordsId(){
+	public static Map<String, Long> getAllWordsId() {
 		Map<String, Long> words = new HashMap<>();
 		try {
 			Statement stmt = connection.createStatement();
@@ -88,6 +94,9 @@ public class WordService {
 				statement.setInt(5, wordLocation.getIndexInLine());
 				statement.setInt(6, wordLocation.getSentence());
 				statement.setInt(7, wordLocation.getParagraph());
+				statement.setBoolean(8, wordLocation.isQuoteAfter());
+				statement.setBoolean(9, wordLocation.isQuoteAfter());
+				statement.setString(10, wordLocation.getPunctuationMark());
 				statement.addBatch();
 				statement.clearParameters();
 			}
@@ -97,5 +106,57 @@ public class WordService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static List<WordLocation> findWordInBooks(String word, Long bookId) {
+		List<WordLocation> wordLocations = new LinkedList<>();
+		PreparedStatement statement = null;
+		try {
+			if (bookId == null)
+				statement = connection.prepareStatement(SQL_FIND_LOCATIONS_BY_WORD);
+
+			else {
+				statement = connection.prepareStatement(SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK);
+				statement.setLong(2, bookId);
+			}
+			statement.setString(1, word);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				WordLocation location = new WordLocation(word, rs.getInt("index"), rs.getInt("line"),
+						rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
+				location.setBookId(rs.getLong("book_id"));
+				wordLocations.add(location);
+			}
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wordLocations;
+	}
+
+	public static String buildPreview(long bookId, int paragraph) {
+		StringBuilder sb = new StringBuilder();
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement(SQL_PREVIEW);
+			statement.setLong(1, bookId);
+			statement.setInt(2, paragraph);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				sb.append(rs.getBoolean("is_quote_before") ? "\"" : "").append(rs.getString("word"))
+						.append(rs.getBoolean("is_quote_after") ? "\"" : "");
+				String punctuationMark = rs.getString("punctuation_mark");
+				if(punctuationMark!=null) sb.append(punctuationMark);
+				sb.append(" ");
+			}
+
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
 	}
 }
