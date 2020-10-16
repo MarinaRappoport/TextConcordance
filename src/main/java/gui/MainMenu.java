@@ -7,99 +7,86 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 //GUI of the main menu
 public class MainMenu extends JFrame {
-    JTextArea statTextArea;
-    JList filesList;
-    JPanel buttons, detailsAndStat, filesDetailsPanel, filesListPanel, filesDetailsAndList;
-    JButton loadFile, showWords, showExp, showGroups;
-    FilesManager filesManager;
-    ArrayList<String> allFiles;
-    ArrayList<String > selectedNames;
-    ArrayList<Book> selectedFiles;
+    private JTextArea statTextArea;
+    private JTable filesTable;
+    private JPanel buttons, detailsAndStat, filesDetailsPanel;
+    private JButton loadFile, showWords, showExp, showGroups;
+    private FilesManager filesManager;
+    private ArrayList<Book> allBooks;
+    private ArrayList<Book> selectedBooks;
 
-    final Color PR_ORANGE = new Color(250, 160, 38);
-    final Color PRIMARY_COLOR = new Color(18, 163, 134, 99);
-    final Color SECONDARY_COLOR = new Color(18, 163, 134, 190);
+    final Color DEFAULT = new Color(206, 200, 200, 2);
+    final Color PRIMARY = new Color(250, 160, 38);
     final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,20);
-    final Border BORDER = BorderFactory.createLineBorder(SECONDARY_COLOR, 2);
-    final Border MATT_BORDER = new MatteBorder(0,0,1,0,PRIMARY_COLOR);
+    final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public MainMenu(){
-
-        selectedFiles = new ArrayList<>();
 
         //Create an instance of the files data base
         filesManager = FilesManager.getInstance();
         FilesManager.setMainMenu(this);
 
-        //Set files list
-        allFiles = new ArrayList<>();
-        filesList = new JList<>();
-        filesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        filesList.setBorder(BORDER);
+        allBooks = new ArrayList<>();
+        selectedBooks = new ArrayList<>();
 
-        filesList.addListSelectionListener(new ListSelectionListener() {
+        filesTable = new JTable( new DefaultTableModel((new String[]{"Title", "Author", "Release Date", "Path"}), 0){
+            public boolean isCellEditable(int row, int column)
+            {
+                return false;//all cells are not editable
+            }
+        });
+        filesTable.setFont(MY_FONT);
+
+        filesTable.setRowHeight(40);
+        filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        TableColumnModel columnModel = filesTable.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(290);
+        columnModel.getColumn(1).setPreferredWidth(250);
+        columnModel.getColumn(2).setPreferredWidth(250);
+        columnModel.getColumn(3).setPreferredWidth(290 );
+
+        JScrollPane tableSP=new JScrollPane(filesTable);
+        tableSP.setVisible(true);
+
+        filesTable.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getValueIsAdjusting()) {
-                    selectedFiles.clear();
-                    if (!filesList.getSelectedValuesList().isEmpty()) {
-                        selectedNames = (ArrayList<String>) filesList.getSelectedValuesList();
+            public void mousePressed(MouseEvent e) {
+                selectedBooks.clear();
+                super.mousePressed(e);
 
-                        for (String name : selectedNames) {
-                            selectedFiles.add(filesManager.getFile(name));
-                        }
-                        System.out.println(selectedFiles);
-                    }
-                    updateFileDetails();
-                    updateStatistics();
+                int[] selectedRow = filesTable.getSelectedRows();
+                for (int row : selectedRow){
+                    selectedBooks.add(filesManager.getFile( (String)filesTable.getValueAt(row,0)) );
                 }
+                updateStatistics();
             }
         });
 
-
-        filesDetailsAndList = new JPanel();
-        filesDetailsAndList.setLayout(new BorderLayout());
-        filesDetailsAndList.setBackground(Color.WHITE);
-
-        filesListPanel = new JPanel();
-
-        filesDetailsPanel = new JPanel();
-        filesDetailsPanel.setLayout(new GridLayout(0,4,2,2));
-        TitledBorder detailsTitle = BorderFactory.createTitledBorder(BORDER, "Files Details", 0,
-                0, new Font("Font", Font.BOLD,16));
-        filesDetailsAndList.setBorder(detailsTitle);
-
-        createFilesDetailsTitles();
-        filesListPanel.add(filesList);
-        filesListPanel.setBackground(Color.white);
-
+        //create the text area of statistics
         statTextArea = createTextArea("Statistics");
+        JScrollPane statSP = new JScrollPane(statTextArea);
 
         //create the panel that contains the details and statistics
         detailsAndStat = new JPanel();
         detailsAndStat.setLayout(new GridLayout(2,1,0,0));
-        filesDetailsPanel.setBorder( new MatteBorder(0,1,0,0, PRIMARY_COLOR));
-        JScrollPane statSP = new JScrollPane(statTextArea);
-        filesDetailsAndList.add(filesDetailsPanel, BorderLayout.CENTER);
-        filesDetailsAndList.add(filesListPanel, BorderLayout.WEST);
-        detailsAndStat.add(filesDetailsAndList);
+        detailsAndStat.add(tableSP);
         detailsAndStat.add(statSP);
 
         //create buttons panels
         buttons = new JPanel();
-        buttons.setLayout( new GridLayout(4, 1, 4, 12) );
-        buttons.setBackground(PRIMARY_COLOR);
-        buttons.setBorder(BorderFactory.createMatteBorder(100, 7, 430, 7, PRIMARY_COLOR));
+        buttons.setBorder(BorderFactory.createMatteBorder(20, 100, 30, 100,DEFAULT));
 
         //create buttons
         loadFile = new JButton("Load New Files");
@@ -138,9 +125,8 @@ public class MainMenu extends JFrame {
         buttons.add(showGroups);
         buttons.add(showExp);
 
-        add(buttons, BorderLayout.WEST);
+        add(buttons, BorderLayout.NORTH);
         add(detailsAndStat, BorderLayout.CENTER);
-
 
     }
 
@@ -156,7 +142,7 @@ public class MainMenu extends JFrame {
         statTextArea.setText("");
 
         //Iterating on files ArrayList and add all details to filesDetailsPanel
-        Iterator<Book> iter = selectedFiles.iterator();
+        Iterator<Book> iter = selectedBooks.iterator();
         while (iter.hasNext()){
             Book current = iter.next();
 
@@ -190,87 +176,26 @@ public class MainMenu extends JFrame {
 
     }
 
-    //Create files details panels titles
-    public void createFilesDetailsTitles(){
-        JLabel nameT = new JLabel("File Name            ");
-        JLabel authorT = new JLabel("Author Name         ");
-        JLabel dateT = new JLabel("Date Of Release    ");
-        JLabel pathT = new JLabel("Path                  ");
-
-        nameT.setBorder(MATT_BORDER);
-        authorT.setBorder(MATT_BORDER);
-        dateT.setBorder(MATT_BORDER);
-        pathT.setBorder(MATT_BORDER);
-
-        nameT.setFont(MY_FONT);
-        authorT.setFont(MY_FONT);
-        dateT.setFont(MY_FONT);
-        pathT.setFont(MY_FONT);
-
-        nameT.setBackground(Color.WHITE);
-        authorT.setBackground(Color.WHITE);
-        dateT.setBackground(Color.WHITE);
-        pathT.setBackground(Color.WHITE);
-
-        nameT.setOpaque(true);
-        authorT.setOpaque(true);
-        dateT.setOpaque(true);
-        pathT.setOpaque(true);
-
-        filesDetailsPanel.add(nameT);
-        filesDetailsPanel.add(authorT);
-        filesDetailsPanel.add(dateT);
-        filesDetailsPanel.add(pathT);
-
-        if ( filesManager.isEmpty() )
-            filesDetailsPanel.add( new JLabel("No files to show"));
-    }
-
     public void updateFileList(ArrayList<Book> files) {
-        allFiles.clear();
-        filesList.removeAll();
+
+        allBooks.clear();
 
         Iterator<Book> iter = files.iterator();
         while (iter.hasNext()) {
-            Book current = iter.next();
-
-            allFiles.add(current.getTitle());
+            allBooks.add(iter.next());
 
         }
-        filesList.setListData(allFiles.toArray());
+
+        updateFileDetails();
     }
 
     public void updateFileDetails() {
 
-        //Remove previous details and recreate all
-        allFiles.clear();
-        filesDetailsPanel.removeAll();
-        createFilesDetailsTitles();
+        DefaultTableModel model = (DefaultTableModel) filesTable.getModel();
+        Book current = allBooks.get(allBooks.size()-1);
+        model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
 
-        //Iterating on files ArrayList and add all details to filesDetailsPanel
-        Iterator<Book> iter = selectedFiles.iterator();
-        while (iter.hasNext()){
-            Book current = iter.next();
-
-            JLabel name = new JLabel(current.getTitle());
-            name.setBorder(MATT_BORDER);
-            JLabel author = new JLabel(current.getAuthor());
-            author.setBorder(MATT_BORDER);
-            JLabel date = new JLabel(current.getDate());
-            date.setBorder(MATT_BORDER);
-            JLabel path = new JLabel(current.getPath());
-            path.setBorder(MATT_BORDER);
-
-            filesDetailsPanel.add(name);
-            filesDetailsPanel.add(author);
-            filesDetailsPanel.add(date);
-            filesDetailsPanel.add(path);
-        }
-
-        filesDetailsAndList.revalidate();
-        filesDetailsPanel.revalidate();
     }
-
 
     public JTextArea createTextArea(String name) {
         JTextArea tArea = new JTextArea();

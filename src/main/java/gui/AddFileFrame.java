@@ -65,7 +65,7 @@ public class AddFileFrame extends JFrame {
         releaseDate.setFont(MY_FONT);
         chooseFile = new JLabel("Choose files");
         chooseFile.setFont(MY_FONT);
-        note = new JLabel("*Note : Press enter to save changes");
+        note = new JLabel("*Press enter to save changes");
 
         //Choose file with JFileChooser
         addFile = new JButton("Select files");
@@ -137,9 +137,9 @@ public class AddFileFrame extends JFrame {
             }
         };
 
-        prev = new JButton("previous");
+        prev = new JButton("Previous");
         prev.addActionListener(btnListener);
-        next = new JButton("next");
+        next = new JButton("Next");
         next.addActionListener(btnListener);
         currPage = new JLabel(currBook + "/0");
 
@@ -151,6 +151,7 @@ public class AddFileFrame extends JFrame {
                 waitingFrame = new WaitingFrame();
                 waitingFrame.pack();
                 waitingFrame.setVisible(true);
+                dispose();
 
                 Thread addFilesThread = new Thread(new Runnable() {
                     @Override
@@ -160,7 +161,6 @@ public class AddFileFrame extends JFrame {
                         }
 
                         waitingFrame.dispose();
-                        dispose();
                     }
                 });
                 addFilesThread.start();
