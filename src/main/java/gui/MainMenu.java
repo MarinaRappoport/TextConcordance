@@ -19,13 +19,14 @@ import java.util.Iterator;
 public class MainMenu extends JFrame {
     JTextArea statTextArea;
     JList filesList;
-    JPanel buttons, detailsAndStat, filesDetailsPanel, filesDetailsAndList;
+    JPanel buttons, detailsAndStat, filesDetailsPanel, filesListPanel, filesDetailsAndList;
     JButton loadFile, showWords, showExp, showGroups;
     FilesManager filesManager;
     ArrayList<String> allFiles;
     ArrayList<String > selectedNames;
     ArrayList<Book> selectedFiles;
 
+    final Color PR_ORANGE = new Color(250, 160, 38);
     final Color PRIMARY_COLOR = new Color(18, 163, 134, 99);
     final Color SECONDARY_COLOR = new Color(18, 163, 134, 190);
     final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,20);
@@ -67,7 +68,10 @@ public class MainMenu extends JFrame {
 
 
         filesDetailsAndList = new JPanel();
+        filesDetailsAndList.setLayout(new BorderLayout());
         filesDetailsAndList.setBackground(Color.WHITE);
+
+        filesListPanel = new JPanel();
 
         filesDetailsPanel = new JPanel();
         filesDetailsPanel.setLayout(new GridLayout(0,4,2,2));
@@ -76,15 +80,18 @@ public class MainMenu extends JFrame {
         filesDetailsAndList.setBorder(detailsTitle);
 
         createFilesDetailsTitles();
+        filesListPanel.add(filesList);
+        filesListPanel.setBackground(Color.white);
 
         statTextArea = createTextArea("Statistics");
 
         //create the panel that contains the details and statistics
         detailsAndStat = new JPanel();
         detailsAndStat.setLayout(new GridLayout(2,1,0,0));
+        filesDetailsPanel.setBorder( new MatteBorder(0,1,0,0, PRIMARY_COLOR));
         JScrollPane statSP = new JScrollPane(statTextArea);
         filesDetailsAndList.add(filesDetailsPanel, BorderLayout.CENTER);
-        filesDetailsAndList.add(filesList, BorderLayout.EAST);
+        filesDetailsAndList.add(filesListPanel, BorderLayout.WEST);
         detailsAndStat.add(filesDetailsAndList);
         detailsAndStat.add(statSP);
 
@@ -95,7 +102,7 @@ public class MainMenu extends JFrame {
         buttons.setBorder(BorderFactory.createMatteBorder(100, 7, 430, 7, PRIMARY_COLOR));
 
         //create buttons
-        loadFile = new JButton("Load New File");
+        loadFile = new JButton("Load New Files");
         loadFile.setFont(MY_FONT);
         loadFile.setAlignmentX(Component.CENTER_ALIGNMENT);
         loadFile.setPreferredSize(new Dimension(200, 40));

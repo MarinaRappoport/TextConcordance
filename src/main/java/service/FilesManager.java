@@ -1,9 +1,11 @@
 package service;
 
 import gui.MainMenu;
+import gui.WaitingFrame;
 import model.Book;
 import model.WordLocation;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +42,7 @@ public class FilesManager {
 	        long id = BookService.insertBook(book);
 	        WordService.addWordLocationList(wordLocationList, id);
             files.add(book);
+
         }
         menu.updateFileList(files);
     }
