@@ -5,13 +5,9 @@ import service.FilesManager;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -21,15 +17,15 @@ import java.util.Iterator;
 public class MainMenu extends JFrame {
     private JTextArea statTextArea;
     private JTable filesTable;
-    private JPanel buttons, detailsAndStat, filesDetailsPanel;
-    private JButton loadFile, showWords, showExp, showGroups;
+    private JPanel buttons, detailsAndStat, bottomPanel;
+    private JButton loadFile, showWords, showExp, showGroups, findBook, extractToXML;
     private FilesManager filesManager;
     private ArrayList<Book> allBooks;
     private ArrayList<Book> selectedBooks;
 
     final Color DEFAULT = new Color(206, 200, 200, 2);
     final Color PRIMARY = new Color(250, 160, 38);
-    final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,20);
+    final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
     final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public MainMenu(){
@@ -52,10 +48,10 @@ public class MainMenu extends JFrame {
         filesTable.setRowHeight(40);
         filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TableColumnModel columnModel = filesTable.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(290);
-        columnModel.getColumn(1).setPreferredWidth(250);
-        columnModel.getColumn(2).setPreferredWidth(250);
-        columnModel.getColumn(3).setPreferredWidth(290 );
+        columnModel.getColumn(0).setPreferredWidth(300);
+        columnModel.getColumn(1).setPreferredWidth(240);
+        columnModel.getColumn(2).setPreferredWidth(240);
+        columnModel.getColumn(3).setPreferredWidth(300 );
 
         JScrollPane tableSP=new JScrollPane(filesTable);
         tableSP.setVisible(true);
@@ -75,7 +71,14 @@ public class MainMenu extends JFrame {
         });
 
         //create the text area of statistics
-        statTextArea = createTextArea("Statistics");
+        statTextArea = new JTextArea();
+        statTextArea.setEditable(false);
+        statTextArea.setColumns(20);
+        statTextArea.setRows(7);
+        TitledBorder title = BorderFactory.createTitledBorder
+                (BORDER, "Statistics", 0, 0, new Font("Font", Font.BOLD,18));
+        title.setTitleJustification(TitledBorder.CENTER);
+        statTextArea.setBorder(title);
         JScrollPane statSP = new JScrollPane(statTextArea);
 
         //create the panel that contains the details and statistics
@@ -86,13 +89,15 @@ public class MainMenu extends JFrame {
 
         //create buttons panels
         buttons = new JPanel();
-        buttons.setBorder(BorderFactory.createMatteBorder(20, 100, 30, 100,DEFAULT));
+        buttons.setBorder(BorderFactory.createMatteBorder(20, 100, 15, 100,DEFAULT));
+
+        bottomPanel = new JPanel();
+        bottomPanel.setBorder(BorderFactory.createMatteBorder(15, 100, 20, 100,DEFAULT));
 
         //create buttons
         loadFile = new JButton("Load New Files");
         loadFile.setFont(MY_FONT);
         loadFile.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loadFile.setPreferredSize(new Dimension(200, 40));
 
         loadFile.addActionListener(new ActionListener() {
             @Override
@@ -108,25 +113,43 @@ public class MainMenu extends JFrame {
         showWords = new JButton("Show Words");
         showWords.setFont(MY_FONT);
         showWords.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showWords.setPreferredSize(new Dimension(200, 40));
+        showWords.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ShowWords showWords = new ShowWords(allBooks);
+                showWords.setSize(573, 450);
+                showWords.setVisible(true);
+                showWords.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            }
+        });
 
         showExp = new JButton("Show Expressions");
         showExp.setFont(MY_FONT);
         showExp.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showExp.setPreferredSize(new Dimension(200, 40));
 
         showGroups = new JButton("Show Groups");
         showGroups.setFont(MY_FONT);
         showGroups.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showGroups.setPreferredSize(new Dimension(200, 40));
+
+        findBook = new JButton("Find Book");
+        findBook.setFont(MY_FONT);
+        findBook.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        extractToXML = new JButton("Extract to XML");
+        extractToXML.setFont(MY_FONT);
+        extractToXML.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        bottomPanel.add(extractToXML);
 
         buttons.add(loadFile);
+        buttons.add(findBook);
         buttons.add(showWords);
         buttons.add(showGroups);
         buttons.add(showExp);
 
         add(buttons, BorderLayout.NORTH);
         add(detailsAndStat, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
 
     }
 
@@ -195,17 +218,6 @@ public class MainMenu extends JFrame {
         Book current = allBooks.get(allBooks.size()-1);
         model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
 
-    }
-
-    public JTextArea createTextArea(String name) {
-        JTextArea tArea = new JTextArea();
-        tArea.setEditable(false);
-        tArea.setColumns(20);
-        tArea.setRows(7);
-        TitledBorder title = BorderFactory.createTitledBorder(BORDER, name, 0, 0, new Font("Font", Font.BOLD,16));
-        tArea.setBorder(title);
-
-        return tArea;
     }
 
 
