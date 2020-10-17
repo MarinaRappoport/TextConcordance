@@ -12,7 +12,7 @@ public class Main {
 
         //start main menu
         MainMenu menu = new MainMenu();
-        menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        menu.setSize(1100, 600);
         menu.setVisible(true);
         menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
