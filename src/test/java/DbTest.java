@@ -95,5 +95,24 @@ public class DbTest {
 		}
 	}
 
+	@Test
+	public void testFindWordInBooks(){
+		List<Book> books = BookService.getAllBooks();
+
+		ArrayList<String> words= new ArrayList<>();
+		words.add("will");
+		words.add("when");
+		words.add("for");
+
+		for(String word : words){
+			System.out.println("***");
+			System.out.println("Word : " + word);
+			for (Book book : books) {
+				List<WordLocation> locations = WordService.findWordInBooks(word, book.getId());
+				System.out.println("In \'" + book.getTitle() + "\'");
+				System.out.println("Number of locations : " + locations.size());
+			}
+		}
+	}
 
 }

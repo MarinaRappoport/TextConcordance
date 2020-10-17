@@ -1,6 +1,9 @@
 package gui;
 
 import model.Book;
+import model.WordLocation;
+import service.BookService;
+import service.WordService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -8,7 +11,12 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShowWords extends JFrame {
     private JPanel north, center, searchWords, chooseBook;
@@ -19,6 +27,10 @@ public class ShowWords extends JFrame {
     private JList<String> words;
     private JTextArea context;
     private JTable locationsTable;
+    private ArrayList<Long> bookIdList;
+    private int selectedBookIndex;
+    private String word;
+
 
     final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
     private final Color DEFAULT = new Color(206, 200, 200, 2);
@@ -28,6 +40,9 @@ public class ShowWords extends JFrame {
 
     public ShowWords(ArrayList<Book> books){
 
+        word = "";
+        selectedBookIndex = 0;
+        bookIdList = new ArrayList<>();
         north = new JPanel();
 
         center = new JPanel();
@@ -40,31 +55,58 @@ public class ShowWords extends JFrame {
 
         search = new JButton("Search");
         search.setFont(MY_FONT);
-        enterWord = new JTextField("  Enter a Word  ");
+
+        search.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectedBookIndex = booksList.getSelectedIndex();
+                word = enterWord.getText();
+
+                if (selectedBookIndex == 0){ //search in all books
+                    for (Book book : books){
+                        addLocations(WordService.findWordInBooks(word, book.getId()));
+                    }
+                }
+                addLocations(WordService.findWordInBooks(word,books.get(selectedBookIndex-1).getId()));
+            }
+        });
+
+        enterWord = new JTextField("Enter a Word");
         enterWord.setFont(MY_FONT);
         chooseBookLabel = new JLabel("Choose a book");
         chooseBookLabel.setFont(MY_FONT);
 
         locationsTable = new JTable( new DefaultTableModel(
-                (new String[]{" ", "Title", "Author", "Line", "Paragraph"}), 0){ //first column for numbering
+                (new String[]{" ", "Title", "Author", "Line", "Phrase"}), 0){ //first column for numbering
             public boolean isCellEditable(int row, int column)
             {
                 return false;
             }
         });
         locationsTable.setFont(MY_FONT);
+        locationsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         locationsTable.setRowHeight(40);
         locationsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TableColumnModel columnModel = locationsTable.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(30);
-        columnModel.getColumn(1).setPreferredWidth(220);
-        columnModel.getColumn(2).setPreferredWidth(100);
+        columnModel.getColumn(1).setPreferredWidth(240);
+        columnModel.getColumn(2).setPreferredWidth(120);
         columnModel.getColumn(3).setPreferredWidth(100);
         columnModel.getColumn(4).setPreferredWidth(100);
 
         JScrollPane tableSP=new JScrollPane(locationsTable);
         tableSP.setVisible(true);
+
+        locationsTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+
+                int row = locationsTable.getSelectedRow();
+                createPreview(bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+            }
+        });
 
         if (books.size() == 0){
             booksList = new JComboBox<>(new String[]{"No books to show"});
@@ -103,5 +145,21 @@ public class ShowWords extends JFrame {
         add(center, BorderLayout.CENTER);
     }
 
+    private void addLocations(List<WordLocation> locations) {
+        DefaultTableModel model = (DefaultTableModel) locationsTable.getModel();
+        Book current;
+        int count = 0;
 
+        for (WordLocation location : locations) {
+            current = BookService.findBookById(location.getBookId());
+            model.addRow(new Object[]{count+1 , current.getTitle(), current.getAuthor(),
+                    location.getLine(), location.getParagraph() });
+            bookIdList.add( location.getBookId());
+        }
+    }
+
+    private void createPreview(long bookId, int phrase){
+        context.append("in create preview");
+    }
 }
+
