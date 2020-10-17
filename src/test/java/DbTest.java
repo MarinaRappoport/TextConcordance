@@ -15,7 +15,7 @@ public class DbTest {
 	@Test
 	public void wordLoadTest() {
 		DbConnection.initSchema();
-		String bookPath = "D:\\uni\\sql_seminar\\text_books\\59774-0.txt";
+		String bookPath = "D:\\uni\\sql_seminar\\text_books\\11-0.txt";
 		Book b = new Book(bookPath);
 		List<WordLocation> wordLocationList = new FileParser().parseFile(b);
 		BookService.insertBook(b);
@@ -32,7 +32,7 @@ public class DbTest {
 				wordLocationListCopy.add(wordLocation);
 //			}
 		}
-		WordService.addWordLocationList(wordLocationListCopy, 1);
+		WordService.addWordLocationList(wordLocationListCopy, b.getId());
 		Date end = new Date();
 		long seconds = (end.getTime() - start.getTime()) / (1000);
 		System.out.println(seconds + " secs");
@@ -77,6 +77,22 @@ public class DbTest {
 		List<WordLocation> wordLocations = WordService.findWordInBooks("Johnsmithia",null);
 
 		System.out.println(WordService.buildPreview(wordLocations.get(0).getBookId(), wordLocations.get(0).getParagraph()));
+	}
+
+	@Test
+	public void testWordsAppearance(){
+		Map<String, Integer> map = WordService.getWordsAppearances(null);
+		System.out.println(map.size());
+		for (Map.Entry<String, Integer> e: map.entrySet()) {
+			System.out.println(e.getKey() + " " + e.getValue());
+		}
+
+		System.out.println("-----------------------------");
+		Map<String, Integer> map2 = WordService.getWordsAppearances(new Long(4));
+		System.out.println(map2.size());
+		for (Map.Entry<String, Integer> e: map2.entrySet()) {
+			System.out.println(e.getKey() + " " + e.getValue());
+		}
 	}
 
 

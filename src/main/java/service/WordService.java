@@ -3,10 +3,7 @@ package service;
 import model.WordLocation;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WordService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
@@ -21,6 +18,10 @@ public class WordService {
 	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word = ? ORDER by book_id, index";
 	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word = ? AND book_id = ? ORDER by index";
 	private final static String SQL_PREVIEW = "SELECT word, is_quote_before, is_quote_after, punctuation_mark from word_in_book where book_id = ? AND paragraph = ? ORDER by index";
+
+	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT word, COUNT(word) from word_in_book where book_id = ? GROUP BY word ORDER by word";
+	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT word, COUNT(word) from word_in_book GROUP BY word ORDER by word";
+
 
 	public static long insertWord(String word) {
 		long id = findWordByValue(word);
@@ -158,5 +159,32 @@ public class WordService {
 			e.printStackTrace();
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * @param bookId - use null to count word appearances in all books
+	 * @return map of pairs word:appearances in alphabetic order
+	 */
+	public static Map<String, Integer> getWordsAppearances(Long bookId){
+		Map<String,Integer> wordMap = new LinkedHashMap<>();
+		PreparedStatement statement = null;
+		try {
+			if (bookId == null)
+				statement = connection.prepareStatement(SQL_FIND_WORDS_APPEARANCES);
+
+			else {
+				statement = connection.prepareStatement(SQL_FIND_WORDS_APPEARANCES_IN_BOOK);
+				statement.setLong(1, bookId);
+			}
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				wordMap.put(rs.getString("word"),rs.getInt(2));
+			}
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wordMap;
 	}
 }
