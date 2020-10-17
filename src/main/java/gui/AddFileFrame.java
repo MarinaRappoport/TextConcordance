@@ -17,6 +17,7 @@ import java.util.List;
 
 //GUI of adding file window
 public class AddFileFrame extends JFrame {
+    private WaitingFrame waitingFrame;
     private JButton addFile, ok, prev, next;
     private int currBook;
     private JLabel title, releaseDate, author, translator, chooseFile, currPage, note;
@@ -64,7 +65,7 @@ public class AddFileFrame extends JFrame {
         releaseDate.setFont(MY_FONT);
         chooseFile = new JLabel("Choose files");
         chooseFile.setFont(MY_FONT);
-        note = new JLabel("*Note : Press enter to save changes");
+        note = new JLabel("*Press enter to save changes");
 
         //Choose file with JFileChooser
         addFile = new JButton("Select files");
@@ -136,9 +137,9 @@ public class AddFileFrame extends JFrame {
             }
         };
 
-        prev = new JButton("previous");
+        prev = new JButton("Previous");
         prev.addActionListener(btnListener);
-        next = new JButton("next");
+        next = new JButton("Next");
         next.addActionListener(btnListener);
         currPage = new JLabel(currBook + "/0");
 
@@ -147,11 +148,23 @@ public class AddFileFrame extends JFrame {
         ok.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                waitingFrame = new WaitingFrame();
+                waitingFrame.pack();
+                waitingFrame.setVisible(true);
+                dispose();
 
-                for (Map.Entry<Book, List<WordLocation>> entry : bookMap.entrySet()){
-                    //TODO alert for waiting and for DONE
-                    filesManager.addFile(entry.getKey(), entry.getValue());
-                }
+                Thread addFilesThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (Map.Entry<Book, List<WordLocation>> entry : bookMap.entrySet()){
+                            filesManager.addFile(entry.getKey(), entry.getValue());
+                        }
+
+                        waitingFrame.dispose();
+                    }
+                });
+                addFilesThread.start();
+
             }
 
         });
