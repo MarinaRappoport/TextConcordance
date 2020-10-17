@@ -9,16 +9,18 @@ import java.util.List;
 public class BookService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
-	private final static String SQL_INSERT = "INSERT INTO book (title,author,translator,release_date," +
+	private final static String SQL_INSERT_BOOK = "INSERT INTO book (title,author,translator,release_date," +
 			"chars_count,words_count,sentence_count,paragraph_count) " +
 			"VALUES (?,?,?,?,?,?,?,?)";
 
-	private final static String SQL_FIND_BY_DETAILS_PREFIX = "SELECT book_id, title,author,translator, " +
+	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT book_id, title,author,translator, " +
 			"release_date FROM book WHERE ";
+
+	private final static String SQL_FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
 
 	public static long insertBook(Book book) {
 		try {
-			PreparedStatement statement = connection.prepareStatement(SQL_INSERT,
+			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK,
 					Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, book.getTitle());
 			statement.setString(2, book.getAuthor());
@@ -54,7 +56,7 @@ public class BookService {
 
 	public static List<Book> findBookByDetails(String title, String author, String translator, Date releaseFrom, Date releaseTo) {
 		List<Book> books = new LinkedList<>();
-		StringBuilder sb = new StringBuilder(SQL_FIND_BY_DETAILS_PREFIX);
+		StringBuilder sb = new StringBuilder(SQL_FIND_BOOK_BY_DETAILS_PREFIX);
 		if (title != null)
 			sb.append("title LIKE '%").append(title).append("%' AND ");
 		if (author != null)
@@ -95,6 +97,23 @@ public class BookService {
 		book.sentenceCount = rs.getInt("sentence_count");
 		book.paragraphCount = rs.getInt("paragraph_count");
 		book.setId(id);
+		return book;
+	}
+
+	public static Book findBookById(long id) {
+		Book book = null;
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement(SQL_FIND_BOOK_BY_ID);
+			statement.setLong(1, id);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next())
+				book = parseBook(rs);
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return book;
 	}
 }
