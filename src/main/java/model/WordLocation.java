@@ -24,20 +24,6 @@ public class WordLocation {
 		this.indexInLine = indexInLine;
 		this.sentence = sentence;
 		this.paragraph = paragraph;
-
-
-		Matcher matcher = Pattern.compile("(\\W*)?(\\w+)(\\W*)").matcher(word);
-		if (matcher.find() && matcher.groupCount() == 3) {
-			if (!matcher.group(1).isEmpty())
-				isQuoteBefore = "\"“\'".contains(matcher.group(1));
-			word = matcher.group(2);
-			String after = matcher.group(3);
-			if (!after.isEmpty()) {
-				isQuoteAfter = "\"”\'".contains(String.valueOf(after.charAt(0)));
-				if (isQuoteAfter) after = after.substring(1);
-				if (!after.isEmpty()) punctuationMark = after;
-			}
-		}
 	}
 
 	public String getWord() {

@@ -7,8 +7,11 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileParser {
 
@@ -55,14 +58,8 @@ public class FileParser {
 						// \\s+ is the space delimiter in java
 						String[] wordList = currentLine.split("\\s+");
 
-						// Add words to data base
-						for (int i = 0; i < wordList.length; i++) {
-							if ( !wordList[i].isEmpty() ) {
-								WordLocation current = new WordLocation(wordList[i], ++book.wordCount,
-										book.lineCount, i + 1, book.sentenceCount, book.paragraphCount);
-								wordLocationList.add(current);
-							}
-						}
+						// Add word location to the list
+						wordLocationList = addWordLocationToList(book, wordList);
 
 						// [!?.:]+ is the sentence delimiter in java
 						String[] sentenceList = currentLine.split("[!?.:]+");
@@ -101,6 +98,42 @@ public class FileParser {
 		System.out.println("Total number of lines = " + book.lineCount + "\n");
 		System.out.println("Number of paragraphs = " + book.paragraphCount + "\n");
 
+		return wordLocationList;
+	}
+
+	private List<WordLocation> addWordLocationToList(Book book, String[] wordList) {
+		List<WordLocation> wordLocationList = new LinkedList<>();
+		for (int i = 0; i < wordList.length; i++) {
+			if (!wordList[i].isEmpty()) {
+				String word = null;
+				boolean isQuoteBefore = false;
+				boolean isQuoteAfter =false;
+				String punctuationMark = null;
+				try {
+					Matcher matcher = Pattern.compile("(\\W*)?([a-zA-Z']+)(\\W*)").matcher(wordList[i].replaceAll("_", ""));
+					if (matcher.find() && matcher.groupCount() == 3) {
+						if (!matcher.group(1).isEmpty())
+							isQuoteBefore = "\"“\'".contains(matcher.group(1));
+						word = matcher.group(2);
+						String after = matcher.group(3);
+						if (!after.isEmpty()) {
+							isQuoteAfter = "\"”\'".contains(String.valueOf(after.charAt(0)));
+							if (isQuoteAfter) after = after.substring(1);
+							if (!after.isEmpty()) punctuationMark = after;
+						}
+					}
+				} catch (Exception e) {
+				}
+				if (word != null) {
+					WordLocation current = new WordLocation(wordList[i], ++book.wordCount,
+							book.lineCount, i + 1, book.sentenceCount, book.paragraphCount);
+					current.setQuoteBefore(isQuoteBefore);
+					current.setQuoteAfter(isQuoteAfter);
+					current.setPunctuationMark(punctuationMark);
+					wordLocationList.add(current);
+				}
+			}
+		}
 		return wordLocationList;
 	}
 }
