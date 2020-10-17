@@ -18,6 +18,8 @@ public class BookService {
 
 	private final static String SQL_FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
 
+	private final static String SQL_FIND_ALL_BOOKS = "SELECT * FROM book";
+
 	public static long insertBook(Book book) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK,
@@ -115,5 +117,20 @@ public class BookService {
 			e.printStackTrace();
 		}
 		return book;
+	}
+
+	public static List<Book> getAllBooks(){
+		List<Book> books = new LinkedList<>();
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_BOOKS);
+			while (rs.next())
+				books.add(parseBook(rs));
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return books;
 	}
 }
