@@ -92,7 +92,10 @@ public class BookService {
 		String title = rs.getString("title");
 		String author = rs.getString("author");
 		String translator = rs.getString("translator");
-		Date releaseDate = new Date(rs.getTimestamp("release_date").getTime());
+		Date releaseDate = null;
+		Timestamp ts = rs.getTimestamp("release_date");
+		if (ts != null)
+			releaseDate = new Date(ts.getTime());
 		Book book = new Book(title, author, translator, releaseDate);
 		book.characterCount = rs.getInt("chars_count");
 		book.wordCount = rs.getInt("words_count");
@@ -119,7 +122,7 @@ public class BookService {
 		return book;
 	}
 
-	public static List<Book> getAllBooks(){
+	public static List<Book> getAllBooks() {
 		List<Book> books = new LinkedList<>();
 		try {
 			Statement stmt = connection.createStatement();
