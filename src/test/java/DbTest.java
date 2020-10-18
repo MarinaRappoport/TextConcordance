@@ -66,15 +66,16 @@ public class DbTest {
 
 	@Test
 	public void testWordParsing() {
-		String word = "Johnsmithia!\"..";
-		WordLocation w = new WordLocation(word, 0, 0, 0, 0, 0);
+		String word = "“without";
+		List<WordLocation> ws = new FileParser().addWordLocationToList(new Book(""),new String[]{word});
+		WordLocation w = ws.get(0);
 		System.out.println((w.isQuoteBefore() ? "\"" : "") + w.getWord() + (w.isQuoteAfter() ? "\"" : "") +
 				(w.getPunctuationMark() == null ? "" : w.getPunctuationMark()));
 	}
 
 	@Test
 	public void testPreview() {
-		List<WordLocation> wordLocations = WordService.findWordInBooks("Johnsmithia",null);
+		List<WordLocation> wordLocations = WordService.findWordInBooks("conversations",null);
 
 		System.out.println(WordService.buildPreview(wordLocations.get(0).getBookId(), wordLocations.get(0).getParagraph()));
 	}

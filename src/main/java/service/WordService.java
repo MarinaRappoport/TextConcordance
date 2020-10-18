@@ -95,7 +95,7 @@ public class WordService {
 				statement.setInt(5, wordLocation.getIndexInLine());
 				statement.setInt(6, wordLocation.getSentence());
 				statement.setInt(7, wordLocation.getParagraph());
-				statement.setBoolean(8, wordLocation.isQuoteAfter());
+				statement.setBoolean(8, wordLocation.isQuoteBefore());
 				statement.setBoolean(9, wordLocation.isQuoteAfter());
 				statement.setString(10, wordLocation.getPunctuationMark());
 				statement.addBatch();

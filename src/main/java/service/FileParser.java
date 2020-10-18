@@ -59,7 +59,7 @@ public class FileParser {
 						String[] wordList = currentLine.split("\\s+");
 
 						// Add word location to the list
-						wordLocationList = addWordLocationToList(book, wordList);
+						wordLocationList.addAll(addWordLocationToList(book, wordList));
 
 						// [!?.:]+ is the sentence delimiter in java
 						String[] sentenceList = currentLine.split("[!?.:]+");
@@ -101,7 +101,7 @@ public class FileParser {
 		return wordLocationList;
 	}
 
-	private List<WordLocation> addWordLocationToList(Book book, String[] wordList) {
+	public List<WordLocation> addWordLocationToList(Book book, String[] wordList) {
 		List<WordLocation> wordLocationList = new LinkedList<>();
 		for (int i = 0; i < wordList.length; i++) {
 			if (!wordList[i].isEmpty()) {
@@ -110,7 +110,7 @@ public class FileParser {
 				boolean isQuoteAfter =false;
 				String punctuationMark = null;
 				try {
-					Matcher matcher = Pattern.compile("(\\W*)?([a-zA-Z']+)(\\W*)").matcher(wordList[i].replaceAll("_", ""));
+					Matcher matcher = Pattern.compile("(\\W*)?([a-zA-Z'’]+)(\\W*)").matcher(wordList[i].replaceAll("_", ""));
 					if (matcher.find() && matcher.groupCount() == 3) {
 						if (!matcher.group(1).isEmpty())
 							isQuoteBefore = "\"“\'".contains(matcher.group(1));
@@ -125,7 +125,7 @@ public class FileParser {
 				} catch (Exception e) {
 				}
 				if (word != null) {
-					WordLocation current = new WordLocation(wordList[i], ++book.wordCount,
+					WordLocation current = new WordLocation(word, ++book.wordCount,
 							book.lineCount, i + 1, book.sentenceCount, book.paragraphCount);
 					current.setQuoteBefore(isQuoteBefore);
 					current.setQuoteAfter(isQuoteAfter);
