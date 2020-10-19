@@ -117,7 +117,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ShowWords showWords = new ShowWords(allBooks);
-                showWords.setSize(613, 450);
+                showWords.setSize(925, 650);
                 showWords.setVisible(true);
                 showWords.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
