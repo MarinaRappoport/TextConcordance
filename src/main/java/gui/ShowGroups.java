@@ -2,6 +2,7 @@ package gui;
 
 import model.Book;
 import model.Group;
+import service.GroupService;
 import service.PreviewService;
 
 import javax.swing.*;
@@ -16,18 +17,18 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ShowGroups extends JFrame {
-    private JButton addWord, addGroup;
-    private JLabel selectBook, selectGroup;
+    private JButton addWord, addGroup, showResult;
+    private JLabel selectBook, selectGroup, resultJLabel;
     private JComboBox<String> booksList, groupsList;
     private int selectedBookIndex, selectedGroupIndex;
     private JTextField enterWord, enterGroup;;
     private ArrayList<Group> groups;
+    private Group currentGroup;
     private DefaultTableModel locationsTableModel, wordsTableModel;
     private ArrayList<Long> bookIdList;
     private ArrayList<Book> books;
-    private String word;
 
-    private JPanel west, north, center;
+    private JPanel west, north, center, chooseBookPanel, groupsPanel, addWordPanel, resultPanel, userSelections;
     private JTextArea context;
     private JTable locationsTable, wordsTable;
 
@@ -38,12 +39,22 @@ public class ShowGroups extends JFrame {
     public ShowGroups(ArrayList<Book> books){
         this.books = books;
         groups = new ArrayList<>();
-        word = new String("");
+
+        chooseBookPanel = new JPanel();
+        groupsPanel = new JPanel();
+        addWordPanel = new JPanel();
+        resultPanel = new JPanel();
 
         north = new JPanel();
+        north.setLayout(new BorderLayout());
+
+        userSelections = new JPanel();
+        userSelections.setLayout(new GridLayout(2,2,30,10));
+
         west = new JPanel();
         west.setPreferredSize(new Dimension(165,400));
         west.setLayout(new BorderLayout());
+
         center = new JPanel();
         center.setLayout( new GridLayout(2,1,0,2));
 
@@ -88,14 +99,13 @@ public class ShowGroups extends JFrame {
 
         enterGroup = new JTextField("New Group");
         enterGroup.setFont(MY_FONT);
-        addGroup = new JButton("Add");
+        addGroup = new JButton("Add New Group");
         addGroup.setFont(MY_FONT);
 
         addGroup.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String groupName = enterGroup.getText();
-                enterGroup.setText("         ");
+                String groupName = JOptionPane.showInputDialog("Enter new group name");
                 Group newGroup = new Group(groupName);
                 if (!groups.contains(newGroup)){
                     groups.add(newGroup);
@@ -105,9 +115,9 @@ public class ShowGroups extends JFrame {
             }
         });
 
-        enterWord = new JTextField("Enter a Word");
+        enterWord = new JTextField("Enter Word");
         enterWord.setFont(MY_FONT);
-        addWord = new JButton("Add");
+        addWord = new JButton("Add Word To Group");
         addWord.setFont(MY_FONT);
 
         addWord.addActionListener(new ActionListener() {
@@ -118,7 +128,7 @@ public class ShowGroups extends JFrame {
                 else {
                     Group currentGroup = groups.get(groupsList.getSelectedIndex() - 1);
                     currentGroup.addWord(enterWord.getText());
-                    enterWord.setText("         ");
+                    enterWord.setText("");
                     updateWords();
                 }
             }
@@ -135,11 +145,13 @@ public class ShowGroups extends JFrame {
                 super.mousePressed(e);
 
                 int row = locationsTable.getSelectedRow();
-                PreviewService.createPreview(context, word, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+                PreviewService.createPreview(context, currentGroup.getWords().toArray(new String[0]), bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
             }
         });
 
         context = PreviewService.createPreview();
+        JScrollPane contextSP =new JScrollPane(context);
+        contextSP.setVisible(true);
 
 
         wordsTable = new JTable( new DefaultTableModel(
@@ -160,29 +172,40 @@ public class ShowGroups extends JFrame {
         JScrollPane wordsTableSP =new JScrollPane(wordsTable);
         wordsTableSP.setVisible(true);
 
-        wordsTable.addMouseListener(new MouseAdapter() {
+        showResult = new JButton("Show Result");
+        showResult.setFont(MY_FONT);
+        showResult.addActionListener(new ActionListener() {
             @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-
-                int row = wordsTable.getSelectedRow();
-                word = (String)wordsTable.getValueAt(row, 0);
-
-                bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), word, locationsTableModel);
+            public void actionPerformed(ActionEvent e) {
+                if (groupsList.getSelectedIndex() > 0) {
+                    currentGroup = groups.get(groupsList.getSelectedIndex() - 1);
+                    bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), currentGroup.getWords().toArray(new String[0]), locationsTableModel);
+                }
             }
         });
 
-        north.add(selectBook);
-        north.add(booksList);
-        north.add(selectGroup);
-        north.add(groupsList);
-        north.add(enterGroup);
-        north.add(addGroup);
-        north.add(enterWord);
-        north.add(addWord);
+        resultJLabel = new JLabel("");
+
+        groupsPanel.add(selectGroup);
+        groupsPanel.add(groupsList);
+        groupsPanel.add(addGroup);
+        chooseBookPanel.add(selectBook);
+        chooseBookPanel.add(booksList);
+        addWordPanel.add(enterWord);
+        addWordPanel.add(addWord);
+
+        resultPanel.add(showResult);
+        resultPanel.add(resultJLabel);
+
+        userSelections.add(groupsPanel);
+        userSelections.add(chooseBookPanel);
+        userSelections.add(addWordPanel);
+
+        north.add(userSelections, BorderLayout.CENTER);
+        north.add(resultPanel, BorderLayout.SOUTH);
 
         center.add(locationsSP);
-        center.add(context);
+        center.add(contextSP);
 
         west.add(wordsTableSP, BorderLayout.CENTER);
 

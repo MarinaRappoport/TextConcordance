@@ -21,7 +21,7 @@ public class PreviewService {
     private final static Color DEFAULT = new Color(206, 200, 200, 2);
     private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
-    public static ArrayList<Long> searchWord(ArrayList<Book> books, int selectedBookIndex, String word, DefaultTableModel model){
+    public static ArrayList<Long> searchWord(ArrayList<Book> books, int selectedBookIndex, String[] word, DefaultTableModel model){
         ArrayList<Long> bookIdList = new ArrayList<>();
 
         int count = 1;
@@ -29,15 +29,21 @@ public class PreviewService {
 
         if (selectedBookIndex == 0){ //search in all books
             for (Book book : books){
-                ArrayList<Long> idList = new ArrayList<>();
-                idList = PreviewService.addLocations
-                        (count,model,WordService.findWordInBooks( word, book.getId()), book);
-                bookIdList.addAll(idList);
-                count += idList.size();
+                ArrayList<Long> idList;
+                for (int i = 0 ; i < word.length ; i++ ) {
+                    idList = PreviewService.addLocations
+                            (count, model, WordService.findWordInBooks(word[i], book.getId()), book);
+                    bookIdList.addAll(idList);
+                    count += idList.size();
+                }
             }
-        } else bookIdList = PreviewService.addLocations
-                (count,model,WordService.findWordInBooks( word,books.get(selectedBookIndex-1).getId()),
-                        books.get(selectedBookIndex-1));
+        } else {
+            for (int i = 0 ; i < word.length ; i++ ) {
+                bookIdList = PreviewService.addLocations
+                        (count, model, WordService.findWordInBooks(word[i], books.get(selectedBookIndex - 1).getId()),
+                                books.get(selectedBookIndex - 1));
+            }
+        }
 
         return bookIdList;
 
@@ -93,7 +99,7 @@ public class PreviewService {
         return idList;
     }
 
-    public static void createPreview(JTextArea context, String word, long bookId, int phrase){
+    public static void createPreview(JTextArea context, String[] word, long bookId, int phrase){
         String text = WordService.buildPreview(bookId,phrase);
         context.setText(text);
 
@@ -101,26 +107,29 @@ public class PreviewService {
         Highlighter.HighlightPainter painter =
                 new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
 
-        int index = 0;
-        while (index >= 0) {
-            int p0 = text.indexOf(word, index);
 
-            if ( p0 == -1 ) {
-                break;
-            }
+        for (int i = 0 ; i < word.length ; i++ ) {
+            int index = 0;
+            while (index >= 0) {
+                int p0 = text.indexOf(word[i], index);
 
-            int p1 = p0 + word.length();
+                if (p0 == -1) {
+                    break;
+                }
 
-            if (!Character.isLetter(text.charAt(p0-1)) ) {
-                if (!Character.isLetter(text.charAt(p1)) ) {
-                    try {
-                        highlighter.addHighlight(p0, p1, painter);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                int p1 = p0 + word[i].length();
+
+                if (!Character.isLetter(text.charAt(p0 - 1))) {
+                    if (!Character.isLetter(text.charAt(p1))) {
+                        try {
+                            highlighter.addHighlight(p0, p1, painter);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+                index = p1;
             }
-            index = p1;
         }
     }
 }

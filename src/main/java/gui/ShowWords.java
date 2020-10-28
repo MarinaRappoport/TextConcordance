@@ -55,7 +55,7 @@ public class ShowWords extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 context.setText("");
                 word = enterWord.getText();
-                bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), word, tableModel);
+                bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), new String[]{word}, tableModel);
             }
         });
 
@@ -76,7 +76,7 @@ public class ShowWords extends JFrame {
                 super.mousePressed(e);
 
                 int row = locationsTable.getSelectedRow();
-                PreviewService.createPreview(context, word, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+                PreviewService.createPreview(context, new String[]{word}, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
             }
         });
 
