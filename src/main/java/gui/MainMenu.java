@@ -15,9 +15,9 @@ import java.util.Iterator;
 
 //GUI of the main menu
 public class MainMenu extends JFrame {
-    private JTextArea statTextArea;
+    private JTextArea statTextArea, common;
     private JTable filesTable;
-    private JPanel buttons, detailsAndStat, bottomPanel;
+    private JPanel buttons, center, bookDetails , bottomPanel;
     private JButton loadFile, showWords, showExp, showGroups, findBook, extractToXML;
     private FilesManager filesManager;
     private ArrayList<Book> allBooks;
@@ -70,22 +70,35 @@ public class MainMenu extends JFrame {
             }
         });
 
+        bookDetails = new JPanel();
+        bookDetails.setLayout(new GridLayout(1,2,1,1));
+
+        common = new JTextArea();
+        common.setEditable(false);
+        common.setColumns(20);
+        common.setRows(7);
+        TitledBorder commonTitle = BorderFactory.createTitledBorder
+                (BORDER, "Top Words (50)", 0, 0, new Font("Font", Font.BOLD,18));
+        commonTitle.setTitleJustification(TitledBorder.CENTER);
+        common.setBorder(commonTitle);
+        JScrollPane commonSP = new JScrollPane(common);
+
         //create the text area of statistics
         statTextArea = new JTextArea();
         statTextArea.setEditable(false);
         statTextArea.setColumns(20);
         statTextArea.setRows(7);
-        TitledBorder title = BorderFactory.createTitledBorder
+        TitledBorder statTitle = BorderFactory.createTitledBorder
                 (BORDER, "Statistics", 0, 0, new Font("Font", Font.BOLD,18));
-        title.setTitleJustification(TitledBorder.CENTER);
-        statTextArea.setBorder(title);
+        statTitle.setTitleJustification(TitledBorder.CENTER);
+        statTextArea.setBorder(statTitle);
         JScrollPane statSP = new JScrollPane(statTextArea);
 
         //create the panel that contains the details and statistics
-        detailsAndStat = new JPanel();
-        detailsAndStat.setLayout(new GridLayout(2,1,0,0));
-        detailsAndStat.add(tableSP);
-        detailsAndStat.add(statSP);
+        center = new JPanel();
+        center.setLayout(new GridLayout(2,1,0,2));
+        center.add(tableSP);
+        center.add(statSP);
 
         //create buttons panels
         buttons = new JPanel();
@@ -117,7 +130,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ShowWords showWords = new ShowWords(allBooks);
-                showWords.setSize(613, 450);
+                showWords.setSize(925, 650);
                 showWords.setVisible(true);
                 showWords.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
@@ -130,6 +143,15 @@ public class MainMenu extends JFrame {
         showGroups = new JButton("Show Groups");
         showGroups.setFont(MY_FONT);
         showGroups.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showGroups.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ShowGroups showGroups  = new ShowGroups(allBooks);
+                showGroups.setSize(1050, 650);
+                showGroups.setVisible(true);
+                showGroups.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            }
+        });
 
         findBook = new JButton("Find Book");
         findBook.setFont(MY_FONT);
@@ -147,8 +169,14 @@ public class MainMenu extends JFrame {
         buttons.add(showGroups);
         buttons.add(showExp);
 
+        bookDetails.add(statSP);
+        bookDetails.add(commonSP);
+
+        center.add(tableSP);
+        center.add(bookDetails);
+
         add(buttons, BorderLayout.NORTH);
-        add(detailsAndStat, BorderLayout.CENTER);
+        add(center, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
     }

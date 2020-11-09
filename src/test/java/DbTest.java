@@ -1,3 +1,4 @@
+import gui.ShowWords;
 import model.Book;
 import model.WordLocation;
 import org.junit.jupiter.api.Test;
@@ -6,6 +7,7 @@ import service.DbConnection;
 import service.FileParser;
 import service.WordService;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

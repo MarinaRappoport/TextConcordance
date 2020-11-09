@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
@@ -8,6 +9,7 @@ public class Group {
 
 	public Group(String name) {
 		this.name = name;
+		words = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -17,4 +19,14 @@ public class Group {
 	public List<String> getWords() {
 		return words;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Group group = (Group) obj;
+		return ( name.equals(group.name));
+	}
+
+    public void addWord(String word) {
+		words.add(word);
+    }
 }
