@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class GroupService {
 
-	private final static String SQL_CREATE_NEW_GROUP = "INSERT INTO groupp (name) VALUES (?)";
-	private final static String SQL_FIND_ALL_GROUPS = "SELECT * from groupp ORDER by name";
-	private final static String SQL_INSERT_WORD_IN_GROUP = "INSERT INTO word_in_group (word,group_id) VALUES (?,?)";
-	private final static String SQL_FIND_WORDS_IN_GROUP = "SELECT word from word_in_group where group_id = ? ORDER by word";
+	private final static String SQL_CREATE_NEW_GROUP = "INSERT INTO groups (name) VALUES (?)";
+	private final static String SQL_FIND_ALL_GROUPS = "SELECT * from groups ORDER by name";
+	private final static String SQL_INSERT_WORD_IN_GROUP = "INSERT INTO word_in_group (word_id,group_id) VALUES (?,?)";
+	private final static String SQL_FIND_WORDS_IN_GROUP = "SELECT value from word, word_in_group where group_id = ? AND word.word_id = word_in_group.word_id ORDER by word";
 
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
@@ -56,14 +56,17 @@ public class GroupService {
 	}
 
 	public void addWordToGroup(String word, int groupId) {
-		try {
-			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_IN_GROUP);
-			statement.setString(1, word);
-			statement.setInt(2, groupId);
-			statement.executeUpdate();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		Long wordId = FilesManager.getInstance().getWordId(word);
+		if (wordId != null) {
+			try {
+				PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_IN_GROUP);
+				statement.setString(1, word);
+				statement.setInt(2, groupId);
+				statement.executeUpdate();
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -74,7 +77,7 @@ public class GroupService {
 			statement.setInt(1, groupId);
 			ResultSet rs = statement.executeQuery(SQL_FIND_ALL_GROUPS);
 			while (rs.next())
-				words.add(rs.getString("word"));
+				words.add(rs.getString("value"));
 			rs.close();
 			statement.close();
 		} catch (SQLException e) {

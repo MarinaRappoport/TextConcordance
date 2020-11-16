@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,7 +20,7 @@ public class FileParser {
 	private final static String TRANSLATOR = "Translator:";
 	private final static String START_OF_BOOK = "*** START OF THIS PROJECT GUTENBERG EBOOK";
 	private final static String END_OF_BOOK = "End of the Project Gutenberg EBook";
-	public static final String EMPTY = "";
+	private static final String EMPTY = "";
 
 	//Parse file to words
 	//Counting words, lines, sentences and paragraph

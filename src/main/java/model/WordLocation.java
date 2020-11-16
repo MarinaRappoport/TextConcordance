@@ -1,8 +1,5 @@
 package model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class WordLocation {
 	private long wordId;
 	private String word;
