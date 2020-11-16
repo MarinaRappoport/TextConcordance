@@ -16,13 +16,12 @@ CREATE TABLE IF NOT EXISTS book (
 CREATE TABLE IF NOT EXISTS word (
     word_id SERIAL PRIMARY KEY,
     value VARCHAR NOT NULL UNIQUE,
-    length INTEGER DEFAULT 0,
     CHECK(value <> '')
 );
 
 CREATE TABLE IF NOT EXISTS word_in_book (
-    word VARCHAR(100) NOT NULL,
-    book_id INTEGER,
+    word_id INTEGER NOT NULL,
+    book_id INTEGER NOT NULL,
     index INTEGER NOT NULL,
     line INTEGER NOT NULL,
     index_in_line INTEGER NOT NULL,
@@ -31,25 +30,28 @@ CREATE TABLE IF NOT EXISTS word_in_book (
     is_quote_before BOOLEAN,
     is_quote_after BOOLEAN,
     punctuation_mark VARCHAR(5),
-    PRIMARY KEY(index, book_id, word),
-    FOREIGN KEY(book_id) REFERENCES book
+    PRIMARY KEY(index, book_id, word_id),
+    FOREIGN KEY(book_id) REFERENCES book,
+    FOREIGN KEY(word_id) REFERENCES word
 );
 
-CREATE TABLE IF NOT EXISTS groupp (
+CREATE TABLE IF NOT EXISTS groups (
     group_id SERIAL PRIMARY KEY,
     group_name VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS word_in_group (
-    group_id INTEGER,
-    word VARCHAR,
-    PRIMARY KEY(group_id, word),
-    FOREIGN KEY(group_id) REFERENCES groupp
+    group_id INTEGER NOT NULL,
+    word_id INTEGER NOT NULL,
+    PRIMARY KEY(group_id, word_id),
+    FOREIGN KEY(group_id) REFERENCES groups,
+    FOREIGN KEY(word_id) REFERENCES word
 );
 
 CREATE TABLE IF NOT EXISTS word_in_phrase (
     phrase_id INTEGER,
-    word VARCHAR,
+    word_id INTEGER,
     index_in_phrase INTEGER,
-    PRIMARY KEY(phrase_id, word, index_in_phrase)
+    PRIMARY KEY(phrase_id, word_id, index_in_phrase),
+    FOREIGN KEY(word_id) REFERENCES word
 );

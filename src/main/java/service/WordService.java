@@ -12,15 +12,15 @@ public class WordService {
 	private final static String SQL_SELECT_ALL_WORDS = "SELECT value,word_id from word";
 	private final static String SQL_SELECT_BY_VALUE = "SELECT word_id from word WHERE value = ?";
 	private final static String SQL_INSERT_WORD_LOCATION = "INSERT INTO word_in_book " +
-			"(word,book_id,index,line,index_in_line,sentence,paragraph,is_quote_before,is_quote_after,punctuation_mark)" +
+			"(word_id,book_id,index,line,index_in_line,sentence,paragraph,is_quote_before,is_quote_after,punctuation_mark)" +
 			" VALUES (?,?,?,?,?,?,?,?,?,?)";
 
-	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word = ? ORDER by book_id, index";
-	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word = ? AND book_id = ? ORDER by index";
-	private final static String SQL_PREVIEW = "SELECT word, is_quote_before, is_quote_after, punctuation_mark from word_in_book where book_id = ? AND paragraph = ? ORDER by index";
+	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word_id = ? ORDER by book_id, index";
+	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word_id = ? AND book_id = ? ORDER by index";
+	private final static String SQL_PREVIEW = "SELECT value, is_quote_before, is_quote_after, punctuation_mark FROM word, word_in_book where book_id = ? AND paragraph = ? AND word.word_id = word_in_book.word_id ORDER by index";
 
-	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT word, COUNT(word) from word_in_book where book_id = ? GROUP BY word ORDER by word";
-	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT word, COUNT(word) from word_in_book GROUP BY word ORDER by word";
+	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY word ORDER by word";
+	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word NATURAL JOIN word_in_book GROUP BY word ORDER by word";
 
 
 	public static long insertWord(String word) {
@@ -88,7 +88,7 @@ public class WordService {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_LOCATION);
 			for (WordLocation wordLocation : wordLocationList) {
-				statement.setString(1, wordLocation.getWord());
+				statement.setLong(1, wordLocation.getWordId());
 				statement.setLong(2, bookId);
 				statement.setInt(3, wordLocation.getIndex());
 				statement.setInt(4, wordLocation.getLine());
@@ -111,27 +111,30 @@ public class WordService {
 
 	public static List<WordLocation> findWordInBooks(String word, Long bookId) {
 		List<WordLocation> wordLocations = new LinkedList<>();
-		PreparedStatement statement = null;
-		try {
-			if (bookId == null)
-				statement = connection.prepareStatement(SQL_FIND_LOCATIONS_BY_WORD);
+		Long wordId = FilesManager.getInstance().getWordId(word);
+		if (wordId != null) {
+			PreparedStatement statement = null;
+			try {
+				if (bookId == null)
+					statement = connection.prepareStatement(SQL_FIND_LOCATIONS_BY_WORD);
 
-			else {
-				statement = connection.prepareStatement(SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK);
-				statement.setLong(2, bookId);
+				else {
+					statement = connection.prepareStatement(SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK);
+					statement.setLong(2, bookId);
+				}
+				statement.setLong(1, wordId);
+				ResultSet rs = statement.executeQuery();
+				while (rs.next()) {
+					WordLocation location = new WordLocation(word, rs.getInt("index"), rs.getInt("line"),
+							rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
+					location.setBookId(rs.getLong("book_id"));
+					wordLocations.add(location);
+				}
+				rs.close();
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			statement.setString(1, word);
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				WordLocation location = new WordLocation(word, rs.getInt("index"), rs.getInt("line"),
-						rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
-				location.setBookId(rs.getLong("book_id"));
-				wordLocations.add(location);
-			}
-			rs.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return wordLocations;
 	}
@@ -146,10 +149,10 @@ public class WordService {
 			ResultSet rs = statement.executeQuery();
 
 			while (rs.next()) {
-				sb.append(rs.getBoolean("is_quote_before") ? "\"" : "").append(rs.getString("word"))
+				sb.append(rs.getBoolean("is_quote_before") ? "\"" : "").append(rs.getString("value"))
 						.append(rs.getBoolean("is_quote_after") ? "\"" : "");
 				String punctuationMark = rs.getString("punctuation_mark");
-				if(punctuationMark!=null) sb.append(punctuationMark);
+				if (punctuationMark != null) sb.append(punctuationMark);
 				sb.append(" ");
 			}
 
@@ -165,8 +168,8 @@ public class WordService {
 	 * @param bookId - use null to count word appearances in all books
 	 * @return map of pairs word:appearances in alphabetic order
 	 */
-	public static Map<String, Integer> getWordsAppearances(Long bookId){
-		Map<String,Integer> wordMap = new LinkedHashMap<>();
+	public static Map<String, Integer> getWordsAppearances(Long bookId) {
+		Map<String, Integer> wordMap = new LinkedHashMap<>();
 		PreparedStatement statement = null;
 		try {
 			if (bookId == null)
@@ -178,7 +181,7 @@ public class WordService {
 			}
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				wordMap.put(rs.getString("word"),rs.getInt(2));
+				wordMap.put(rs.getString("word"), rs.getInt(2));
 			}
 			rs.close();
 			statement.close();
