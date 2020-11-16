@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class GroupService {
 
-	private final static String SQL_CREATE_NEW_GROUP = "INSERT INTO groups (name) VALUES (?)";
-	private final static String SQL_FIND_ALL_GROUPS = "SELECT * from groups ORDER by name";
+	private final static String SQL_CREATE_NEW_GROUP = "INSERT INTO groups (group_name) VALUES (?)";
+	private final static String SQL_FIND_ALL_GROUPS = "SELECT * from groups ORDER by group_name";
 	private final static String SQL_INSERT_WORD_IN_GROUP = "INSERT INTO word_in_group (word_id,group_id) VALUES (?,?)";
 	private final static String SQL_FIND_WORDS_IN_GROUP = "SELECT value from word, word_in_group where group_id = ? AND word.word_id = word_in_group.word_id ORDER by word";
 
@@ -46,7 +46,7 @@ public class GroupService {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_GROUPS);
 			while (rs.next())
-				groups.put(rs.getString("name"), rs.getInt("group_id"));
+				groups.put(rs.getString("group_name"), rs.getInt("group_id"));
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
