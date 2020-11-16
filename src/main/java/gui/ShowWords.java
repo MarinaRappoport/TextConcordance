@@ -1,6 +1,7 @@
 package gui;
 
 import model.Book;
+import service.FilesManager;
 import service.PreviewService;
 
 import javax.swing.*;
@@ -8,10 +9,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class ShowWords extends JFrame {
@@ -32,8 +30,8 @@ public class ShowWords extends JFrame {
     private final Color DEFAULT = new Color(206, 200, 200, 2);
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
-    public ShowWords(ArrayList<Book> books){
-        this.books = books;
+    public ShowWords(){
+        this.books = FilesManager.getInstance().getFiles();
         word = "";
         selectedBookIndex = 0;
         bookIdList = new ArrayList<>();
@@ -116,7 +114,5 @@ public class ShowWords extends JFrame {
         add(north, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
     }
-
-
 }
 

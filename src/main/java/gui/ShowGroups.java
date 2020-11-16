@@ -2,7 +2,7 @@ package gui;
 
 import model.Book;
 import model.Group;
-import service.GroupService;
+import service.FilesManager;
 import service.PreviewService;
 
 import javax.swing.*;
@@ -21,7 +21,7 @@ public class ShowGroups extends JFrame {
     private JLabel selectBook, selectGroup, resultJLabel;
     private JComboBox<String> booksList, groupsList;
     private int selectedBookIndex, selectedGroupIndex;
-    private JTextField enterWord, enterGroup;;
+    private JTextField enterWord, enterGroup;
     private ArrayList<Group> groups;
     private Group currentGroup;
     private DefaultTableModel locationsTableModel, wordsTableModel;
@@ -32,12 +32,12 @@ public class ShowGroups extends JFrame {
     private JTextArea context;
     private JTable locationsTable, wordsTable;
 
-    final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
-    private final Color DEFAULT = new Color(206, 200, 200, 2);
+	private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
+    private static final Color DEFAULT = new Color(206, 200, 200, 2);
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
-    public ShowGroups(ArrayList<Book> books){
-        this.books = books;
+    public ShowGroups(){
+        this.books = FilesManager.getInstance().getFiles();
         groups = new ArrayList<>();
 
         chooseBookPanel = new JPanel();
@@ -224,6 +224,4 @@ public class ShowGroups extends JFrame {
             }
         }
     }
-
-
 }

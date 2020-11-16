@@ -3,6 +3,7 @@ package service;
 import model.Book;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -122,8 +123,8 @@ public class BookService {
 		return book;
 	}
 
-	public static List<Book> getAllBooks() {
-		List<Book> books = new LinkedList<>();
+	public static ArrayList<Book> getAllBooks() {
+		ArrayList<Book> books = new ArrayList<>();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_BOOKS);

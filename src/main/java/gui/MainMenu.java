@@ -20,7 +20,6 @@ public class MainMenu extends JFrame {
     private JPanel buttons, center, bookDetails , bottomPanel;
     private JButton loadFile, showWords, showExp, showGroups, findBook, extractToXML;
     private FilesManager filesManager;
-    private ArrayList<Book> allBooks;
     private ArrayList<Book> selectedBooks;
 
     final Color DEFAULT = new Color(206, 200, 200, 2);
@@ -34,7 +33,6 @@ public class MainMenu extends JFrame {
         filesManager = FilesManager.getInstance();
         FilesManager.setMainMenu(this);
 
-        allBooks = new ArrayList<>();
         selectedBooks = new ArrayList<>();
 
         filesTable = new JTable( new DefaultTableModel((new String[]{"Title", "Author", "Release Date", "Path"}), 0){
@@ -47,7 +45,12 @@ public class MainMenu extends JFrame {
 
         filesTable.setRowHeight(40);
         filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        TableColumnModel columnModel = filesTable.getColumnModel();
+
+	    for (Book current: FilesManager.getInstance().getFiles()) {
+		    ((DefaultTableModel)filesTable.getModel()).addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
+	    }
+
+	    TableColumnModel columnModel = filesTable.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(300);
         columnModel.getColumn(1).setPreferredWidth(240);
         columnModel.getColumn(2).setPreferredWidth(240);
@@ -129,7 +132,7 @@ public class MainMenu extends JFrame {
         showWords.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ShowWords showWords = new ShowWords(allBooks);
+                ShowWords showWords = new ShowWords();
                 showWords.setSize(925, 650);
                 showWords.setVisible(true);
                 showWords.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -146,7 +149,7 @@ public class MainMenu extends JFrame {
         showGroups.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ShowGroups showGroups  = new ShowGroups(allBooks);
+                ShowGroups showGroups  = new ShowGroups();
                 showGroups.setSize(1050, 650);
                 showGroups.setVisible(true);
                 showGroups.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -178,7 +181,6 @@ public class MainMenu extends JFrame {
         add(buttons, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
-
     }
 
     public void updateStatistics() {
@@ -227,27 +229,10 @@ public class MainMenu extends JFrame {
 
     }
 
-    public void updateFileList(ArrayList<Book> files) {
-
-        allBooks.clear();
-
-        Iterator<Book> iter = files.iterator();
-        while (iter.hasNext()) {
-            allBooks.add(iter.next());
-
-        }
-
-        updateFileDetails();
-    }
-
     public void updateFileDetails() {
-
         DefaultTableModel model = (DefaultTableModel) filesTable.getModel();
-        Book current = allBooks.get(allBooks.size()-1);
+        Book current = FilesManager.getInstance().getFiles().get(FilesManager.getInstance().getFiles().size()-1);
         model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
-
     }
-
-
 
 }
