@@ -1,8 +1,8 @@
 package gui;
 
 import model.Book;
-import model.Group;
 import service.FilesManager;
+import service.GroupService;
 import service.PreviewService;
 
 import javax.swing.*;
@@ -15,15 +15,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 public class ShowGroups extends JFrame {
     private JButton addWord, addGroup, showResult;
     private JLabel selectBook, selectGroup, resultJLabel;
     private JComboBox<String> booksList, groupsList;
-    private int selectedBookIndex, selectedGroupIndex;
     private JTextField enterWord, enterGroup;
-    private ArrayList<Group> groups;
-    private Group currentGroup;
+    private Map<String, Integer> groups;
+    private String currentGroup;
+    private Integer currentGroupId;
     private DefaultTableModel locationsTableModel, wordsTableModel;
     private ArrayList<Long> bookIdList;
     private ArrayList<Book> books;
@@ -37,8 +39,8 @@ public class ShowGroups extends JFrame {
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public ShowGroups(){
-        this.books = FilesManager.getInstance().getFiles();
-        groups = new ArrayList<>();
+        books = FilesManager.getInstance().getFiles();
+        groups = GroupService.getAllGroups();
 
         chooseBookPanel = new JPanel();
         groupsPanel = new JPanel();
@@ -82,11 +84,15 @@ public class ShowGroups extends JFrame {
             groupsList = new JComboBox<>(new String[]{"      "});
         }else {
             String[] groupsArray = new String[groups.size()+1];
+
             int i = 0;
-            for (Group curr : groups) {
-                groupsArray[i] = curr.getName();
+            Iterator<Map.Entry<String, Integer>> itr = groups.entrySet().iterator();
+
+            while ( itr.hasNext() ) {
+                groupsArray[i] = itr.next().getKey();
                 i++;
             }
+
             groupsList = new JComboBox<>(groupsArray);
         }
         groupsList.setFont(MY_FONT);
@@ -106,12 +112,11 @@ public class ShowGroups extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String groupName = JOptionPane.showInputDialog("Enter new group name");
-                Group newGroup = new Group(groupName);
-                if (!groups.contains(newGroup)){
-                    groups.add(newGroup);
-                    groupsList.addItem(groupName);
-                }
-                else JOptionPane.showMessageDialog(null, "Group already exists", "Error", JOptionPane.ERROR_MESSAGE);
+
+                GroupService.createNewGroup(groupName);
+                groupsList.addItem(groupName);
+
+                // JOptionPane.showMessageDialog(null, "Group already exists", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -126,10 +131,12 @@ public class ShowGroups extends JFrame {
                 if ( groupsList.getSelectedIndex() == 0 )
                     JOptionPane.showMessageDialog(null, "You must choose a group", "Error", JOptionPane.ERROR_MESSAGE);
                 else {
-                    Group currentGroup = groups.get(groupsList.getSelectedIndex() - 1);
-                    currentGroup.addWord(enterWord.getText());
-                    enterWord.setText("");
-                    updateWords();
+                    String currentGroup = (String)groupsList.getSelectedItem();
+                    if (!enterWord.getText().equals("")) {
+                        GroupService.addWordToGroup(enterWord.getText(), groups.get(currentGroup));
+                        enterWord.setText("          ");
+                        updateWords();
+                    }
                 }
             }
         });
@@ -145,7 +152,8 @@ public class ShowGroups extends JFrame {
                 super.mousePressed(e);
 
                 int row = locationsTable.getSelectedRow();
-                PreviewService.createPreview(context, currentGroup.getWords().toArray(new String[0]), bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+
+                PreviewService.createPreview(context, GroupService.getAllWordsForGroup(currentGroupId).toArray(new String[0]), bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
             }
         });
 
@@ -178,8 +186,10 @@ public class ShowGroups extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (groupsList.getSelectedIndex() > 0) {
-                    currentGroup = groups.get(groupsList.getSelectedIndex() - 1);
-                    bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), currentGroup.getWords().toArray(new String[0]), locationsTableModel);
+                    currentGroup = (String)groupsList.getSelectedItem();
+                    Integer currentGroupID = groups.get(currentGroup);
+                    bookIdList = PreviewService.searchWord
+                            (books, booksList.getSelectedIndex(), GroupService.getAllWordsForGroup(currentGroupID).toArray(new String[0]), locationsTableModel);
                 }
             }
         });
@@ -217,9 +227,10 @@ public class ShowGroups extends JFrame {
 
     private void updateWords() {
         if (groupsList.getSelectedIndex() != 0) {
-            wordsTableModel.setRowCount(0);
+            currentGroup = (String)groupsList.getSelectedItem();
+            currentGroupId = groups.get(currentGroup);
 
-            for (String word : groups.get(groupsList.getSelectedIndex() - 1).getWords()) {
+            for (String word : GroupService.getAllWordsForGroup(currentGroupId)) {
                 wordsTableModel.addRow((new Object[]{word}));
             }
         }

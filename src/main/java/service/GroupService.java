@@ -15,7 +15,7 @@ public class GroupService {
 
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
-	public long createNewGroup(String name) {
+	public static long createNewGroup(String name) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_CREATE_NEW_GROUP,
 					Statement.RETURN_GENERATED_KEYS);
@@ -40,7 +40,7 @@ public class GroupService {
 		return -1;
 	}
 
-	public Map<String, Integer> getAllGroups() {
+	public static Map<String, Integer> getAllGroups() {
 		Map<String, Integer> groups = new LinkedHashMap<>();
 		try {
 			Statement stmt = connection.createStatement();
@@ -55,7 +55,7 @@ public class GroupService {
 		return groups;
 	}
 
-	public void addWordToGroup(String word, int groupId) {
+	public static void addWordToGroup(String word, int groupId) {
 		Long wordId = FilesManager.getInstance().getWordId(word);
 		if (wordId != null) {
 			try {
@@ -70,7 +70,7 @@ public class GroupService {
 		}
 	}
 
-	public List<String> getAllWordsForGroup(int groupId) {
+	public static List<String> getAllWordsForGroup(int groupId) {
 		List<String> words = new ArrayList<>();
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_FIND_WORDS_IN_GROUP);
