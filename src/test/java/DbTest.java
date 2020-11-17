@@ -1,11 +1,9 @@
 import gui.ShowWords;
 import model.Book;
+import model.Group;
 import model.WordLocation;
 import org.junit.jupiter.api.Test;
-import service.BookService;
-import service.DbConnection;
-import service.FileParser;
-import service.WordService;
+import service.*;
 
 import javax.swing.*;
 import java.util.*;
@@ -118,4 +116,14 @@ public class DbTest {
 		}
 	}
 
+	@Test
+	public void testGroupService(){
+		String groupName = "animals";
+		Map<String, Integer> groupMap = GroupService.getAllGroups();
+		int groupId = GroupService.createNewGroup(groupName);
+		GroupService.addWordToGroup("cat", groupId);
+		GroupService.addWordToGroup("dog", groupId);
+		groupMap = GroupService.getAllGroups();
+		System.out.println(GroupService.getAllWordsForGroup(groupMap.get(groupName)));
+	}
 }
