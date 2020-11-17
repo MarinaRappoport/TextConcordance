@@ -15,7 +15,7 @@ public class GroupService {
 
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
-	public static long createNewGroup(String name) {
+	public static int createNewGroup(String name) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_CREATE_NEW_GROUP,
 					Statement.RETURN_GENERATED_KEYS);
@@ -26,7 +26,7 @@ public class GroupService {
 			if (affectedRows != 0) {
 				try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
-						long id = generatedKeys.getLong(1);
+						int id = generatedKeys.getInt(1);
 						statement.close();
 						return id;
 					} else {
@@ -57,10 +57,12 @@ public class GroupService {
 
 	public static void addWordToGroup(String word, int groupId) {
 		Long wordId = FilesManager.getInstance().getWordId(word);
-		if (wordId != null) {
+		if (wordId != null)
+			wordId = WordService.insertWord(word);
+		if (wordId > 0) {
 			try {
 				PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_IN_GROUP);
-				statement.setString(1, word);
+				statement.setLong(1, wordId);
 				statement.setInt(2, groupId);
 				statement.executeUpdate();
 				statement.close();
@@ -75,7 +77,7 @@ public class GroupService {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_FIND_WORDS_IN_GROUP);
 			statement.setInt(1, groupId);
-			ResultSet rs = statement.executeQuery(SQL_FIND_ALL_GROUPS);
+			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 				words.add(rs.getString("value"));
 			rs.close();

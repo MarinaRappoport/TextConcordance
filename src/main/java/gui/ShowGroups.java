@@ -83,7 +83,7 @@ public class ShowGroups extends JFrame {
         if (groups.size() == 0){
             groupsList = new JComboBox<>(new String[]{"      "});
         }else {
-            String[] groupsArray = new String[groups.size()+1];
+            String[] groupsArray = new String[groups.size()];
 
             int i = 0;
             Iterator<Map.Entry<String, Integer>> itr = groups.entrySet().iterator();
@@ -99,6 +99,8 @@ public class ShowGroups extends JFrame {
         groupsList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if ( groupsList.getItemCount() == 0 )
+                    return;
                  updateWords();
             }
         });
@@ -113,14 +115,27 @@ public class ShowGroups extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String groupName = JOptionPane.showInputDialog("Enter new group name");
 
-                GroupService.createNewGroup(groupName);
-                groupsList.addItem(groupName);
+                if ((groupName == null) || (groupName.equals("")))
+                    return;
 
-                // JOptionPane.showMessageDialog(null, "Group already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                if (groups.containsKey(groupName)) {
+                    JOptionPane.showMessageDialog(null, "Group already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                else {
+                    Integer id = (int) (long) GroupService.createNewGroup(groupName);
+                    groups.put(groupName, id);
+
+                    if (groups.size()==1)
+                        groupsList.removeAllItems();
+
+                    System.out.println("Adding new GROUP !! ");
+                    groupsList.addItem(groupName);
+                }
+
             }
         });
 
-        enterWord = new JTextField("Enter Word");
+        enterWord = new JTextField("Enter a Word");
         enterWord.setFont(MY_FONT);
         addWord = new JButton("Add Word To Group");
         addWord.setFont(MY_FONT);
@@ -128,12 +143,11 @@ public class ShowGroups extends JFrame {
         addWord.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ( groupsList.getSelectedIndex() == 0 )
-                    JOptionPane.showMessageDialog(null, "You must choose a group", "Error", JOptionPane.ERROR_MESSAGE);
-                else {
-                    String currentGroup = (String)groupsList.getSelectedItem();
-                    if (!enterWord.getText().equals("")) {
-                        GroupService.addWordToGroup(enterWord.getText(), groups.get(currentGroup));
+                String currentGroup = (String)groupsList.getSelectedItem();
+                String word = enterWord.getText().trim();
+                if (!word.equals("")) {
+                    if ( groups.size() > 0 ) {
+                        GroupService.addWordToGroup(word, groups.get(currentGroup));
                         enterWord.setText("          ");
                         updateWords();
                     }
@@ -185,12 +199,11 @@ public class ShowGroups extends JFrame {
         showResult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (groupsList.getSelectedIndex() > 0) {
-                    currentGroup = (String)groupsList.getSelectedItem();
-                    Integer currentGroupID = groups.get(currentGroup);
-                    bookIdList = PreviewService.searchWord
-                            (books, booksList.getSelectedIndex(), GroupService.getAllWordsForGroup(currentGroupID).toArray(new String[0]), locationsTableModel);
-                }
+                currentGroup = (String)groupsList.getSelectedItem();
+                Integer currentGroupID = groups.get(currentGroup);
+                bookIdList = PreviewService.searchWord
+                        (books, booksList.getSelectedIndex(), GroupService.getAllWordsForGroup(currentGroupID).toArray(new String[0]), locationsTableModel);
+
             }
         });
 
@@ -226,13 +239,16 @@ public class ShowGroups extends JFrame {
     }
 
     private void updateWords() {
-        if (groupsList.getSelectedIndex() != 0) {
-            currentGroup = (String)groupsList.getSelectedItem();
-            currentGroupId = groups.get(currentGroup);
+        wordsTableModel.setRowCount(0);
 
-            for (String word : GroupService.getAllWordsForGroup(currentGroupId)) {
-                wordsTableModel.addRow((new Object[]{word}));
-            }
+        currentGroup = (String)groupsList.getSelectedItem();
+        if (currentGroup.trim().isEmpty())
+            return;
+
+        currentGroupId = groups.get(currentGroup);
+
+        for (String word : GroupService.getAllWordsForGroup(currentGroupId)) {
+            wordsTableModel.addRow((new Object[]{word}));
         }
     }
 }
