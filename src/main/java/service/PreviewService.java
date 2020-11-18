@@ -51,7 +51,7 @@ public class PreviewService {
 
     public static JTable createLocationsTable(){
         JTable table = new JTable( new DefaultTableModel(
-                (new String[]{" ", "Title", "Author", "Line", "Phrase"}), 0){ //first column for numbering
+                (new String[]{" ", "Title", "Author", "Line", "Paragraph"}), 0){ //first column for numbering
             public boolean isCellEditable(int row, int column)
             {
                 return false;

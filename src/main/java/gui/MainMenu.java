@@ -18,7 +18,7 @@ public class MainMenu extends JFrame {
     private JTextArea statTextArea, common;
     private JTable filesTable;
     private JPanel buttons, center, bookDetails , bottomPanel;
-    private JButton loadFile, showWords, showExp, showGroups, findBook, extractToXML;
+    private JButton loadFile, showWords, showExp, showGroups, findBook, extractToXML, importFromXML;
     private FilesManager filesManager;
     private ArrayList<Book> selectedBooks;
 
@@ -133,15 +133,24 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ShowWords showWords = new ShowWords();
-                showWords.setSize(925, 650);
+                showWords.setSize(900, 650);
                 showWords.setVisible(true);
                 showWords.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
         });
 
-        showExp = new JButton("Show Expressions");
+        showExp = new JButton("Show Phrases");
         showExp.setFont(MY_FONT);
         showExp.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showExp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ShowPhrases showPhrases  = new ShowPhrases();
+                showPhrases.setSize(890, 650);
+                showPhrases.setVisible(true);
+                showPhrases.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            }
+        });
 
         showGroups = new JButton("Show Groups");
         showGroups.setFont(MY_FONT);
@@ -160,11 +169,16 @@ public class MainMenu extends JFrame {
         findBook.setFont(MY_FONT);
         findBook.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        extractToXML = new JButton("Extract to XML");
+        extractToXML = new JButton("Extract To XML");
         extractToXML.setFont(MY_FONT);
         extractToXML.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        importFromXML = new JButton("Import From XML");
+        importFromXML.setFont(MY_FONT);
+        importFromXML.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         bottomPanel.add(extractToXML);
+        bottomPanel.add(importFromXML);
 
         buttons.add(loadFile);
         buttons.add(findBook);
