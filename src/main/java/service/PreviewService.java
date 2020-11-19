@@ -119,7 +119,7 @@ public class PreviewService {
 
                 int p1 = p0 + word[i].length();
 
-                if (!Character.isLetter(text.charAt(p0 - 1))) {
+                if ( (p0 == 0) || (!Character.isLetter(text.charAt(p0 - 1))) ) {
                     if (!Character.isLetter(text.charAt(p1))) {
                         try {
                             highlighter.addHighlight(p0, p1, painter);
