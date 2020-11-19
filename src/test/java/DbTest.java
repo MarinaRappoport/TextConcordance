@@ -126,4 +126,10 @@ public class DbTest {
 		groupMap = GroupService.getAllGroups();
 		System.out.println(GroupService.getAllWordsForGroup(groupMap.get(groupName)));
 	}
+
+	@Test
+	public void testTopWordsAppearances(){
+		Map<String, Integer> map = WordService.getTopWordsAppearances(new Long(1), 50);
+		System.out.println(map.get("a"));
+	}
 }
