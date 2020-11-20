@@ -39,6 +39,8 @@ public class ShowGroups extends JFrame {
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public ShowGroups(){
+        setTitle("Show Groups");
+
         books = FilesManager.getInstance().getFiles();
         groups = GroupService.getAllGroups();
 

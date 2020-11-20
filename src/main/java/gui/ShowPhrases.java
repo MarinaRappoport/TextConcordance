@@ -1,6 +1,7 @@
 package gui;
 
 import model.Book;
+import model.WordLocation;
 import service.FilesManager;
 import service.PreviewService;
 
@@ -14,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class ShowPhrases extends JFrame{
+    private int phrasesIndex;
     private JLabel phraseLabel, inBookLabel;
     private JButton newPhrase, result;
     private JComboBox<String> booksList;
@@ -29,6 +31,9 @@ public class ShowPhrases extends JFrame{
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public ShowPhrases(){
+        setTitle("Show Phrases");
+
+        phrasesIndex = 0;
         books = FilesManager.getInstance().getFiles();
         //TODO initial phrasesList
 
@@ -40,7 +45,7 @@ public class ShowPhrases extends JFrame{
         newPhrase.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO
+                //TODO add new phrase to list and table
             }
         });
 
@@ -127,6 +132,8 @@ public class ShowPhrases extends JFrame{
     }
 
     private void addNewPhrase(String phrase){
+
+        phrasesTableModel.addRow(new Object[]{phrasesIndex ,phrase});
 
     }
 

@@ -34,6 +34,8 @@ public class AddFileFrame extends JFrame {
     final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 35);
 
     public AddFileFrame(){
+        setTitle("Add Book");
+
 	    bookMap = new HashMap<>();
         filesManager = FilesManager.getInstance();
         currBook = 0;

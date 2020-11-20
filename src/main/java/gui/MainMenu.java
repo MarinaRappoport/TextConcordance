@@ -28,6 +28,7 @@ public class MainMenu extends JFrame {
     final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public MainMenu(){
+        setTitle("Main Menu");
 
         //Create an instance of the files data base
         filesManager = FilesManager.getInstance();
@@ -165,9 +166,18 @@ public class MainMenu extends JFrame {
             }
         });
 
-        findBook = new JButton("Find Book");
+        findBook = new JButton("Find By Details");
         findBook.setFont(MY_FONT);
         findBook.setAlignmentX(Component.CENTER_ALIGNMENT);
+        findBook.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FindByDetails findByDetails  = new FindByDetails();
+                findByDetails.setSize(850, 650);
+                findByDetails.setVisible(true);
+                findByDetails.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            }
+        });
 
         extractToXML = new JButton("Extract To XML");
         extractToXML.setFont(MY_FONT);
