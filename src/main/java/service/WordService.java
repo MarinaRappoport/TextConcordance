@@ -19,8 +19,10 @@ public class WordService {
 	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word_id = ? AND book_id = ? ORDER by index";
 	private final static String SQL_PREVIEW = "SELECT value, is_quote_before, is_quote_after, punctuation_mark FROM word, word_in_book where book_id = ? AND paragraph = ? AND word.word_id = word_in_book.word_id ORDER by index";
 
-	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY word ORDER by word";
-	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word NATURAL JOIN word_in_book GROUP BY word ORDER by word";
+	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY value ORDER by word";
+	private final static String SQL_TOP_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
+	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word NATURAL JOIN word_in_book GROUP BY value ORDER by word";
+	private final static String SQL_TOP_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word NATURAL JOIN word_in_book GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
 
 
 	public static long insertWord(String word) {
@@ -181,7 +183,38 @@ public class WordService {
 			}
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				wordMap.put(rs.getString("word"), rs.getInt(2));
+				wordMap.put(rs.getString("value"), rs.getInt(2));
+			}
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wordMap;
+	}
+
+
+	/**
+	 * @param bookId - use null to count word appearances in all books
+	 * @return map of top X pairs word:appearances starting with the most frequent
+	 */
+	public static Map<String, Integer> getTopWordsAppearances(Long bookId, int limit) {
+		Map<String, Integer> wordMap = new LinkedHashMap<>();
+		PreparedStatement statement = null;
+		try {
+			if (bookId == null) {
+				statement = connection.prepareStatement(SQL_TOP_WORDS_APPEARANCES);
+				statement.setInt(1, limit);
+			}
+			else {
+				statement = connection.prepareStatement(SQL_TOP_WORDS_APPEARANCES_IN_BOOK);
+				statement.setLong(1, bookId);
+				statement.setInt(2, limit);
+			}
+
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				wordMap.put(rs.getString("value"), rs.getInt(2));
 			}
 			rs.close();
 			statement.close();

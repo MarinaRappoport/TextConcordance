@@ -23,6 +23,15 @@ public class WordLocation {
 		this.paragraph = paragraph;
 	}
 
+	public WordLocation(Long wordId, int index, int line, int indexInLine, int sentence, int paragraph) {
+		this.wordId = wordId;
+		this.index = index;
+		this.line = line;
+		this.indexInLine = indexInLine;
+		this.sentence = sentence;
+		this.paragraph = paragraph;
+	}
+
 	public String getWord() {
 		return word;
 	}

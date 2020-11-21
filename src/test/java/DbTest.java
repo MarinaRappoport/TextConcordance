@@ -1,14 +1,10 @@
-import gui.ShowWords;
 import model.Book;
-import model.Group;
 import model.WordLocation;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.*;
 
-import javax.swing.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DbTest {
 
@@ -38,8 +34,8 @@ public class DbTest {
 		System.out.println(seconds + " secs");
 	}
 
-	@Test
-	public void init() {
+	@BeforeAll
+	public static void init() {
 		//to init the schema
 		DbConnection.initSchema();
 	}
@@ -125,5 +121,21 @@ public class DbTest {
 		GroupService.addWordToGroup("dog", groupId);
 		groupMap = GroupService.getAllGroups();
 		System.out.println(GroupService.getAllWordsForGroup(groupMap.get(groupName)));
+	}
+
+	@Test
+	public void testTopWordsAppearances(){
+		Map<String, Integer> map = WordService.getTopWordsAppearances(new Long(1), 50);
+		System.out.println(map.get("a"));
+	}
+
+	@Test
+	public void testPhraseService() {
+		int id = PhraseService.saveNewPhrase("I suppose so");
+		PhraseService.saveNewPhrase("I love you");
+		PhraseService.saveNewPhrase("I love mama");
+		Map<Integer, String> phrases = PhraseService.getAllPhrases();
+		System.out.println(phrases.get(1));
+		List<WordLocation> list = PhraseService.findPhraseInBooks(id, null);
 	}
 }

@@ -57,7 +57,7 @@ public class GroupService {
 
 	public static void addWordToGroup(String word, int groupId) {
 		Long wordId = FilesManager.getInstance().getWordId(word);
-		if (wordId != null)
+		if (wordId == null)
 			wordId = WordService.insertWord(word);
 		if (wordId > 0) {
 			try {
