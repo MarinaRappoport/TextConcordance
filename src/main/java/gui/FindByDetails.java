@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
@@ -15,7 +16,8 @@ public class FindByDetails extends JFrame {
     private JTextField titleField, authorField, translatorField, toDateField, fromDateField, lineField, indexField;
     private JTable bookResultTable;
 
-    final static Font TITLE = new Font("Font", Font.BOLD,20);
+    final static Border SEPARATOR = BorderFactory.createMatteBorder(0,0,1,0,Color.black);
+    final static Font TITLE = new Font("Title", Font.BOLD,18);
     final static Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
     private final static Color DEFAULT = new Color(206, 200, 200, 2);
     private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
@@ -25,6 +27,12 @@ public class FindByDetails extends JFrame {
 
         findBookTitle = new JLabel("Find Book By Details");
         findBookTitle.setFont(TITLE);
+        findBookTitle.setBorder(SEPARATOR);
+        findWordTitle = new JLabel("Find Word By Position");
+        findWordTitle.setFont(TITLE);
+        findWordTitle.setBorder(SEPARATOR);
+
+
         title = new JLabel("Title : ");
         title.setFont(MY_FONT);
         author = new JLabel("Author : ");
@@ -57,8 +65,6 @@ public class FindByDetails extends JFrame {
             }
         });
 
-        findWordTitle = new JLabel("Find Word By Location");
-        findWordTitle.setFont(TITLE);
         line = new JLabel("Line Number : ");
         line.setFont(MY_FONT);
         index = new JLabel("Index Number : ");
@@ -89,16 +95,15 @@ public class FindByDetails extends JFrame {
         });
 
         DefaultTableModel tableModel = (DefaultTableModel) bookResultTable.getModel();
-        bookResultTable.setFont(MY_FONT);
         bookResultTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         bookResultTable.setRowHeight(40);
         bookResultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         TableColumnModel columnModel = bookResultTable.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(45);
-        columnModel.getColumn(1).setPreferredWidth(350);
-        columnModel.getColumn(2).setPreferredWidth(220);
-        columnModel.getColumn(3).setPreferredWidth(155);
+        columnModel.getColumn(0).setPreferredWidth(35);
+        columnModel.getColumn(1).setPreferredWidth(200);
+        columnModel.getColumn(2).setPreferredWidth(150);
+        columnModel.getColumn(3).setPreferredWidth(250);
 
         JScrollPane tableSP =new JScrollPane(bookResultTable);
         tableSP.setVisible(true);
@@ -127,11 +132,11 @@ public class FindByDetails extends JFrame {
 
         wordDetails = new JPanel();
         wordDetails.setLayout(new GridLayout(2,2,5,10));
+
         wordDetails.add(line);
         wordDetails.add(lineField);
         wordDetails.add(index);
         wordDetails.add(indexField);
-
         wordSearchPanel = new JPanel();
         wordSearchPanel.setLayout(new BorderLayout());
         wordSearchPanel.add(wordDetails, BorderLayout.CENTER);
@@ -143,31 +148,66 @@ public class FindByDetails extends JFrame {
 
         getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10,5,10,5);
+        gbc.insets = new Insets(20,10,0,10);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 6;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         add(findBookTitle, gbc);
 
+        gbc.insets = new Insets(5,10,20,10);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(bookSearchPanel, gbc);
+        gbc.gridheight = 3;
+        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(bookDetails, gbc);
 
         gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        add(searchBook, gbc);
+
+        gbc.gridx = 3;
         gbc.gridy = 1;
+        gbc.gridheight = 4;
+        gbc.gridwidth = 3;
+        gbc.weightx = 3.0;
+        gbc.weighty = 3.0;
+        gbc.fill = GridBagConstraints.BOTH;
         add(tableSP, gbc);
 
+        gbc.insets = new Insets(20,10,0,10);
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 6;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 6;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         add(findWordTitle, gbc);
 
+        gbc.insets = new Insets(5,10,20,10);
         gbc.gridx = 0;
-        gbc.gridy = 3;
-        add(wordSearchPanel, gbc);
+        gbc.gridy = 7;
+        gbc.weightx = 0.0;
+        gbc.gridheight = 3;
+        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(wordDetails, gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 10;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        add(searchWord, gbc);
+
+        gbc.gridx = 3;
+        gbc.gridy = 7;
+        gbc.gridheight = 4;
+        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.BOTH;
         add(wordResult, gbc);
 
     }

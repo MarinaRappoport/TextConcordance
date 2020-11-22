@@ -160,7 +160,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ShowGroups showGroups  = new ShowGroups();
-                showGroups.setSize(1050, 650);
+                showGroups.setSize(1250, 1000);
                 showGroups.setVisible(true);
                 showGroups.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
@@ -173,7 +173,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 FindByDetails findByDetails  = new FindByDetails();
-                findByDetails.setSize(850, 650);
+                findByDetails.setSize(1080, 550);
                 findByDetails.setVisible(true);
                 findByDetails.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
