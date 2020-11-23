@@ -48,10 +48,15 @@ CREATE TABLE IF NOT EXISTS word_in_group (
     FOREIGN KEY(word_id) REFERENCES word
 );
 
+CREATE TABLE IF NOT EXISTS phrase (
+    phrase_id SERIAL PRIMARY KEY
+);
+
 CREATE TABLE IF NOT EXISTS word_in_phrase (
     phrase_id INTEGER,
     word_id INTEGER,
     index_in_phrase INTEGER,
     PRIMARY KEY(phrase_id, word_id, index_in_phrase),
-    FOREIGN KEY(word_id) REFERENCES word
+    FOREIGN KEY(word_id) REFERENCES word,
+    FOREIGN KEY(phrase_id) REFERENCES phrase
 );
