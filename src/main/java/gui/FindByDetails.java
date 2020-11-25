@@ -1,5 +1,8 @@
 package gui;
 
+import model.Book;
+import service.FilesManager;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
@@ -8,13 +11,17 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class FindByDetails extends JFrame {
     private JPanel findBook, wordSearchPanel, findWord, bookDetails, bookSearchPanel, wordDetails;
-    private JLabel findBookTitle, findWordTitle, title, author, translator, fromDate, toDate, line, index, wordResult;
+    private JLabel findBookTitle, findWordTitle, title, author, translator, fromDate, toDate, line, index, wordResult, inBook;
     private JButton searchBook, searchWord;
     private JTextField titleField, authorField, translatorField, toDateField, fromDateField, lineField, indexField;
     private JTable bookResultTable;
+    private ArrayList<Book> books;
+    private JComboBox<String> booksList;
 
     final static Border SEPARATOR = BorderFactory.createMatteBorder(0,0,1,0,Color.black);
     final static Font TITLE = new Font("Title", Font.BOLD,18);
@@ -24,6 +31,23 @@ public class FindByDetails extends JFrame {
 
     public FindByDetails(){
         setTitle("Find By Details");
+        books = FilesManager.getInstance().getFiles();
+
+        String[] booksArray;
+        int i = 0;
+        Iterator itr;
+        if (this.books.size() == 0) {
+            this.booksList = new JComboBox(new String[]{"No books to show"});
+        } else {
+            booksArray = new String[this.books.size()];
+
+            for(itr = this.books.iterator(); itr.hasNext(); ++i) {
+                Book curr = (Book)itr.next();
+                booksArray[i] = curr.getTitle();
+            }
+
+            this.booksList = new JComboBox(booksArray);
+        }
 
         findBookTitle = new JLabel("Find Book By Details");
         findBookTitle.setFont(TITLE);
@@ -71,6 +95,8 @@ public class FindByDetails extends JFrame {
         index.setFont(MY_FONT);
         wordResult = new JLabel("Result : ");
         wordResult.setFont(MY_FONT);
+        inBook = new JLabel("In Book : ");
+        inBook.setFont(MY_FONT);
 
         lineField = new JTextField();
         lineField.setFont(MY_FONT);
@@ -131,12 +157,15 @@ public class FindByDetails extends JFrame {
         findBook.add(tableSP);
 
         wordDetails = new JPanel();
-        wordDetails.setLayout(new GridLayout(2,2,5,10));
+        wordDetails.setLayout(new GridLayout(3,2,5,10));
 
         wordDetails.add(line);
         wordDetails.add(lineField);
         wordDetails.add(index);
         wordDetails.add(indexField);
+        wordDetails.add(inBook);
+        wordDetails.add(booksList);
+
         wordSearchPanel = new JPanel();
         wordSearchPanel.setLayout(new BorderLayout());
         wordSearchPanel.add(wordDetails, BorderLayout.CENTER);

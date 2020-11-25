@@ -130,7 +130,6 @@ public class ShowGroups extends JFrame {
                     if (groups.size()==1)
                         groupsList.removeAllItems();
 
-                    System.out.println("Adding new GROUP !! ");
                     groupsList.addItem(groupName);
                 }
 

@@ -99,8 +99,8 @@ public class PreviewService {
         return idList;
     }
 
-    public static void createPreview(JTextArea context, String[] word, long bookId, int phrase){
-        String text = WordService.buildPreview(bookId,phrase);
+    public static void createPreview(JTextArea context, String[] word, long bookId, int paragraph){
+        String text = WordService.buildPreview(bookId,paragraph);
         context.setText(text);
 
         Highlighter highlighter = context.getHighlighter();
@@ -109,6 +109,7 @@ public class PreviewService {
 
 
         for (int i = 0 ; i < word.length ; i++ ) {
+
             int index = 0;
             while (index >= 0) {
                 int p0 = text.indexOf(word[i], index);
@@ -132,4 +133,56 @@ public class PreviewService {
             }
         }
     }
-}
+
+    public static void createPhrasePreview(JTextArea context, String[] phrase, long bookId, int paragraph) {
+        String text = WordService.buildPreview(bookId, paragraph);
+        context.setText(text);
+
+        Highlighter highlighter = context.getHighlighter();
+        Highlighter.HighlightPainter painter =
+                new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
+
+        for (int i = 0 ; i < phrase.length ; i++ ) {
+
+            int index = 0;
+            while (index >= 0) {
+                int p0 = text.indexOf(phrase[i], index);
+
+                if (p0 == -1) {
+                    break;
+                }
+
+                int p1 = p0 + phrase[i].length();
+
+                for ( int j = 1 ; j < phrase.length ; j++ ) {
+                    //If it's not sub-word of other word
+                    if ((p0 == 0) || (!Character.isLetter(text.charAt(p0 - 1)))) {
+                        if (!Character.isLetter(text.charAt(p1))) {
+                            // if next word equals the next word in phrase
+                            if ( text.substring(p1+1, p1+1+phrase[j].length()).equals(phrase[j]) ) {
+                                p1 += 1 + phrase[j].length();
+
+                                //We have reached a point where the next word is the last word in the phrase
+                                if ( j == (phrase.length  - 1) ){
+                                    try {
+                                        highlighter.addHighlight(p0, p1, painter);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                }
+
+                            }
+                            else break;
+                        }
+                    }
+
+                index = p1;
+
+                }
+
+            }
+        }
+
+    }
+

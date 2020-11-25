@@ -2,7 +2,9 @@ package gui;
 
 import model.Book;
 import model.WordLocation;
+import service.BookService;
 import service.FilesManager;
+import service.PhraseService;
 import service.PreviewService;
 
 import javax.swing.*;
@@ -12,30 +14,37 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.*;
+import java.util.List;
 
 public class ShowPhrases extends JFrame{
     private int phrasesIndex;
     private JLabel phraseLabel, inBookLabel;
-    private JButton newPhrase, result;
+    private JButton newPhrase;
     private JComboBox<String> booksList;
-    private JTable allLocations;
+    private JTable allLocations, phrasesTable;
     private DefaultTableModel locationsTableModel, phrasesTableModel;
     private JTextArea context;
     private ArrayList<Book> books;
     private JPanel top1, top2,center2, phrasesPanel, previewPanel;
-    private List phrasesList;
+    private Map<Integer, String> allPhrases;
+    private List<Long> bookIdList;
+    private String currentPhrase;
 
     private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
     private static final Color DEFAULT = new Color(206, 200, 200, 2);
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public ShowPhrases(){
+        Iterator itr;
+        allPhrases = PhraseService.getAllPhrases();
         setTitle("Show Phrases");
 
-        phrasesIndex = 0;
+        phrasesIndex = 1;
         books = FilesManager.getInstance().getFiles();
-        //TODO initial phrasesList
+        bookIdList = new ArrayList<>();
 
         inBookLabel = new JLabel("In Book :");
         inBookLabel.setFont(MY_FONT);
@@ -45,16 +54,12 @@ public class ShowPhrases extends JFrame{
         newPhrase.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO add new phrase to list and table
-            }
-        });
+                String newPhrase = JOptionPane.showInputDialog("Enter new phrase");
+                int newId = PhraseService.saveNewPhrase(newPhrase);
 
-        result = new JButton("Show Result");
-        result.setFont(MY_FONT);
-        result.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TODO
+                allPhrases.put(newId, newPhrase);
+
+                addNewPhrase(newPhrase);
             }
         });
 
@@ -70,8 +75,14 @@ public class ShowPhrases extends JFrame{
             }
             booksList = new JComboBox<>(booksArray);
         }
+        booksList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchPhrase();
+            }
+        });
 
-        JTable phrasesTable = new JTable( new DefaultTableModel(
+        phrasesTable = new JTable( new DefaultTableModel(
                 (new String[]{" ", "Phrases"}), 0){ //first column for numbering
             public boolean isCellEditable(int row, int column)
             {
@@ -93,12 +104,35 @@ public class ShowPhrases extends JFrame{
         columnModel.getColumn(0).setPreferredWidth(45);
         columnModel.getColumn(1).setPreferredWidth(800);
 
+        phrasesTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                searchPhrase();
+            }
+        });
+        for(itr = this.allPhrases.entrySet().iterator(); itr.hasNext();) {
+            addNewPhrase((String)((Map.Entry)itr.next()).getValue());
+        }
+        context = PreviewService.createPreview();
+
         allLocations = PreviewService.createLocationsTable();
         locationsTableModel = (DefaultTableModel) allLocations.getModel();
         JScrollPane locationsSP =new JScrollPane(allLocations);
         locationsSP.setVisible(true);
 
-        context = PreviewService.createPreview();
+        allLocations.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+
+                String[] words = currentPhrase.split("\\s+");
+
+                int row = allLocations.getSelectedRow();
+                PreviewService.createPhrasePreview(context, words, bookIdList.get(row), (int)allLocations.getValueAt(row, 4));
+            }
+        });
+
 
         top1 = new JPanel();
         top1.add(newPhrase);
@@ -111,7 +145,6 @@ public class ShowPhrases extends JFrame{
         top2 = new JPanel();
         top2.add(inBookLabel);
         top2.add(booksList);
-        top2.add(result);
 
         center2 = new JPanel();
         center2.setLayout(new BoxLayout (center2, BoxLayout.Y_AXIS));
@@ -133,8 +166,43 @@ public class ShowPhrases extends JFrame{
 
     private void addNewPhrase(String phrase){
 
-        phrasesTableModel.addRow(new Object[]{phrasesIndex ,phrase});
+        phrasesTableModel.addRow(new Object[]{phrasesIndex++ ,phrase});
 
     }
+
+    public int getKey(Map<Integer, String> map, String value) {
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return -1;
+    }
+
+    public void searchPhrase(){
+        bookIdList.clear();
+        locationsTableModel.setRowCount(0);
+        int index = 1;
+        List<WordLocation> wordLocations;
+
+        int row = phrasesTable.getSelectedRow();
+        currentPhrase = (String)phrasesTable.getValueAt(row, 1);
+        int phraseId = getKey(allPhrases, currentPhrase);
+        if ( booksList.getSelectedIndex() == 0 ){
+            wordLocations = PhraseService.findPhraseInBooks(phraseId,null);
+        }
+        else {
+            Long bookId = FilesManager.getFile((String) booksList.getSelectedItem()).getId();
+            wordLocations = PhraseService.findPhraseInBooks(phraseId,bookId);
+        }
+
+        for (WordLocation location : wordLocations){
+            Book book = BookService.findBookById(location.getBookId());
+            locationsTableModel.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),
+                    location.getLine(), location.getParagraph() });
+            bookIdList.add( location.getBookId());
+        }
+    }
+
 
 }

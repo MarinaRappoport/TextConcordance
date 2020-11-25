@@ -147,7 +147,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ShowPhrases showPhrases  = new ShowPhrases();
-                showPhrases.setSize(890, 650);
+                showPhrases.setSize(866, 650);
                 showPhrases.setVisible(true);
                 showPhrases.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
