@@ -55,11 +55,12 @@ public class ShowPhrases extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String newPhrase = JOptionPane.showInputDialog("Enter new phrase");
-                int newId = PhraseService.saveNewPhrase(newPhrase);
 
-                allPhrases.put(newId, newPhrase);
-
-                addNewPhrase(newPhrase);
+                if ( !allPhrases.containsValue(newPhrase) ) {
+                    int newId = PhraseService.saveNewPhrase(newPhrase);
+                    allPhrases.put(newId, newPhrase);
+                    addNewPhrase(newPhrase);
+                } else JOptionPane.showMessageDialog(null, "Phrase already exists", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
