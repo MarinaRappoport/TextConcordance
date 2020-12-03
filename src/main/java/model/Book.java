@@ -1,8 +1,12 @@
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 
+/**
+ * Represents table 'book'
+ */
 public class Book {
 	private long id;
 	private String title, date;
@@ -10,22 +14,16 @@ public class Book {
 	private String translator;
 	private Date releaseDate;
 	public int wordCount, lineCount, sentenceCount, paragraphCount, characterCount;
+	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMMM dd, yyyy");
 
-	//This is too many constructors - We'll deal with this later.
-
-	public Book(String title, String author, String translator, String releaseDate, String path) {
-		this.title = title;
-		this.author = author;
-		this.translator = translator;
-		this.date = releaseDate; //TODO string date to Date
-		this.path = path;
-	}
-
+	// constructors
 	public Book(String title, String author, String translator, Date releaseDate) {
 		this.title = title;
 		this.author = author;
 		this.translator = translator;
 		this.releaseDate = releaseDate;
+		if (releaseDate != null)
+			date = DATE_FORMAT.format(releaseDate);
 	}
 
 	public Book(String path) {
@@ -50,6 +48,13 @@ public class Book {
 
 	public void setDate(String date) {
 		this.date = date;
+		if (date != null && !date.isEmpty()) {
+			try {
+				this.releaseDate = DATE_FORMAT.parse(date);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void setAuthor(String author) {
@@ -57,7 +62,7 @@ public class Book {
 	}
 
 	public void setTranslator(String translator) {
-		if(translator.equals("")) translator = null;
+		if (translator.equals("")) translator = null;
 		else this.translator = translator;
 	}
 
