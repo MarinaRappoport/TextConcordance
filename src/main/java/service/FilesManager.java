@@ -60,7 +60,7 @@ public class FilesManager {
 		return files.isEmpty();
 	}
 
-	public Book getFile(String name) {
+	public static Book getFile(String name) {
 		Book file;
 
 		Iterator<Book> iter = files.iterator();
