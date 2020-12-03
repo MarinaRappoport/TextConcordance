@@ -138,4 +138,9 @@ public class DbTest {
 		System.out.println(phrases.get(1));
 		List<WordLocation> list = PhraseService.findPhraseInBooks(id, null);
 	}
+
+	@Test
+	public void testWordByLocation() {
+		System.out.println(WordService.findWordByLocation(1, 4, 1));
+	}
 }

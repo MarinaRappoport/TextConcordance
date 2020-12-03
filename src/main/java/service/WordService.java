@@ -17,7 +17,7 @@ public class WordService {
 
 	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word_id = ? ORDER by book_id, index";
 	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word_id = ? AND book_id = ? ORDER by index";
-	private final static String SQL_FIND_WORD_BY_LOCATION = "SELECT value from word_in_book, word where where word.word_id = word_in_book.word_id AND book_id = ? AND line = ? AND index_in_line = ?";
+	private final static String SQL_FIND_WORD_BY_LOCATION = "SELECT value from word_in_book, word where word.word_id = word_in_book.word_id AND book_id = ? AND line = ? AND index_in_line = ?";
 	private final static String SQL_PREVIEW = "SELECT value, is_quote_before, is_quote_after, punctuation_mark FROM word, word_in_book where book_id = ? AND paragraph = ? AND word.word_id = word_in_book.word_id ORDER by index";
 
 	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY value ORDER by word";
