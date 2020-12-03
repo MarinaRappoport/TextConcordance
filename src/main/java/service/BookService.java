@@ -14,15 +14,27 @@ public class BookService {
 			"chars_count,words_count,sentence_count,paragraph_count) " +
 			"VALUES (?,?,?,?,?,?,?,?)";
 
-	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT book_id, title,author,translator, " +
-			"release_date FROM book WHERE ";
+	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT * FROM book WHERE ";
 
 	private final static String SQL_FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
 
 	private final static String SQL_FIND_ALL_BOOKS = "SELECT * FROM book";
 
+	private final static String SQL_IF_BOOK_EXISTS = "SELECT COUNT(book_id) FROM book WHERE title = ? AND author = ?";
+
 	public static long insertBook(Book book) {
+		boolean isAlreadyExist = false;
 		try {
+			PreparedStatement stmt = connection.prepareStatement(SQL_IF_BOOK_EXISTS);
+			stmt.setString(1, book.getTitle());
+			stmt.setString(2, book.getAuthor());
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next())
+				isAlreadyExist = rs.getInt(1) > 0;
+			rs.close();
+			stmt.close();
+			if (isAlreadyExist) return 0;
+
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK,
 					Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, book.getTitle());
@@ -53,7 +65,6 @@ public class BookService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return -1;
 	}
 

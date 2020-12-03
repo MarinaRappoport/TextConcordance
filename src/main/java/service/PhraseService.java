@@ -163,15 +163,21 @@ public class PhraseService {
 
 		//check that order of the words and filter only correct locations
 		int y = 0;
+		int index = 0;
 		for (int i = 0; i < wordLocationsAll.size(); i++) {
-			if (wordLocationsAll.get(i).getWordId() == wordList.get(y)) y++;
-			else {
+			if (wordLocationsAll.get(i).getWordId() == wordList.get(y)
+					&& (index == 0 || wordLocationsAll.get(i).getIndex() == index + 1)) {
+				y++;
+				index = wordLocationsAll.get(i).getIndex();
+			} else {
 				i++;
 				y = 0;
+				index = 0;
 			}
 			if (y == wordList.size()) {
 				listFiltered.add(wordLocationsAll.get(i + 1 - y));
 				y = 0;
+				index = 0;
 			}
 		}
 		return listFiltered;

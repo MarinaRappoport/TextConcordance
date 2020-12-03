@@ -4,12 +4,15 @@ import gui.MainMenu;
 import model.Book;
 import model.WordLocation;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-//Singleton class for handling files
+/**
+ * Singleton class for handling files
+ */
 public class FilesManager {
 	private static ArrayList<Book> files;
 	private static Map<String, Long> words;
@@ -38,9 +41,8 @@ public class FilesManager {
 
 	//Add only new file. We cannot add the same file twice.
 	public void addFile(Book book, List<WordLocation> wordLocationList) {
-		if (!files.contains(book)) {
-			//TODO check if book already in DB - alert
-			long id = BookService.insertBook(book);
+		long id = BookService.insertBook(book);
+		if (id > 0) {
 			for (WordLocation wordLocation : wordLocationList) {
 				Long wordId = words.get(wordLocation.getWord());
 				if (wordId == null)
@@ -52,12 +54,10 @@ public class FilesManager {
 			}
 			WordService.addWordLocationList(wordLocationList, id);
 			files.add(book);
+			menu.updateFileDetails();
+		} else {
+			JOptionPane.showMessageDialog(null, "Book already exists", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		menu.updateFileDetails();
-	}
-
-	public boolean isEmpty() {
-		return files.isEmpty();
 	}
 
 	public static Book getFile(String name) {

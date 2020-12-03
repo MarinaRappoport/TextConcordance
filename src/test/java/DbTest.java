@@ -47,17 +47,16 @@ public class DbTest {
 		System.out.println(WordService.insertWord("buy"));
 		System.out.println(WordService.insertWord("am"));
 
-		System.out.println(WordService.findWordByValue("am"));
-		System.out.println(WordService.findWordByValue("buy"));
-		System.out.println(WordService.findWordByValue("no"));
+		System.out.println(WordService.findWordIdByValue("am"));
+		System.out.println(WordService.findWordIdByValue("buy"));
+		System.out.println(WordService.findWordIdByValue("no"));
 	}
 
+	@Test
 	public void testBookService() {
-		Book book = new Book("Book2", "Author2", "", new Date());
-		BookService.insertBook(book);
-
-		List<Book> books = BookService.findBookByDetails("Book", null, null, null, null);
+		List<Book> books = BookService.findBookByDetails(null, "Lewis", null, null, null);
 		System.out.println("Found " + books.size() + " books");
+		System.out.println("Title: " + books.get(0).getTitle());
 	}
 
 	@Test
@@ -125,7 +124,10 @@ public class DbTest {
 
 	@Test
 	public void testTopWordsAppearances(){
-		Map<String, Integer> map = WordService.getTopWordsAppearances(new Long(1), 50);
+		List<Long> books = new ArrayList<>();
+		books.add((long) 1);
+		books.add((long) 2);
+		Map<String, Integer> map = WordService.getTopWordsAppearances(books, 50);
 		System.out.println(map.get("a"));
 	}
 
@@ -137,5 +139,10 @@ public class DbTest {
 		Map<Integer, String> phrases = PhraseService.getAllPhrases();
 		System.out.println(phrases.get(1));
 		List<WordLocation> list = PhraseService.findPhraseInBooks(id, null);
+	}
+
+	@Test
+	public void testWordByLocation() {
+		System.out.println(WordService.findWordByLocation(1, 4, 1));
 	}
 }
