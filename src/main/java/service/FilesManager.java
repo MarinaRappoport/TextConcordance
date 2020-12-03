@@ -10,7 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-//Singleton class for handling files
+/**
+ * Singleton class for handling files
+ */
 public class FilesManager {
 	private static ArrayList<Book> files;
 	private static Map<String, Long> words;
@@ -56,10 +58,6 @@ public class FilesManager {
 		} else {
 			JOptionPane.showMessageDialog(null, "Book already exists", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-	}
-
-	public boolean isEmpty() {
-		return files.isEmpty();
 	}
 
 	public static Book getFile(String name) {
