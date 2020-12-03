@@ -30,7 +30,7 @@ public class BookService {
 			stmt.setString(2, book.getAuthor());
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next())
-				isAlreadyExist = true;
+				isAlreadyExist = rs.getInt(1) > 0;
 			rs.close();
 			stmt.close();
 			if (isAlreadyExist) return 0;

@@ -124,7 +124,10 @@ public class DbTest {
 
 	@Test
 	public void testTopWordsAppearances(){
-		Map<String, Integer> map = WordService.getTopWordsAppearances(new Long(1), 50);
+		List<Long> books = new ArrayList<>();
+		books.add((long) 1);
+		books.add((long) 2);
+		Map<String, Integer> map = WordService.getTopWordsAppearances(books, 50);
 		System.out.println(map.get("a"));
 	}
 

@@ -21,7 +21,7 @@ public class WordService {
 	private final static String SQL_PREVIEW = "SELECT value, is_quote_before, is_quote_after, punctuation_mark FROM word, word_in_book where book_id = ? AND paragraph = ? AND word.word_id = word_in_book.word_id ORDER by index";
 
 	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY value ORDER by word";
-	private final static String SQL_TOP_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
+	private final static String SQL_TOP_WORDS_APPEARANCES_IN_BOOKS = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id in (%s) AND word.word_id = word_in_book.word_id GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
 	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where word.word_id = word_in_book.word_id GROUP BY value ORDER by word";
 	private final static String SQL_TOP_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where word.word_id = word_in_book.word_id GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
 
@@ -196,21 +196,30 @@ public class WordService {
 
 
 	/**
-	 * @param bookId - use null to count word appearances in all books
+	 * @param bookIds - use null to count word appearances in all books
 	 * @return map of top X pairs word:appearances starting with the most frequent
 	 */
-	public static Map<String, Integer> getTopWordsAppearances(Long bookId, int limit) {
+	public static Map<String, Integer> getTopWordsAppearances(List<Long> bookIds, int limit) {
 		Map<String, Integer> wordMap = new LinkedHashMap<>();
 		PreparedStatement statement = null;
 		try {
-			if (bookId == null) {
+			if (bookIds == null || bookIds.isEmpty()) {
 				statement = connection.prepareStatement(SQL_TOP_WORDS_APPEARANCES);
 				statement.setInt(1, limit);
 			} else {
-				statement = connection.prepareStatement(SQL_TOP_WORDS_APPEARANCES_IN_BOOK);
-				statement.setLong(1, bookId);
-				statement.setInt(2, limit);
+				StringJoiner sj = new StringJoiner(",");
+				for (int i = 0; i < bookIds.size(); i++) {
+					sj.add("?");
+				}
+				String sql = String.format(SQL_TOP_WORDS_APPEARANCES_IN_BOOKS, sj.toString());
+				statement = connection.prepareStatement(sql);
+				for (int i = 1; i <= bookIds.size(); i++) {
+					statement.setLong(i, bookIds.get(i - 1));
+				}
+				statement.setInt(bookIds.size() + 1, limit);
 			}
+
+			System.out.println(statement.toString());
 
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
