@@ -47,9 +47,9 @@ public class DbTest {
 		System.out.println(WordService.insertWord("buy"));
 		System.out.println(WordService.insertWord("am"));
 
-		System.out.println(WordService.findWordByValue("am"));
-		System.out.println(WordService.findWordByValue("buy"));
-		System.out.println(WordService.findWordByValue("no"));
+		System.out.println(WordService.findWordIdByValue("am"));
+		System.out.println(WordService.findWordIdByValue("buy"));
+		System.out.println(WordService.findWordIdByValue("no"));
 	}
 
 	public void testBookService() {

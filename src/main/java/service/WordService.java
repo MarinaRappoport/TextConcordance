@@ -17,16 +17,17 @@ public class WordService {
 
 	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word_id = ? ORDER by book_id, index";
 	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word_id = ? AND book_id = ? ORDER by index";
+	private final static String SQL_FIND_WORD_BY_LOCATION = "SELECT value from word_in_book, word where where word.word_id = word_in_book.word_id AND book_id = ? AND line = ? AND index_in_line = ?";
 	private final static String SQL_PREVIEW = "SELECT value, is_quote_before, is_quote_after, punctuation_mark FROM word, word_in_book where book_id = ? AND paragraph = ? AND word.word_id = word_in_book.word_id ORDER by index";
 
 	private final static String SQL_FIND_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY value ORDER by word";
 	private final static String SQL_TOP_WORDS_APPEARANCES_IN_BOOK = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where book_id = ? AND word.word_id = word_in_book.word_id GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
-	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word NATURAL JOIN word_in_book GROUP BY value ORDER by word";
-	private final static String SQL_TOP_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word NATURAL JOIN word_in_book GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
+	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where word.word_id = word_in_book.word_id GROUP BY value ORDER by word";
+	private final static String SQL_TOP_WORDS_APPEARANCES = "SELECT DISTINCT value, COUNT(value) from word, word_in_book where word.word_id = word_in_book.word_id GROUP BY value ORDER by COUNT(value) DESC LIMIT ?";
 
 
 	public static long insertWord(String word) {
-		long id = findWordByValue(word);
+		long id = findWordIdByValue(word);
 		if (id > 0) return id;
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD,
@@ -54,7 +55,7 @@ public class WordService {
 		return -1;
 	}
 
-	public static long findWordByValue(String word) {
+	public static long findWordIdByValue(String word) {
 		PreparedStatement statement = null;
 		long id = -1;
 		try {
@@ -205,8 +206,7 @@ public class WordService {
 			if (bookId == null) {
 				statement = connection.prepareStatement(SQL_TOP_WORDS_APPEARANCES);
 				statement.setInt(1, limit);
-			}
-			else {
+			} else {
 				statement = connection.prepareStatement(SQL_TOP_WORDS_APPEARANCES_IN_BOOK);
 				statement.setLong(1, bookId);
 				statement.setInt(2, limit);
@@ -222,5 +222,28 @@ public class WordService {
 			e.printStackTrace();
 		}
 		return wordMap;
+	}
+
+	/**
+	 * @return word in location and book specified, or null if location is not valid
+	 */
+	public static String findWordByLocation(long bookId, int line, int indexInLine) {
+		PreparedStatement statement = null;
+		String word = null;
+		try {
+			statement = connection.prepareStatement(SQL_FIND_WORD_BY_LOCATION);
+			statement.setLong(1, bookId);
+			statement.setInt(2, line);
+			statement.setInt(3, indexInLine);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next())
+				word = rs.getString("value");
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return word;
 	}
 }
