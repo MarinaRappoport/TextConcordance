@@ -31,6 +31,8 @@ public class ShowWords extends JFrame {
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public ShowWords(){
+        setTitle("Show Words");
+
         this.books = FilesManager.getInstance().getFiles();
         word = "";
         selectedBookIndex = 0;

@@ -39,6 +39,8 @@ public class ShowGroups extends JFrame {
     private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public ShowGroups(){
+        setTitle("Show Groups");
+
         books = FilesManager.getInstance().getFiles();
         groups = GroupService.getAllGroups();
 
@@ -128,7 +130,6 @@ public class ShowGroups extends JFrame {
                     if (groups.size()==1)
                         groupsList.removeAllItems();
 
-                    System.out.println("Adding new GROUP !! ");
                     groupsList.addItem(groupName);
                 }
 
