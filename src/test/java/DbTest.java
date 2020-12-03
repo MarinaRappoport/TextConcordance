@@ -52,12 +52,11 @@ public class DbTest {
 		System.out.println(WordService.findWordIdByValue("no"));
 	}
 
+	@Test
 	public void testBookService() {
-		Book book = new Book("Book2", "Author2", "", new Date());
-		BookService.insertBook(book);
-
-		List<Book> books = BookService.findBookByDetails("Book", null, null, null, null);
+		List<Book> books = BookService.findBookByDetails(null, "Lewis", null, null, null);
 		System.out.println("Found " + books.size() + " books");
+		System.out.println("Title: " + books.get(0).getTitle());
 	}
 
 	@Test

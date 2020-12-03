@@ -14,8 +14,7 @@ public class BookService {
 			"chars_count,words_count,sentence_count,paragraph_count) " +
 			"VALUES (?,?,?,?,?,?,?,?)";
 
-	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT book_id, title,author,translator, " +
-			"release_date FROM book WHERE ";
+	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT * FROM book WHERE ";
 
 	private final static String SQL_FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
 
