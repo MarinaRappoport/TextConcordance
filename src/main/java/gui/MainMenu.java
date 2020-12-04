@@ -2,6 +2,7 @@ package gui;
 
 import model.Book;
 import service.FilesManager;
+import service.WordService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -12,15 +13,18 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 
 //GUI of the main menu
 public class MainMenu extends JFrame {
     private JTextArea statTextArea, common;
     private JTable filesTable;
+    private DefaultTableModel model;
     private JPanel buttons, center, bookDetails , bottomPanel;
     private JButton loadFile, showWords, showExp, showGroups, findBook, extractToXML, importFromXML;
     private FilesManager filesManager;
     private ArrayList<Book> selectedBooks;
+    private ArrayList<Long> selectedBooksId;
 
     final Color DEFAULT = new Color(206, 200, 200, 2);
     final Color PRIMARY = new Color(250, 160, 38);
@@ -34,6 +38,7 @@ public class MainMenu extends JFrame {
         filesManager = FilesManager.getInstance();
         FilesManager.setMainMenu(this);
 
+        selectedBooksId = new ArrayList<>();
         selectedBooks = new ArrayList<>();
 
         filesTable = new JTable( new DefaultTableModel((new String[]{"Title", "Author", "Release Date", "Path"}), 0){
@@ -51,6 +56,7 @@ public class MainMenu extends JFrame {
 		    ((DefaultTableModel)filesTable.getModel()).addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
 	    }
 
+        model = (DefaultTableModel) filesTable.getModel();
 	    TableColumnModel columnModel = filesTable.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(300);
         columnModel.getColumn(1).setPreferredWidth(240);
@@ -63,14 +69,18 @@ public class MainMenu extends JFrame {
         filesTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                selectedBooksId.clear();
                 selectedBooks.clear();
                 super.mousePressed(e);
 
                 int[] selectedRow = filesTable.getSelectedRows();
                 for (int row : selectedRow){
                     selectedBooks.add(filesManager.getFile( (String)filesTable.getValueAt(row,0)) );
+                    selectedBooksId.add(selectedBooks.get(selectedBooks.size()-1).getId());
+
                 }
                 updateStatistics();
+                updateTopWords();
             }
         });
 
@@ -82,7 +92,7 @@ public class MainMenu extends JFrame {
         common.setColumns(20);
         common.setRows(7);
         TitledBorder commonTitle = BorderFactory.createTitledBorder
-                (BORDER, "Top Words (50)", 0, 0, new Font("Font", Font.BOLD,18));
+                (BORDER, "Top 50 Words", 0, 0, new Font("Font", Font.BOLD,18));
         commonTitle.setTitleJustification(TitledBorder.CENTER);
         common.setBorder(commonTitle);
         JScrollPane commonSP = new JScrollPane(common);
@@ -207,6 +217,22 @@ public class MainMenu extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    private void updateTopWords() {
+        common.setText("");
+        int i = 1;
+
+        if (selectedBooks.size() == model.getRowCount()) //Selected all books
+            selectedBooksId = null;
+
+        Map<String, Integer> topWords = WordService.getTopWordsAppearances(selectedBooksId, 50);
+
+        for (Map.Entry<String,Integer> entry : topWords.entrySet())
+            common.append((i++)+")       " + entry.getKey() + "    [" + entry.getValue() +"]\n");
+
+        selectedBooksId = new ArrayList<>();
+
+    }
+
     public void updateStatistics() {
 
         int sumOfCharacters = 0;
@@ -254,7 +280,6 @@ public class MainMenu extends JFrame {
     }
 
     public void updateFileDetails() {
-        DefaultTableModel model = (DefaultTableModel) filesTable.getModel();
         Book current = FilesManager.getInstance().getFiles().get(FilesManager.getInstance().getFiles().size()-1);
         model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
     }

@@ -1,27 +1,36 @@
 package gui;
 
 import model.Book;
+import service.BookService;
 import service.FilesManager;
+import service.WordService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class FindByDetails extends JFrame {
     private JPanel findBook, wordSearchPanel, findWord, bookDetails, bookSearchPanel, wordDetails;
     private JLabel findBookTitle, findWordTitle, title, author, translator, fromDate, toDate, line, index, wordResult, inBook;
     private JButton searchBook, searchWord;
-    private JTextField titleField, authorField, translatorField, toDateField, fromDateField, lineField, indexField;
+    private JTextField titleField, authorField, translatorField, lineField, indexField;
+    private JFormattedTextField toDateField, fromDateField;
+    private Date Date_FromDate, Date_ToDate;
     private JTable bookResultTable;
     private ArrayList<Book> books;
+    private java.util.List<Book> bookListResult;
     private JComboBox<String> booksList;
+    private DefaultTableModel tableModel;
 
     final static Border SEPARATOR = BorderFactory.createMatteBorder(0,0,1,0,Color.black);
     final static Font TITLE = new Font("Title", Font.BOLD,18);
@@ -30,8 +39,11 @@ public class FindByDetails extends JFrame {
     private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
     public FindByDetails(){
+        bookListResult = new ArrayList<>();
         setTitle("Find By Details");
         books = FilesManager.getInstance().getFiles();
+
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
         String[] booksArray;
         int i = 0;
@@ -74,9 +86,9 @@ public class FindByDetails extends JFrame {
         authorField.setFont(MY_FONT);
         translatorField = new JTextField();
         translatorField.setFont(MY_FONT);
-        fromDateField = new JTextField();
+        fromDateField = new JFormattedTextField(df);
         fromDateField.setFont(MY_FONT);
-        toDateField = new JTextField();
+        toDateField = new JFormattedTextField(df);
         toDateField.setFont(MY_FONT);
 
         searchBook = new JButton("Search Book");
@@ -84,8 +96,44 @@ public class FindByDetails extends JFrame {
         searchBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO search the details
-                //TODO add cooks to table
+                tableModel.setRowCount(0);
+                int index = 1;
+
+                java.sql.Date sql_FromDate;
+                java.sql.Date sql_ToDate;
+
+                if (fromDateField.getText().equals(""))
+                    sql_FromDate = null;
+                else {
+                    try {
+                        Date_FromDate = new SimpleDateFormat("dd/MM/yyyy").parse(fromDateField.getText());
+                    } catch (Exception exception){
+                        JOptionPane.showMessageDialog(null, "Invalid release from date", "Error", JOptionPane.ERROR_MESSAGE);
+                        exception.printStackTrace();
+                    }
+                    sql_FromDate = new java.sql.Date(Date_FromDate.getTime());
+                }
+
+                if (toDateField.getText().equals(""))
+                    sql_ToDate = null;
+                else {
+                    try {
+                        Date_FromDate = new SimpleDateFormat("dd/MM/yyyy").parse(toDateField.getText());
+                    } catch (Exception exception){
+                        JOptionPane.showMessageDialog(null, "Invalid release from date", "Error", JOptionPane.ERROR_MESSAGE);
+                        exception.printStackTrace();
+                    }
+                    sql_ToDate = new java.sql.Date(Date_FromDate.getTime());
+                }
+
+                bookListResult = BookService.findBookByDetails(titleField.getText().equals("")? null : titleField.getText(),
+                        authorField.getText().equals("")? null : authorField.getText(),
+                        translatorField.getText().equals("")? null : translatorField.getText(),
+                        sql_FromDate ,sql_ToDate);
+
+                for(Book curr : bookListResult){
+                    tableModel.addRow(new Object[]{index++, curr.getTitle(), curr.getAuthor(), curr.getTranslator(), curr.getDate()});
+                }
             }
         });
 
@@ -108,7 +156,13 @@ public class FindByDetails extends JFrame {
         searchWord.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO find the word
+                String result = WordService.findWordByLocation(books.get(booksList.getSelectedIndex()).getId(),
+                        Integer.valueOf(lineField.getText()), Integer.valueOf(indexField.getText()));
+
+                if ( result == null )
+                    result = "Invalid location (White space or after the line was ended)";
+
+                wordResult.setText("Result : " + result);
             }
         });
 
@@ -120,7 +174,7 @@ public class FindByDetails extends JFrame {
             }
         });
 
-        DefaultTableModel tableModel = (DefaultTableModel) bookResultTable.getModel();
+        tableModel = (DefaultTableModel) bookResultTable.getModel();
         bookResultTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         bookResultTable.setRowHeight(40);
         bookResultTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
