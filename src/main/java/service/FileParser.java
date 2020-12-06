@@ -54,7 +54,6 @@ public class FileParser {
 					} else {
 						book.characterCount += currentLine.length();
 
-						// \\s+ is the space delimiter in java
 						String[] wordList = currentLine.split("\\s+");
 
 						// Add word location to the list

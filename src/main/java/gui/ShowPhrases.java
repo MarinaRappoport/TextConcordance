@@ -187,6 +187,10 @@ public class ShowPhrases extends JFrame{
         List<WordLocation> wordLocations;
 
         int row = phrasesTable.getSelectedRow();
+
+        if( row == -1 ) //No phrase selected
+            return;
+
         currentPhrase = (String)phrasesTable.getValueAt(row, 1);
         int phraseId = getKey(allPhrases, currentPhrase);
         if ( booksList.getSelectedIndex() == 0 ){
