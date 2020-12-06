@@ -68,7 +68,7 @@ public class BookService {
 		return -1;
 	}
 
-	public static List<Book> findBookByDetails(String title, String author, String translator, Date releaseFrom, Date releaseTo) {
+	public static List<Book> findBookByDetails(String title, String author, String translator, String releaseFrom, String releaseTo) {
 		List<Book> books = new LinkedList<>();
 		StringBuilder sb = new StringBuilder(SQL_FIND_BOOK_BY_DETAILS_PREFIX);
 		if (title != null)
@@ -79,7 +79,7 @@ public class BookService {
 			sb.append("translator LIKE %").append(translator).append("%' AND ");
 		if (releaseFrom != null)
 			sb.append("release_date >= '").append(releaseFrom).append("' AND ");
-		if (releaseFrom != null)
+		if (releaseTo != null)
 			sb.append("release_date <= '").append(releaseTo).append("' AND ");
 
 		String sql = sb.toString();
