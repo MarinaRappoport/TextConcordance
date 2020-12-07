@@ -78,6 +78,10 @@ public class Book {
 		return path;
 	}
 
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 	public String getTranslator() {
 		return translator;
 	}
