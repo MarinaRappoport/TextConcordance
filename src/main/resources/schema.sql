@@ -1,13 +1,15 @@
 CREATE TABLE IF NOT EXISTS book (
     book_id SERIAL PRIMARY KEY ,
-    title VARCHAR NOT NULL,
-    author VARCHAR NOT NULL,
-    translator VARCHAR,
+    title VARCHAR(100) NOT NULL,
+    author VARCHAR(50) NOT NULL,
+    translator VARCHAR(50),
     release_date DATE,
     chars_count INTEGER,
     words_count INTEGER,
     sentence_count INTEGER,
+    line_count INTEGER,
     paragraph_count INTEGER,
+    path VARCHAR(100),
     UNIQUE(title, author),
     CHECK(title <> ''),
     CHECK(author <> '')
@@ -15,7 +17,7 @@ CREATE TABLE IF NOT EXISTS book (
 
 CREATE TABLE IF NOT EXISTS word (
     word_id SERIAL PRIMARY KEY,
-    value VARCHAR NOT NULL UNIQUE,
+    value VARCHAR(50) NOT NULL UNIQUE,
     CHECK(value <> '')
 );
 
