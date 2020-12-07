@@ -41,6 +41,7 @@ public class FileParser {
 		String currentLine;
 		String prevLine = "";
 		boolean isBookStarted = false;
+		boolean isParagraphOver = false;
 
 		// Reading line by line from the
 		// file until a null is returned
@@ -48,10 +49,14 @@ public class FileParser {
 			while ((currentLine = reader.readLine()) != null) {
 				if (isBookStarted) {
 					if (currentLine.startsWith(END_OF_BOOK)) break;
-					book.lineCount++;
 					if (currentLine.equals("")) {
-						book.paragraphCount++;
+						if (isParagraphOver) {
+							book.paragraphCount++;
+							isParagraphOver = false;
+						}
 					} else {
+						isParagraphOver = true;
+						book.lineCount++;
 						book.characterCount += currentLine.length();
 
 						String[] wordList = currentLine.split("\\s+");
@@ -105,10 +110,10 @@ public class FileParser {
 			if (!wordList[i].isEmpty()) {
 				String word = null;
 				boolean isQuoteBefore = false;
-				boolean isQuoteAfter =false;
+				boolean isQuoteAfter = false;
 				String punctuationMark = null;
 				try {
-					Matcher matcher = Pattern.compile("(\\W*)?([a-zA-Z'’]+)(\\W*)").matcher(wordList[i].replaceAll("_", ""));
+					Matcher matcher = Pattern.compile("(\\W*)?([0-9a-zA-Z'’-]+)(\\W*)").matcher(wordList[i].replaceAll("_", ""));
 					if (matcher.find() && matcher.groupCount() == 3) {
 						if (!matcher.group(1).isEmpty())
 							isQuoteBefore = "\"“\'".contains(matcher.group(1));
