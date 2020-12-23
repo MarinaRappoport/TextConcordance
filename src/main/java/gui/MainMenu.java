@@ -41,7 +41,7 @@ public class MainMenu extends JFrame {
         selectedBooksId = new ArrayList<>();
         selectedBooks = new ArrayList<>();
 
-        filesTable = new JTable( new DefaultTableModel((new String[]{"Title", "Author", "Release Date", "Path"}), 0){
+        filesTable = new JTable( new DefaultTableModel((new String[]{"Title", "Author", "Translator", "Release Date", "Path"}), 0){
             public boolean isCellEditable(int row, int column)
             {
                 return false;//all cells are not editable
@@ -53,15 +53,16 @@ public class MainMenu extends JFrame {
         filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 	    for (Book current: FilesManager.getInstance().getFiles()) {
-		    ((DefaultTableModel)filesTable.getModel()).addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
+		    ((DefaultTableModel)filesTable.getModel()).addRow(new Object[]{current.getTitle(), current.getAuthor(),current.getTranslator(), current.getDate(), current.getPath()});
 	    }
 
         model = (DefaultTableModel) filesTable.getModel();
 	    TableColumnModel columnModel = filesTable.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(300);
-        columnModel.getColumn(1).setPreferredWidth(240);
-        columnModel.getColumn(2).setPreferredWidth(240);
-        columnModel.getColumn(3).setPreferredWidth(300 );
+        columnModel.getColumn(0).setPreferredWidth(280);
+        columnModel.getColumn(1).setPreferredWidth(220);
+        columnModel.getColumn(2).setPreferredWidth(200);
+        columnModel.getColumn(3).setPreferredWidth(220);
+        columnModel.getColumn(4).setPreferredWidth(180);
 
         JScrollPane tableSP=new JScrollPane(filesTable);
         tableSP.setVisible(true);
