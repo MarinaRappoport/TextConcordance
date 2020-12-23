@@ -11,8 +11,8 @@ public class BookService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
 	private final static String SQL_INSERT_BOOK = "INSERT INTO book (title,author,translator,release_date," +
-			"chars_count,words_count,sentence_count,paragraph_count) " +
-			"VALUES (?,?,?,?,?,?,?,?)";
+			"chars_count,words_count,sentence_count,line_count,paragraph_count,path) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?)";
 
 	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT * FROM book WHERE ";
 
@@ -45,7 +45,9 @@ public class BookService {
 			statement.setInt(5, book.characterCount);
 			statement.setInt(6, book.wordCount);
 			statement.setInt(7, book.sentenceCount);
-			statement.setInt(8, book.paragraphCount);
+			statement.setInt(8, book.lineCount);
+			statement.setInt(9, book.paragraphCount);
+			statement.setString(10, book.getPath());
 
 			System.out.println(statement.toString());
 
@@ -68,7 +70,7 @@ public class BookService {
 		return -1;
 	}
 
-	public static List<Book> findBookByDetails(String title, String author, String translator, Date releaseFrom, Date releaseTo) {
+	public static List<Book> findBookByDetails(String title, String author, String translator, String releaseFrom, String releaseTo) {
 		List<Book> books = new LinkedList<>();
 		StringBuilder sb = new StringBuilder(SQL_FIND_BOOK_BY_DETAILS_PREFIX);
 		if (title != null)
@@ -79,7 +81,7 @@ public class BookService {
 			sb.append("translator LIKE %").append(translator).append("%' AND ");
 		if (releaseFrom != null)
 			sb.append("release_date >= '").append(releaseFrom).append("' AND ");
-		if (releaseFrom != null)
+		if (releaseTo != null)
 			sb.append("release_date <= '").append(releaseTo).append("' AND ");
 
 		String sql = sb.toString();
@@ -112,7 +114,9 @@ public class BookService {
 		book.characterCount = rs.getInt("chars_count");
 		book.wordCount = rs.getInt("words_count");
 		book.sentenceCount = rs.getInt("sentence_count");
+		book.lineCount = rs.getInt("line_count");
 		book.paragraphCount = rs.getInt("paragraph_count");
+		book.setPath(rs.getString("path"));
 		book.setId(id);
 		return book;
 	}

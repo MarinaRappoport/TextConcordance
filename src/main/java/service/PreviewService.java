@@ -107,12 +107,12 @@ public class PreviewService {
         Highlighter.HighlightPainter painter =
                 new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
 
-
+	    String lowerText = text.toLowerCase();
         for (int i = 0 ; i < word.length ; i++ ) {
 
             int index = 0;
             while (index >= 0) {
-                int p0 = text.indexOf(word[i], index);
+	            int p0 = lowerText.indexOf(word[i].toLowerCase(), index);
 
                 if (p0 == -1) {
                     break;
@@ -120,8 +120,8 @@ public class PreviewService {
 
                 int p1 = p0 + word[i].length();
 
-                if ( (p0 == 0) || (!Character.isLetter(text.charAt(p0 - 1))) ) {
-                    if (!Character.isLetter(text.charAt(p1))) {
+	            if ((p0 == 0) || (!Character.isLetter(lowerText.charAt(p0 - 1)))) {
+		            if (!Character.isLetter(lowerText.charAt(p1))) {
                         try {
                             highlighter.addHighlight(p0, p1, painter);
                         } catch (Exception e) {

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.*;
 
+import java.text.ParseException;
 import java.util.*;
 
 public class DbTest {
@@ -53,8 +54,8 @@ public class DbTest {
 	}
 
 	@Test
-	public void testBookService() {
-		List<Book> books = BookService.findBookByDetails(null, "Lewis", null, null, null);
+	public void testBookService() throws ParseException {
+		List<Book> books = BookService.findBookByDetails(null, "Lewis", null, "18/10/2010", null);
 		System.out.println("Found " + books.size() + " books");
 		System.out.println("Title: " + books.get(0).getTitle());
 	}
