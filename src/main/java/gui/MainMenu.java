@@ -184,7 +184,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 FindByDetails findByDetails  = new FindByDetails();
-                findByDetails.setSize(1080, 550);
+                findByDetails.setSize(1080, 600);
                 findByDetails.setVisible(true);
                 findByDetails.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }

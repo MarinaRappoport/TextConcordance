@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ShowPhrases extends JFrame{
     private int phrasesIndex;
-    private JLabel phraseLabel, inBookLabel;
+    private JLabel inBookLabel;
     private JButton newPhrase;
     private JComboBox<String> booksList;
     private JTable allLocations, phrasesTable;
