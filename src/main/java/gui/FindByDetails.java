@@ -16,7 +16,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
 public class FindByDetails extends JFrame {
@@ -387,7 +386,7 @@ public class FindByDetails extends JFrame {
 		if (!dateStr.isEmpty()) {
 			try {
 				DATE_FORMAT.setLenient(false);
-				Date date = DATE_FORMAT.parse(dateStr);
+				DATE_FORMAT.parse(dateStr);
 			} catch (ParseException e) {
 				JOptionPane.showMessageDialog(null, "Invalid date format!",
 						"Error", JOptionPane.ERROR_MESSAGE);
