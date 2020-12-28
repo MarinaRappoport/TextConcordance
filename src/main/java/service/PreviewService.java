@@ -5,14 +5,9 @@ import model.WordLocation;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,9 +70,9 @@ public class PreviewService {
         return table;
     }
 
-    public static ArrayList<Integer> addLocations(int count, DefaultTableModel model, List<WordLocation> locations, Book book) {
+	public static ArrayList<Integer> addLocations(int count, DefaultTableModel model, List<WordLocation> locations, Book book) {
         int index = count;
-        ArrayList<Integer> idList = new ArrayList<>();
+		ArrayList<Integer> idList = new ArrayList<>();
 
         for (WordLocation location : locations) {
             model.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),

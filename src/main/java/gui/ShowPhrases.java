@@ -28,7 +28,7 @@ public class ShowPhrases extends JFrame{
     private JComboBox<String> booksList;
     private JTable allLocations, phrasesTable;
     private DefaultTableModel locationsTableModel, phrasesTableModel;
-    private TextPreviewComponent context;
+	private TextPreviewComponent context;
     private ArrayList<Book> books;
     private JPanel top1, top2,center2, phrasesPanel, previewPanel;
     private Map<Integer, String> allPhrases;
@@ -59,8 +59,8 @@ public class ShowPhrases extends JFrame{
                 String newPhrase = JOptionPane.showInputDialog("Enter new phrase");
 
                 if ( !allPhrases.containsValue(newPhrase) ) {
-                    if (newPhrase == null)
-                        return;
+	                if (newPhrase == null)
+		                return;
                     int newId = PhraseService.saveNewPhrase(newPhrase);
                     allPhrases.put(newId, newPhrase);
                     addNewPhrase(newPhrase);
@@ -119,7 +119,7 @@ public class ShowPhrases extends JFrame{
         for(itr = this.allPhrases.entrySet().iterator(); itr.hasNext();) {
             addNewPhrase((String)((Map.Entry)itr.next()).getValue());
         }
-        context = new TextPreviewComponent(true);
+	    context = new TextPreviewComponent(true);
 
         allLocations = PreviewService.createLocationsTable();
         locationsTableModel = (DefaultTableModel) allLocations.getModel();
@@ -134,7 +134,7 @@ public class ShowPhrases extends JFrame{
                 String[] words = currentPhrase.split("\\s+");
 
                 int row = allLocations.getSelectedRow();
-                context.createPhrasePreview(words, bookIdList.get(row), (int)allLocations.getValueAt(row, 4));
+	            context.createPhrasePreview(words, bookIdList.get(row), (int) allLocations.getValueAt(row, 4));
             }
         });
 
