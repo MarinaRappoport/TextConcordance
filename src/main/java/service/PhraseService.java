@@ -62,14 +62,14 @@ public class PhraseService {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_SAVE_NEW_PHRASE);
 			for (String word : words) {
-				Long wordId = FilesManager.getInstance().getWordId(word);
+				Integer wordId = FilesManager.getInstance().getWordId(word);
 				if (wordId == null) {
 					wordId = WordService.insertWord(word);
 					if (wordId == -1) return -1;
 				}
 
 				statement.setInt(1, id);
-				statement.setLong(2, wordId);
+				statement.setInt(2, wordId);
 				statement.setInt(3, ordinal++);
 				statement.addBatch();
 				statement.clearParameters();
@@ -107,8 +107,8 @@ public class PhraseService {
 		return phrases;
 	}
 
-	private static List<Long> getWordsInPhrase(int phraseId) {
-		List<Long> wordList = new ArrayList<>();
+	private static List<Integer> getWordsInPhrase(int phraseId) {
+		List<Integer> wordList = new ArrayList<>();
 		PreparedStatement statement = null;
 		long id = -1;
 		try {
@@ -116,7 +116,7 @@ public class PhraseService {
 			statement.setInt(1, phraseId);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
-				wordList.add(rs.getLong("word_id"));
+				wordList.add(rs.getInt("word_id"));
 			rs.close();
 			statement.close();
 		} catch (SQLException e) {
@@ -130,11 +130,11 @@ public class PhraseService {
 	 * @param bookId   use null to search in all books
 	 * @return location of the first word in phrase
 	 */
-	public static List<WordLocation> findPhraseInBooks(Integer phraseId, Long bookId) {
+	public static List<WordLocation> findPhraseInBooks(Integer phraseId, Integer bookId) {
 		List<WordLocation> wordLocationsAll = new LinkedList<>();
-		List<Long> wordList = getWordsInPhrase(phraseId);
+		List<Integer> wordList = getWordsInPhrase(phraseId);
 		StringJoiner joiner = new StringJoiner(",");
-		for (Long id : wordList) {
+		for (Integer id : wordList) {
 			joiner.add(String.valueOf(id));
 		}
 		String wordIds = joiner.toString();
@@ -148,9 +148,9 @@ public class PhraseService {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				WordLocation location = new WordLocation(rs.getLong("word_id"), rs.getInt("index"), rs.getInt("line"),
+				WordLocation location = new WordLocation(rs.getInt("word_id"), rs.getInt("index"), rs.getInt("line"),
 						rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
-				location.setBookId(rs.getLong("book_id"));
+				location.setBookId(rs.getInt("book_id"));
 				wordLocationsAll.add(location);
 			}
 			rs.close();

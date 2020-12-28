@@ -16,8 +16,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class ShowPhrases extends JFrame{
     private int phrasesIndex;
@@ -30,7 +32,7 @@ public class ShowPhrases extends JFrame{
     private ArrayList<Book> books;
     private JPanel top1, top2,center2, phrasesPanel, previewPanel;
     private Map<Integer, String> allPhrases;
-    private List<Long> bookIdList;
+	private List<Integer> bookIdList;
     private String currentPhrase;
 
     private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
@@ -44,7 +46,7 @@ public class ShowPhrases extends JFrame{
 
         phrasesIndex = 1;
         books = FilesManager.getInstance().getFiles();
-        bookIdList = new ArrayList<>();
+	    bookIdList = new ArrayList<Integer>();
 
         inBookLabel = new JLabel("In Book :");
         inBookLabel.setFont(MY_FONT);
@@ -197,7 +199,7 @@ public class ShowPhrases extends JFrame{
             wordLocations = PhraseService.findPhraseInBooks(phraseId,null);
         }
         else {
-            Long bookId = FilesManager.getFile((String) booksList.getSelectedItem()).getId();
+	        int bookId = FilesManager.getFile((String) booksList.getSelectedItem()).getId();
             wordLocations = PhraseService.findPhraseInBooks(phraseId,bookId);
         }
 

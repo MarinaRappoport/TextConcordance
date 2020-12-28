@@ -8,7 +8,7 @@ import java.util.Date;
  * Represents table 'book'
  */
 public class Book {
-	private long id;
+	private int id;
 	private String title, date;
 	private String author, path;
 	private String translator;
@@ -26,15 +26,18 @@ public class Book {
 			date = DATE_FORMAT.format(releaseDate);
 	}
 
+	public Book() {
+	}
+
 	public Book(String path) {
 		this.path = path;
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

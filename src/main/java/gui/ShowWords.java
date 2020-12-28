@@ -9,7 +9,10 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ShowWords extends JFrame {
@@ -20,7 +23,7 @@ public class ShowWords extends JFrame {
     private JComboBox<String> booksList;
     private JTextArea context;
     private JTable locationsTable;
-    private ArrayList<Long> bookIdList;
+	private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
     private int selectedBookIndex, count;
     private String word;
@@ -36,7 +39,7 @@ public class ShowWords extends JFrame {
         this.books = FilesManager.getInstance().getFiles();
         word = "";
         selectedBookIndex = 0;
-        bookIdList = new ArrayList<>();
+	    bookIdList = new ArrayList<Integer>();
         north = new JPanel();
 
         center = new JPanel();

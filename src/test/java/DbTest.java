@@ -1,9 +1,11 @@
 import model.Book;
+import model.DbData;
 import model.WordLocation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -63,7 +65,7 @@ public class DbTest {
 	@Test
 	public void testWordParsing() {
 		String word = "“without";
-		List<WordLocation> ws = new FileParser().addWordLocationToList(new Book(""),new String[]{word});
+		List<WordLocation> ws = new FileParser().addWordLocationToList(new Book(""), new String[]{word});
 		WordLocation w = ws.get(0);
 		System.out.println((w.isQuoteBefore() ? "\"" : "") + w.getWord() + (w.isQuoteAfter() ? "\"" : "") +
 				(w.getPunctuationMark() == null ? "" : w.getPunctuationMark()));
@@ -71,37 +73,37 @@ public class DbTest {
 
 	@Test
 	public void testPreview() {
-		List<WordLocation> wordLocations = WordService.findWordInBooks("conversations",null);
+		List<WordLocation> wordLocations = WordService.findWordInBooks("conversations", null);
 
 		System.out.println(WordService.buildPreview(wordLocations.get(0).getBookId(), wordLocations.get(0).getParagraph()));
 	}
 
 	@Test
-	public void testWordsAppearance(){
+	public void testWordsAppearance() {
 		Map<String, Integer> map = WordService.getWordsAppearances(null);
 		System.out.println(map.size());
-		for (Map.Entry<String, Integer> e: map.entrySet()) {
+		for (Map.Entry<String, Integer> e : map.entrySet()) {
 			System.out.println(e.getKey() + " " + e.getValue());
 		}
 
 		System.out.println("-----------------------------");
-		Map<String, Integer> map2 = WordService.getWordsAppearances(new Long(4));
+		Map<String, Integer> map2 = WordService.getWordsAppearances(4);
 		System.out.println(map2.size());
-		for (Map.Entry<String, Integer> e: map2.entrySet()) {
+		for (Map.Entry<String, Integer> e : map2.entrySet()) {
 			System.out.println(e.getKey() + " " + e.getValue());
 		}
 	}
 
 	@Test
-	public void testFindWordInBooks(){
+	public void testFindWordInBooks() {
 		List<Book> books = BookService.getAllBooks();
 
-		ArrayList<String> words= new ArrayList<>();
+		ArrayList<String> words = new ArrayList<>();
 		words.add("will");
 		words.add("when");
 		words.add("for");
 
-		for(String word : words){
+		for (String word : words) {
 			System.out.println("***");
 			System.out.println("Word : " + word);
 			for (Book book : books) {
@@ -113,7 +115,7 @@ public class DbTest {
 	}
 
 	@Test
-	public void testGroupService(){
+	public void testGroupService() {
 		String groupName = "animals";
 		Map<String, Integer> groupMap = GroupService.getAllGroups();
 		int groupId = GroupService.createNewGroup(groupName);
@@ -124,10 +126,10 @@ public class DbTest {
 	}
 
 	@Test
-	public void testTopWordsAppearances(){
-		List<Long> books = new ArrayList<>();
-		books.add((long) 1);
-		books.add((long) 2);
+	public void testTopWordsAppearances() {
+		List<Integer> books = new ArrayList<>();
+		books.add(1);
+		books.add(2);
 		Map<String, Integer> map = WordService.getTopWordsAppearances(books, 50);
 		System.out.println(map.get("a"));
 	}
@@ -145,5 +147,15 @@ public class DbTest {
 	@Test
 	public void testWordByLocation() {
 		System.out.println(WordService.findWordByLocation(1, 4, 1));
+	}
+
+	@Test
+	public void testXmlExportImport() throws IOException {
+		List<Book> books = BookService.getAllBooks();
+		DbData dbData = new DbData(books);
+		XmlSerializer xmlSerializer = new XmlSerializer();
+		xmlSerializer.exportToXml(dbData);
+		DbData dbData1 = xmlSerializer.importFromXml();
+		System.out.println("Done");
 	}
 }

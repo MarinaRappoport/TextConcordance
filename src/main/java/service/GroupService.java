@@ -56,13 +56,13 @@ public class GroupService {
 	}
 
 	public static void addWordToGroup(String word, int groupId) {
-		Long wordId = FilesManager.getInstance().getWordId(word);
+		Integer wordId = FilesManager.getInstance().getWordId(word);
 		if (wordId == null)
 			wordId = WordService.insertWord(word);
 		if (wordId > 0) {
 			try {
 				PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_IN_GROUP);
-				statement.setLong(1, wordId);
+				statement.setInt(1, wordId);
 				statement.setInt(2, groupId);
 				statement.executeUpdate();
 				statement.close();

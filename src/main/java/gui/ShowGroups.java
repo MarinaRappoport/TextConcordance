@@ -27,7 +27,7 @@ public class ShowGroups extends JFrame {
     private String currentGroup;
     private Integer currentGroupId;
     private DefaultTableModel locationsTableModel, wordsTableModel;
-    private ArrayList<Long> bookIdList;
+	private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
 
     private JPanel west, north, center, chooseBookPanel, groupsPanel, addWordPanel, resultPanel, userSelections;
