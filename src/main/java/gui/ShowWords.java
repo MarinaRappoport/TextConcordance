@@ -21,7 +21,7 @@ public class ShowWords extends JFrame {
     private JTextField enterWord;
     private JLabel chooseBookLabel;
     private JComboBox<String> booksList;
-    private JTextArea context;
+    private TextPreviewComponent context;
     private JTable locationsTable;
 	private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
@@ -56,7 +56,7 @@ public class ShowWords extends JFrame {
         search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                context.setText("");
+                context.clearText();
                 word = enterWord.getText();
                 bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), new String[]{word}, tableModel);
             }
@@ -79,7 +79,7 @@ public class ShowWords extends JFrame {
                 super.mousePressed(e);
 
                 int row = locationsTable.getSelectedRow();
-                PreviewService.createPreview(context, new String[]{word}, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+                context.createPreview( new String[]{word}, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
             }
         });
 
@@ -96,6 +96,9 @@ public class ShowWords extends JFrame {
             booksList = new JComboBox<>(booksArray);
         }
 
+        context = new TextPreviewComponent(false);
+
+        /*
         context = new JTextArea(14,150);
         context.setEditable(false);
         context.setLineWrap(true);
@@ -106,6 +109,8 @@ public class ShowWords extends JFrame {
         context.setBorder(title);
         JScrollPane contextSP = new JScrollPane(context);
 
+         */
+
         searchWords.add(enterWord);
         searchWords.add(search);
         chooseBook.add(chooseBookLabel);
@@ -114,7 +119,7 @@ public class ShowWords extends JFrame {
         north.add(chooseBook);
 
         center.add(tableSP);
-        center.add(contextSP);
+        center.add(context);
 
         add(north, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);

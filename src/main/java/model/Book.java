@@ -92,4 +92,6 @@ public class Book {
 	public Date getReleaseDate() {
 		return releaseDate;
 	}
+
+	public int getParagraphCount() { return paragraphCount; }
 }

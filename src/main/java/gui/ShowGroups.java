@@ -31,7 +31,8 @@ public class ShowGroups extends JFrame {
     private ArrayList<Book> books;
 
     private JPanel west, north, center, chooseBookPanel, groupsPanel, addWordPanel, resultPanel, userSelections;
-    private JTextArea context;
+    private TextPreviewComponent context;
+    //private JTextArea context;
     private JTable locationsTable, wordsTable;
 
 	private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
@@ -172,13 +173,13 @@ public class ShowGroups extends JFrame {
 
                 int row = locationsTable.getSelectedRow();
 
-                PreviewService.createPreview(context, GroupService.getAllWordsForGroup(currentGroupId).toArray(new String[0]), bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+                context.createPreview( GroupService.getAllWordsForGroup(currentGroupId).toArray(new String[0]), bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
             }
         });
 
-        context = PreviewService.createPreview();
-        JScrollPane contextSP =new JScrollPane(context);
-        contextSP.setVisible(true);
+        context = new TextPreviewComponent(false);
+//        JScrollPane contextSP =new JScrollPane(context);
+//        contextSP.setVisible(true);
 
 
         wordsTable = new JTable( new DefaultTableModel(
@@ -233,7 +234,7 @@ public class ShowGroups extends JFrame {
         north.add(resultPanel, BorderLayout.SOUTH);
 
         center.add(locationsSP);
-        center.add(contextSP);
+        center.add(context);
 
         west.add(wordsTableSP, BorderLayout.CENTER);
 
