@@ -5,14 +5,9 @@ import model.WordLocation;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Highlighter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +18,15 @@ public class PreviewService {
     private final static Color DEFAULT = new Color(206, 200, 200, 2);
     private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
-    public static ArrayList<Long> searchWord(ArrayList<Book> books, int selectedBookIndex, String[] word, DefaultTableModel model){
-        ArrayList<Long> bookIdList = new ArrayList<>();
+	public static ArrayList<Integer> searchWord(ArrayList<Book> books, int selectedBookIndex, String[] word, DefaultTableModel model) {
+		ArrayList<Integer> bookIdList = new ArrayList<>();
 
         int count = 1;
         model.setRowCount(0);
 
         if (selectedBookIndex == 0){ //search in all books
             for (Book book : books){
-                ArrayList<Long> idList;
+	            ArrayList<Integer> idList;
                 for (int i = 0 ; i < word.length ; i++ ) {
                     idList = PreviewService.addLocations
                             (count, model, WordService.findWordInBooks(word[i], book.getId()), book);
@@ -75,9 +70,9 @@ public class PreviewService {
         return table;
     }
 
-    public static ArrayList<Long> addLocations(int count, DefaultTableModel model, List<WordLocation> locations, Book book) {
+	public static ArrayList<Integer> addLocations(int count, DefaultTableModel model, List<WordLocation> locations, Book book) {
         int index = count;
-        ArrayList<Long> idList = new ArrayList<>();
+		ArrayList<Integer> idList = new ArrayList<>();
 
         for (WordLocation location : locations) {
             model.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),

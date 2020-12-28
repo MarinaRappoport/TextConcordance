@@ -6,10 +6,12 @@ import service.PreviewService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ShowWords extends JFrame {
@@ -18,9 +20,9 @@ public class ShowWords extends JFrame {
     private JTextField enterWord;
     private JLabel chooseBookLabel;
     private JComboBox<String> booksList;
-    private TextPreviewComponent context;
+	private TextPreviewComponent context;
     private JTable locationsTable;
-    private ArrayList<Long> bookIdList;
+	private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
     private int selectedBookIndex, count;
     private String word;
@@ -36,7 +38,7 @@ public class ShowWords extends JFrame {
         this.books = FilesManager.getInstance().getFiles();
         word = "";
         selectedBookIndex = 0;
-        bookIdList = new ArrayList<>();
+	    bookIdList = new ArrayList<Integer>();
         north = new JPanel();
 
         center = new JPanel();
@@ -53,7 +55,7 @@ public class ShowWords extends JFrame {
         search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                context.clearText();
+	            context.clearText();
                 word = enterWord.getText();
                 bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), new String[]{word}, tableModel);
             }
@@ -76,7 +78,7 @@ public class ShowWords extends JFrame {
                 super.mousePressed(e);
 
                 int row = locationsTable.getSelectedRow();
-                context.createPreview( new String[]{word}, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+	            context.createPreview(new String[]{word}, bookIdList.get(row), (int) locationsTable.getValueAt(row, 4));
             }
         });
 
@@ -93,7 +95,7 @@ public class ShowWords extends JFrame {
             booksList = new JComboBox<>(booksArray);
         }
 
-        context = new TextPreviewComponent(false);
+	    context = new TextPreviewComponent(false);
 
         /*
         context = new JTextArea(14,150);
@@ -116,7 +118,7 @@ public class ShowWords extends JFrame {
         north.add(chooseBook);
 
         center.add(tableSP);
-        center.add(context);
+	    center.add(context);
 
         add(north, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);

@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class FilesManager {
 	private static ArrayList<Book> files;
-	private static Map<String, Long> words;
+	private static Map<String, Integer> words;
 	private static MainMenu menu = null;
 	private static FilesManager single_instance = null;
 
@@ -41,10 +41,10 @@ public class FilesManager {
 
 	//Add only new file. We cannot add the same file twice.
 	public void addFile(Book book, List<WordLocation> wordLocationList) {
-		long id = BookService.insertBook(book);
+		int id = BookService.insertBook(book);
 		if (id > 0) {
 			for (WordLocation wordLocation : wordLocationList) {
-				Long wordId = words.get(wordLocation.getWord());
+				Integer wordId = words.get(wordLocation.getWord());
 				if (wordId == null)
 					wordId = WordService.insertWord(wordLocation.getWord());
 				if (wordId > 0) {
@@ -95,7 +95,7 @@ public class FilesManager {
 	}
 
 
-	public Long getWordId(String word) {
+	public Integer getWordId(String word) {
 		return words.get(word);
 	}
 
