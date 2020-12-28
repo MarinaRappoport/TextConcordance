@@ -19,8 +19,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ShowGroups extends JFrame {
-    private JButton addWord, addGroup, showResult;
-    private JLabel selectBook, selectGroup, resultJLabel;
+    private JButton  addGroup, showResult;
+    private JLabel addWord, selectBook, selectGroup, resultJLabel;
     private JComboBox<String> booksList, groupsList;
     private JTextField enterWord, enterGroup;
     private Map<String, Integer> groups;
@@ -136,20 +136,24 @@ public class ShowGroups extends JFrame {
             }
         });
 
-        enterWord = new JTextField("Enter a Word");
+        enterWord = new JTextField("");
+        enterWord.setColumns(20);
         enterWord.setFont(MY_FONT);
-        addWord = new JButton("Add Word To Group");
+        addWord = new JLabel("Add Word To Group : ");
         addWord.setFont(MY_FONT);
 
-        addWord.addActionListener(new ActionListener() {
+        enterWord.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String currentGroup = (String)groupsList.getSelectedItem();
                 String word = enterWord.getText().trim();
                 if (!word.equals("")) {
                     if ( groups.size() > 0 ) {
+                        if (GroupService.getAllWordsForGroup(currentGroupId).contains(word))
+                            return;
+
                         GroupService.addWordToGroup(word, groups.get(currentGroup));
-                        enterWord.setText("          ");
+                        enterWord.setText("");
                         updateWords();
                     }
                 }
@@ -215,8 +219,8 @@ public class ShowGroups extends JFrame {
         groupsPanel.add(addGroup);
         chooseBookPanel.add(selectBook);
         chooseBookPanel.add(booksList);
-        addWordPanel.add(enterWord);
         addWordPanel.add(addWord);
+        addWordPanel.add(enterWord);
 
         resultPanel.add(showResult);
         resultPanel.add(resultJLabel);
