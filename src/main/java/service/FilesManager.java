@@ -77,6 +77,24 @@ public class FilesManager {
 
 	}
 
+	public static Book getFile(long id) {
+		Book file;
+
+		Iterator<Book> iter = files.iterator();
+		while (iter.hasNext()) {
+			Book current = iter.next();
+			if (current.getId() == id) {
+				file = current;
+				return file;
+			}
+		}
+
+		//if file name not found
+		return null;
+
+	}
+
+
 	public Long getWordId(String word) {
 		return words.get(word);
 	}
