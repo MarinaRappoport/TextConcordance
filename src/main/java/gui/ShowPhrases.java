@@ -5,7 +5,6 @@ import model.WordLocation;
 import service.BookService;
 import service.FilesManager;
 import service.PhraseService;
-import service.PreviewService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -24,8 +23,9 @@ public class ShowPhrases extends JFrame{
     private JLabel inBookLabel;
     private JButton newPhrase;
     private JComboBox<String> booksList;
-    private JTable allLocations, phrasesTable;
-    private DefaultTableModel locationsTableModel, phrasesTableModel;
+    private JTable phrasesTable;
+    private LocationsTableComponent allLocations;
+    private DefaultTableModel phrasesTableModel;
     private TextPreviewComponent context;
     private ArrayList<Book> books;
     private JPanel top1, top2,center2, phrasesPanel, previewPanel;
@@ -119,8 +119,7 @@ public class ShowPhrases extends JFrame{
         }
         context = new TextPreviewComponent(true);
 
-        allLocations = PreviewService.createLocationsTable();
-        locationsTableModel = (DefaultTableModel) allLocations.getModel();
+        allLocations = new LocationsTableComponent();
         JScrollPane locationsSP =new JScrollPane(allLocations);
         locationsSP.setVisible(true);
 
@@ -182,9 +181,10 @@ public class ShowPhrases extends JFrame{
         return -1;
     }
 
+
     public void searchPhrase(){
         bookIdList.clear();
-        locationsTableModel.setRowCount(0);
+        allLocations.clearTable();
         int index = 1;
         List<WordLocation> wordLocations;
 
@@ -205,7 +205,7 @@ public class ShowPhrases extends JFrame{
 
         for (WordLocation location : wordLocations){
             Book book = BookService.findBookById(location.getBookId());
-            locationsTableModel.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),
+            allLocations.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),
                     location.getLine(), location.getParagraph() });
             bookIdList.add( location.getBookId());
         }
