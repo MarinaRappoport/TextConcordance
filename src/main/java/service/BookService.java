@@ -22,7 +22,7 @@ public class BookService {
 
 	private final static String SQL_IF_BOOK_EXISTS = "SELECT COUNT(book_id) FROM book WHERE title = ? AND author = ?";
 
-	public static long insertBook(Book book) {
+	public static int insertBook(Book book) {
 		boolean isAlreadyExist = false;
 		try {
 			PreparedStatement stmt = connection.prepareStatement(SQL_IF_BOOK_EXISTS);
@@ -56,7 +56,7 @@ public class BookService {
 			if (affectedRows != 0) {
 				try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
-						book.setId(generatedKeys.getLong(1));
+						book.setId(generatedKeys.getInt(1));
 						statement.close();
 						return book.getId();
 					} else {
@@ -102,7 +102,7 @@ public class BookService {
 	}
 
 	private static Book parseBook(ResultSet rs) throws SQLException {
-		long id = rs.getLong("book_id");
+		int id = rs.getInt("book_id");
 		String title = rs.getString("title");
 		String author = rs.getString("author");
 		String translator = rs.getString("translator");
@@ -121,12 +121,12 @@ public class BookService {
 		return book;
 	}
 
-	public static Book findBookById(long id) {
+	public static Book findBookById(int id) {
 		Book book = null;
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(SQL_FIND_BOOK_BY_ID);
-			statement.setLong(1, id);
+			statement.setInt(1, id);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 				book = parseBook(rs);

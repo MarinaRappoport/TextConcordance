@@ -27,8 +27,8 @@ public class WordService {
 	private final static String SQL_TOP_WORDS_APPEARANCES = "SELECT DISTINCT lower(value) as lowercase_value, COUNT(value) as word_counter from word, word_in_book where word.word_id = word_in_book.word_id GROUP BY lowercase_value ORDER by word_counter DESC LIMIT ?";
 
 
-	public static long insertWord(String word) {
-		long id = findWordIdByValue(word);
+	public static int insertWord(String word) {
+		int id = findWordIdByValue(word);
 		if (id > 0) return id;
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD,
@@ -40,7 +40,7 @@ public class WordService {
 			if (affectedRows != 0) {
 				try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
-						id = generatedKeys.getLong(1);
+						id = generatedKeys.getInt(1);
 						statement.close();
 						return id;
 					} else {
@@ -54,15 +54,15 @@ public class WordService {
 		return -1;
 	}
 
-	public static long findWordIdByValue(String word) {
+	public static int findWordIdByValue(String word) {
 		PreparedStatement statement = null;
-		long id = -1;
+		int id = -1;
 		try {
 			statement = connection.prepareStatement(SQL_SELECT_BY_VALUE);
 			statement.setString(1, word);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
-				id = rs.getLong("word_id");
+				id = rs.getInt("word_id");
 			rs.close();
 			statement.close();
 		} catch (SQLException e) {
@@ -71,15 +71,15 @@ public class WordService {
 		return id;
 	}
 
-	public static List<Long> findWordIdByValueCaseInsensitive(String word) {
-		List<Long> ids = new ArrayList<>();
+	public static List<Integer> findWordIdByValueCaseInsensitive(String word) {
+		List<Integer> ids = new ArrayList<>();
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(SQL_SELECT_BY_VALUE_LOWERCASE);
 			statement.setString(1, word.toLowerCase());
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
-				ids.add(rs.getLong("word_id"));
+				ids.add(rs.getInt("word_id"));
 			rs.close();
 			statement.close();
 		} catch (SQLException e) {
@@ -88,13 +88,13 @@ public class WordService {
 		return ids;
 	}
 
-	public static Map<String, Long> getAllWordsId() {
-		Map<String, Long> words = new HashMap<>();
+	public static Map<String, Integer> getAllWordsId() {
+		Map<String, Integer> words = new HashMap<>();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(SQL_SELECT_ALL_WORDS);
 			while (rs.next())
-				words.put(rs.getString(1), rs.getLong(2));
+				words.put(rs.getString(1), rs.getInt(2));
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
@@ -103,12 +103,12 @@ public class WordService {
 		return words;
 	}
 
-	public static void addWordLocationList(List<WordLocation> wordLocationList, long bookId) {
+	public static void addWordLocationList(List<WordLocation> wordLocationList, int bookId) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_LOCATION);
 			for (WordLocation wordLocation : wordLocationList) {
-				statement.setLong(1, wordLocation.getWordId());
-				statement.setLong(2, bookId);
+				statement.setInt(1, wordLocation.getWordId());
+				statement.setInt(2, bookId);
 				statement.setInt(3, wordLocation.getIndex());
 				statement.setInt(4, wordLocation.getLine());
 				statement.setInt(5, wordLocation.getIndexInLine());
@@ -128,9 +128,9 @@ public class WordService {
 		}
 	}
 
-	public static List<WordLocation> findWordInBooks(String word, Long bookId) {
+	public static List<WordLocation> findWordInBooks(String word, Integer bookId) {
 		List<WordLocation> wordLocations = new LinkedList<>();
-		List<Long> wordIds = findWordIdByValueCaseInsensitive(word);
+		List<Integer> wordIds = findWordIdByValueCaseInsensitive(word);
 		if (!wordIds.isEmpty()) {
 			try {
 				StringJoiner sj = new StringJoiner(",");
@@ -141,14 +141,14 @@ public class WordService {
 				PreparedStatement statement = connection.prepareStatement(sql);
 
 				for (int i = 0; i < wordIds.size(); i++)
-					statement.setLong(i + 1, wordIds.get(i));
+					statement.setInt(i + 1, wordIds.get(i));
 				if (bookId != null)
-					statement.setLong(wordIds.size() + 1, bookId);
+					statement.setInt(wordIds.size() + 1, bookId);
 				ResultSet rs = statement.executeQuery();
 				while (rs.next()) {
 					WordLocation location = new WordLocation(word, rs.getInt("index"), rs.getInt("line"),
 							rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
-					location.setBookId(rs.getLong("book_id"));
+					location.setBookId(rs.getInt("book_id"));
 					wordLocations.add(location);
 				}
 				rs.close();
@@ -160,12 +160,12 @@ public class WordService {
 		return wordLocations;
 	}
 
-	public static String buildPreview(long bookId, int paragraph) {
+	public static String buildPreview(int bookId, int paragraph) {
 		StringBuilder sb = new StringBuilder();
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(SQL_PREVIEW);
-			statement.setLong(1, bookId);
+			statement.setInt(1, bookId);
 			statement.setInt(2, paragraph);
 			ResultSet rs = statement.executeQuery();
 
@@ -189,7 +189,7 @@ public class WordService {
 	 * @param bookId - use null to count word appearances in all books
 	 * @return map of pairs word:appearances in alphabetic order
 	 */
-	public static Map<String, Integer> getWordsAppearances(Long bookId) {
+	public static Map<String, Integer> getWordsAppearances(Integer bookId) {
 		Map<String, Integer> wordMap = new LinkedHashMap<>();
 		PreparedStatement statement = null;
 		try {
@@ -198,7 +198,7 @@ public class WordService {
 
 			else {
 				statement = connection.prepareStatement(SQL_FIND_WORDS_APPEARANCES_IN_BOOK);
-				statement.setLong(1, bookId);
+				statement.setInt(1, bookId);
 			}
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
@@ -218,7 +218,7 @@ public class WordService {
 	 * @return map of top X pairs word:appearances starting with the most frequent
 	 * all words are in lowercase
 	 */
-	public static Map<String, Integer> getTopWordsAppearances(List<Long> bookIds, int limit) {
+	public static Map<String, Integer> getTopWordsAppearances(List<Integer> bookIds, int limit) {
 		Map<String, Integer> wordMap = new LinkedHashMap<>();
 		PreparedStatement statement = null;
 		try {
@@ -233,7 +233,7 @@ public class WordService {
 				String sql = String.format(SQL_TOP_WORDS_APPEARANCES_IN_BOOKS, sj.toString());
 				statement = connection.prepareStatement(sql);
 				for (int i = 1; i <= bookIds.size(); i++) {
-					statement.setLong(i, bookIds.get(i - 1));
+					statement.setInt(i, bookIds.get(i - 1));
 				}
 				statement.setInt(bookIds.size() + 1, limit);
 			}
@@ -255,12 +255,12 @@ public class WordService {
 	/**
 	 * @return word in location and book specified, or null if location is not valid
 	 */
-	public static String findWordByLocation(long bookId, int line, int indexInLine) {
+	public static String findWordByLocation(int bookId, int line, int indexInLine) {
 		PreparedStatement statement = null;
 		String word = null;
 		try {
 			statement = connection.prepareStatement(SQL_FIND_WORD_BY_LOCATION);
-			statement.setLong(1, bookId);
+			statement.setInt(1, bookId);
 			statement.setInt(2, line);
 			statement.setInt(3, indexInLine);
 			ResultSet rs = statement.executeQuery();

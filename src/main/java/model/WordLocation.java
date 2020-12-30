@@ -1,9 +1,12 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class WordLocation {
-	private long wordId;
+	private int wordId;
+	@JsonIgnore
 	private String word;
-	private long bookId;
+	private int bookId;
 	private int index;
 	private int line;
 	private int indexInLine;
@@ -23,7 +26,7 @@ public class WordLocation {
 		this.paragraph = paragraph;
 	}
 
-	public WordLocation(Long wordId, int index, int line, int indexInLine, int sentence, int paragraph) {
+	public WordLocation(int wordId, int index, int line, int indexInLine, int sentence, int paragraph) {
 		this.wordId = wordId;
 		this.index = index;
 		this.line = line;
@@ -36,15 +39,15 @@ public class WordLocation {
 		return word;
 	}
 
-	public void setWordId(long wordId) {
+	public void setWordId(int wordId) {
 		this.wordId = wordId;
 	}
 
-	public long getWordId() {
+	public int getWordId() {
 		return wordId;
 	}
 
-	public long getBookId() {
+	public int getBookId() {
 		return bookId;
 	}
 
@@ -92,7 +95,7 @@ public class WordLocation {
 		this.punctuationMark = punctuationMark;
 	}
 
-	public void setBookId(long bookId) {
+	public void setBookId(int bookId) {
 		this.bookId = bookId;
 	}
 }

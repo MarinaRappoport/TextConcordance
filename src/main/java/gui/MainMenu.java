@@ -10,7 +10,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,7 +27,7 @@ public class MainMenu extends JFrame {
     private JButton loadFile, showWords, showExp, showGroups, findBook, extractToXML, importFromXML;
     private FilesManager filesManager;
     private ArrayList<Book> selectedBooks;
-    private ArrayList<Long> selectedBooksId;
+	private ArrayList<Integer> selectedBooksId;
 
     final Color DEFAULT = new Color(206, 200, 200, 2);
     final Color PRIMARY = new Color(250, 160, 38);
@@ -38,7 +41,7 @@ public class MainMenu extends JFrame {
         filesManager = FilesManager.getInstance();
         FilesManager.setMainMenu(this);
 
-        selectedBooksId = new ArrayList<>();
+	    selectedBooksId = new ArrayList<Integer>();
         selectedBooks = new ArrayList<>();
 
         filesTable = new JTable( new DefaultTableModel((new String[]{"Title", "Author", "Translator", "Release Date", "Path"}), 0){
@@ -230,7 +233,7 @@ public class MainMenu extends JFrame {
         for (Map.Entry<String,Integer> entry : topWords.entrySet())
             common.append((i++)+")       " + entry.getKey() + "    [" + entry.getValue() +"]\n");
 
-        selectedBooksId = new ArrayList<>();
+	    selectedBooksId = new ArrayList<Integer>();
 
     }
 
