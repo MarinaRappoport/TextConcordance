@@ -91,7 +91,11 @@ public class AddFileFrame extends JFrame {
 					Arrays.asList(files).forEach(x -> {
 						Book newBook = new Book(x.getAbsolutePath());
 						List<WordLocation> list = new FileParser().parseFile(newBook);
-						bookMap.put(newBook, list);
+						if (list == null) {
+							JOptionPane.showMessageDialog(null, "Failed to parse file: " + x.getAbsolutePath(),
+									"Error", JOptionPane.WARNING_MESSAGE);
+						} else
+							bookMap.put(newBook, list);
 					});
 
 					updateBookDetails();

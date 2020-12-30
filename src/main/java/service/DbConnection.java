@@ -6,7 +6,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DbConnection {
 	// JDBC driver name and database URL
@@ -96,5 +99,17 @@ public class DbConnection {
 			}
 			System.out.println("Connection safely closed!");
 		}
+	}
+
+
+	public void clearDB() {
+		try {
+			Statement stm = connection.createStatement();
+			stm.executeUpdate("TRUNCATE word_in_book, word_in_group, word_in_phrase, word, phrase, groups, book");
+			stm.close();
+		} catch (SQLException e) {
+			System.out.print("Failed to clear the DB data");
+		}
+
 	}
 }

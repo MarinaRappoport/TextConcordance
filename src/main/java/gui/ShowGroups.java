@@ -25,14 +25,14 @@ public class ShowGroups extends JFrame {
     private Map<String, Integer> groups;
     private String currentGroup;
     private Integer currentGroupId;
-    private DefaultTableModel wordsTableModel;
-    private ArrayList<Integer> bookIdList;
+	private DefaultTableModel wordsTableModel;
+	private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
 
     private JPanel west, north, center, chooseBookPanel, groupsPanel, addWordPanel, resultPanel, userSelections;
-    private TextPreviewComponent context;
-    private LocationsTableComponent locationsTable;
-    private JTable wordsTable;
+	private TextPreviewComponent context;
+	private LocationsTableComponent locationsTable;
+	private JTable wordsTable;
 
 	private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
     private static final Color DEFAULT = new Color(206, 200, 200, 2);
@@ -42,7 +42,7 @@ public class ShowGroups extends JFrame {
         setTitle("Show Groups");
 
         books = FilesManager.getInstance().getFiles();
-        groups = GroupService.getAllGroups();
+	    groups = GroupService.getAllGroupsId();
 
         chooseBookPanel = new JPanel();
         groupsPanel = new JPanel();
@@ -160,7 +160,7 @@ public class ShowGroups extends JFrame {
             }
         });
 
-        locationsTable = new LocationsTableComponent();
+	    locationsTable = new LocationsTableComponent();
         JScrollPane locationsSP =new JScrollPane(locationsTable);
         locationsSP.setVisible(true);
 
@@ -171,11 +171,11 @@ public class ShowGroups extends JFrame {
 
                 int row = locationsTable.getSelectedRow();
 
-                context.createPreview( GroupService.getAllWordsForGroup(currentGroupId).toArray(new String[0]), bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+	            context.createPreview(GroupService.getAllWordsForGroup(currentGroupId).toArray(new String[0]), bookIdList.get(row), (int) locationsTable.getValueAt(row, 4));
             }
         });
 
-        context = new TextPreviewComponent(false);
+	    context = new TextPreviewComponent(false);
 
         wordsTable = new JTable( new DefaultTableModel(
                 (new String[]{"Words In Group"}), 0){
@@ -202,8 +202,8 @@ public class ShowGroups extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 currentGroup = (String)groupsList.getSelectedItem();
                 Integer currentGroupID = groups.get(currentGroup);
-                bookIdList = locationsTable.searchWord
-                        (books, booksList.getSelectedIndex(), GroupService.getAllWordsForGroup(currentGroupID).toArray(new String[0]));
+	            bookIdList = locationsTable.searchWord
+			            (books, booksList.getSelectedIndex(), GroupService.getAllWordsForGroup(currentGroupID).toArray(new String[0]));
 
             }
         });
@@ -229,7 +229,7 @@ public class ShowGroups extends JFrame {
         north.add(resultPanel, BorderLayout.SOUTH);
 
         center.add(locationsSP);
-        center.add(context);
+	    center.add(context);
 
         west.add(wordsTableSP, BorderLayout.CENTER);
 

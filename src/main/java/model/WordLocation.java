@@ -35,6 +35,11 @@ public class WordLocation {
 		this.paragraph = paragraph;
 	}
 
+	//empty constructor for XML parsing
+	public WordLocation() {
+	}
+
+	@JsonIgnore
 	public String getWord() {
 		return word;
 	}

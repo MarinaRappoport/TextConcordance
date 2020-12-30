@@ -36,7 +36,7 @@ public class FileParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Error with buffer reader of file: " + book.getPath());
-			System.exit(1);
+			return null;
 		}
 		String currentLine;
 		String prevLine = "";
@@ -90,8 +90,7 @@ public class FileParser {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
+			return null;
 		}
 
 		//TEST

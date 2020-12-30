@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,8 +11,11 @@ import java.util.Date;
  * Represents table 'book'
  */
 public class Book {
+	@JacksonXmlProperty(isAttribute = true)
 	private int id;
-	private String title, date;
+	private String title;
+	@JsonIgnore
+	private String date;
 	private String author, path;
 	private String translator;
 	private Date releaseDate;
@@ -26,6 +32,7 @@ public class Book {
 			date = DATE_FORMAT.format(releaseDate);
 	}
 
+	//empty constructor for XML parsing
 	public Book() {
 	}
 
