@@ -87,39 +87,6 @@ public class LocationsTableComponent extends JTable {
         return idList;
     }
 
-    /*
-    public void searchPhrase(int phraseRow, int selectedBookIndex){
-        List<Long> bookIdList = new ArrayList<Long>();
-        tableModel.setRowCount(0);
-        int index = 1;
-        List<WordLocation> wordLocations;
-
-        //int phraseRow = phrasesTable.getSelectedRow();
-
-        if( phraseRow == -1 ) //No phrase selected
-            return;
-
-        String currentPhrase = (String)phrasesTable.getValueAt(phraseRow, 1);
-        int phraseId = getKey(allPhrases, currentPhrase);
-        //if ( booksList.getSelectedIndex() == 0 ){
-        if ( selectedBookIndex == 0 ){
-            wordLocations = PhraseService.findPhraseInBooks(phraseId,null);
-        }
-        else {
-            Long bookId = FilesManager.getFile((String) booksList.getSelectedItem()).getId();
-            wordLocations = PhraseService.findPhraseInBooks(phraseId,bookId);
-        }
-
-        for (WordLocation location : wordLocations){
-            Book book = BookService.findBookById(location.getBookId());
-            tableModel.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),
-                    location.getLine(), location.getParagraph() });
-            bookIdList.add( location.getBookId());
-        }
-    }
-
-     */
-
     public void clearTable(){
         tableModel.setRowCount(0);
     }
