@@ -30,7 +30,7 @@ public class ShowPhrases extends JFrame{
     private ArrayList<Book> books;
     private JPanel top1, top2,center2, phrasesPanel, previewPanel;
     private Map<Integer, String> allPhrases;
-    private List<Long> bookIdList;
+    private List<Integer> bookIdList;
     private String currentPhrase;
 
     private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
@@ -199,7 +199,7 @@ public class ShowPhrases extends JFrame{
             wordLocations = PhraseService.findPhraseInBooks(phraseId,null);
         }
         else {
-            Long bookId = FilesManager.getFile((String) booksList.getSelectedItem()).getId();
+            Integer bookId = FilesManager.getFile((String) booksList.getSelectedItem()).getId();
             wordLocations = PhraseService.findPhraseInBooks(phraseId,bookId);
         }
 

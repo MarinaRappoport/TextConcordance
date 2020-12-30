@@ -46,15 +46,15 @@ public class LocationsTableComponent extends JTable {
         return false;
     }
 
-    public ArrayList<Long> searchWord(ArrayList<Book> books, int selectedBookIndex, String[] word){
-        ArrayList<Long> bookIdList = new ArrayList<>();
+    public ArrayList<Integer> searchWord(ArrayList<Book> books, int selectedBookIndex, String[] word){
+        ArrayList<Integer> bookIdList = new ArrayList<>();
 
         int count = 1;
         tableModel.setRowCount(0);
 
         if (selectedBookIndex == 0){ //search in all books
             for (Book book : books){
-                ArrayList<Long> idList;
+                ArrayList<Integer> idList;
                 for (int i = 0 ; i < word.length ; i++ ) {
                     idList = addLocations
                             (count, WordService.findWordInBooks(word[i], book.getId()), book);
@@ -74,9 +74,9 @@ public class LocationsTableComponent extends JTable {
 
     }
 
-    public ArrayList<Long> addLocations(int count, List<WordLocation> locations, Book book) {
+    public ArrayList<Integer> addLocations(int count, List<WordLocation> locations, Book book) {
         int index = count;
-        ArrayList<Long> idList = new ArrayList<>();
+        ArrayList<Integer> idList = new ArrayList<>();
 
         for (WordLocation location : locations) {
             tableModel.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),

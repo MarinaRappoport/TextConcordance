@@ -17,7 +17,7 @@ public class ShowWords extends JFrame {
     private JComboBox<String> booksList;
     private TextPreviewComponent context;
     private LocationsTableComponent locationsTable;
-    private ArrayList<Long> bookIdList;
+    private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
     private String word;
 
