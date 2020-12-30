@@ -1,6 +1,0 @@
-TODO
-- to chose several files in once
-- alert after file(s) is loaded
-- parse title, author... from file, remove part not related to book itself
-- first - submit the book details, than add all words to DB (need to set the book id..)
-

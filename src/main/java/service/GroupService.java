@@ -1,5 +1,7 @@
 package service;
 
+import model.Group;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -40,7 +42,7 @@ public class GroupService {
 		return -1;
 	}
 
-	public static Map<String, Integer> getAllGroups() {
+	public static Map<String, Integer> getAllGroupsId() {
 		Map<String, Integer> groups = new LinkedHashMap<>();
 		try {
 			Statement stmt = connection.createStatement();
@@ -86,5 +88,14 @@ public class GroupService {
 			e.printStackTrace();
 		}
 		return words;
+	}
+
+	public static List<Group> getAllGroups() {
+		List<Group> groups = new ArrayList<>();
+		Map<String, Integer> groupMap = getAllGroupsId();
+		for (Map.Entry<String, Integer> entry : groupMap.entrySet()) {
+			groups.add(new Group(entry.getKey(), entry.getValue()));
+		}
+		return groups;
 	}
 }

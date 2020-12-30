@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import service.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
@@ -117,11 +118,11 @@ public class DbTest {
 	@Test
 	public void testGroupService() {
 		String groupName = "animals";
-		Map<String, Integer> groupMap = GroupService.getAllGroups();
+		Map<String, Integer> groupMap = GroupService.getAllGroupsId();
 		int groupId = GroupService.createNewGroup(groupName);
 		GroupService.addWordToGroup("cat", groupId);
 		GroupService.addWordToGroup("dog", groupId);
-		groupMap = GroupService.getAllGroups();
+		groupMap = GroupService.getAllGroupsId();
 		System.out.println(GroupService.getAllWordsForGroup(groupMap.get(groupName)));
 	}
 
@@ -151,11 +152,13 @@ public class DbTest {
 
 	@Test
 	public void testXmlExportImport() throws IOException {
-		List<Book> books = BookService.getAllBooks();
-		DbData dbData = new DbData(books);
-		XmlSerializer xmlSerializer = new XmlSerializer();
-		xmlSerializer.exportToXml(dbData);
-		DbData dbData1 = xmlSerializer.importFromXml();
+		File folder = new File("C:\\Users\\Marina Rappoport\\Desktop\\text_books");
+//		XmlSerializer.exportToXml(folder);
+		DbData dbData1 = XmlSerializer.importFromXml(new File(folder, "concordanceDB.xml"));
+		DbConnection.getInstance().clearDB();
+		WordService.addWords(dbData1.getWords());
+		BookService.insertBooks(dbData1.getBooks());
+		WordService.addWordLocationList(dbData1.getWordLocations(), null);
 		System.out.println("Done");
 	}
 }

@@ -6,18 +6,21 @@ import service.FilesManager;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ShowWords extends JFrame {
-    private JPanel searchDetailsPanel, searchButtonPanel, north, center, searchWords, chooseBook;
+	private JPanel searchDetailsPanel, searchButtonPanel, north, center, searchWords, chooseBook;
     private JButton search;
-    private JTextField wordTextField;
-    private JLabel enterWord, chooseBookLabel;
+	private JTextField wordTextField;
+	private JLabel enterWord, chooseBookLabel;
     private JComboBox<String> booksList;
-    private TextPreviewComponent context;
-    private LocationsTableComponent locationsTable;
-    private ArrayList<Integer> bookIdList;
+	private TextPreviewComponent context;
+	private LocationsTableComponent locationsTable;
+	private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
     private String word;
 
@@ -30,11 +33,11 @@ public class ShowWords extends JFrame {
 
         this.books = FilesManager.getInstance().getFiles();
         word = "";
-        bookIdList = new ArrayList<>();
+	    bookIdList = new ArrayList<>();
 
         north = new JPanel();
-        searchDetailsPanel = new JPanel();
-        searchButtonPanel = new JPanel();
+	    searchDetailsPanel = new JPanel();
+	    searchButtonPanel = new JPanel();
         center = new JPanel();
         center.setLayout(new GridLayout(2,1,0,0));
         center.setBorder(BORDER);
@@ -49,21 +52,21 @@ public class ShowWords extends JFrame {
         search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                context.clearText();
-                word = wordTextField.getText();
-                bookIdList = locationsTable.searchWord(books, booksList.getSelectedIndex(), new String[]{word});
+	            context.clearText();
+	            word = wordTextField.getText();
+	            bookIdList = locationsTable.searchWord(books, booksList.getSelectedIndex(), new String[]{word});
             }
         });
 
-        enterWord = new JLabel("Enter a word : ");
+	    enterWord = new JLabel("Enter a word : ");
         enterWord.setFont(MY_FONT);
-        wordTextField = new JTextField("");
-        wordTextField.setColumns(15);
-        wordTextField.setFont(MY_FONT);
+	    wordTextField = new JTextField("");
+	    wordTextField.setColumns(15);
+	    wordTextField.setFont(MY_FONT);
         chooseBookLabel = new JLabel("Choose a book");
         chooseBookLabel.setFont(MY_FONT);
 
-        locationsTable = new LocationsTableComponent();
+	    locationsTable = new LocationsTableComponent();
         JScrollPane tableSP=new JScrollPane(locationsTable);
         tableSP.setVisible(true);
 
@@ -73,7 +76,7 @@ public class ShowWords extends JFrame {
                 super.mousePressed(e);
 
                 int row = locationsTable.getSelectedRow();
-                context.createPreview( new String[]{word}, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
+	            context.createPreview(new String[]{word}, bookIdList.get(row), (int) locationsTable.getValueAt(row, 4));
             }
         });
 
@@ -90,21 +93,21 @@ public class ShowWords extends JFrame {
             booksList = new JComboBox<>(booksArray);
         }
 
-        context = new TextPreviewComponent(false);
+	    context = new TextPreviewComponent(false);
 
-        searchButtonPanel.add(search);
+	    searchButtonPanel.add(search);
         searchWords.add(enterWord);
-        searchWords.add(wordTextField);
+	    searchWords.add(wordTextField);
         chooseBook.add(chooseBookLabel);
         chooseBook.add(booksList);
-        searchDetailsPanel.add(searchWords);
-        searchDetailsPanel.add(chooseBook);
+	    searchDetailsPanel.add(searchWords);
+	    searchDetailsPanel.add(chooseBook);
 
-        north.add(searchDetailsPanel);
-        north.add(searchButtonPanel);
+	    north.add(searchDetailsPanel);
+	    north.add(searchButtonPanel);
 
         center.add(tableSP);
-        center.add(context);
+	    center.add(context);
 
         add(north, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);

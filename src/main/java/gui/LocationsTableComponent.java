@@ -2,9 +2,6 @@ package gui;
 
 import model.Book;
 import model.WordLocation;
-import service.BookService;
-import service.FilesManager;
-import service.PhraseService;
 import service.WordService;
 
 import javax.swing.*;
@@ -16,76 +13,76 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationsTableComponent extends JTable {
-    private DefaultTableModel tableModel;
+	private DefaultTableModel tableModel;
 
-    final static Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
-    private final static Color DEFAULT = new Color(206, 200, 200, 2);
-    private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
+	final static Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT, 18);
+	private final static Color DEFAULT = new Color(206, 200, 200, 2);
+	private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 
-    public LocationsTableComponent(){
-        super(new DefaultTableModel(
-                (new String[]{" ", "Title", "Author", "Line", "Paragraph"}),0));
+	public LocationsTableComponent() {
+		super(new DefaultTableModel(
+				(new String[]{" ", "Title", "Author", "Line", "Paragraph"}), 0));
 
-        setFont(MY_FONT);
-        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setFont(MY_FONT);
+		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        setRowHeight(40);
-        setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		setRowHeight(40);
+		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        TableColumnModel columnModel = getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(45);
-        columnModel.getColumn(1).setPreferredWidth(350);
-        columnModel.getColumn(2).setPreferredWidth(220);
-        columnModel.getColumn(3).setPreferredWidth(155);
+		TableColumnModel columnModel = getColumnModel();
+		columnModel.getColumn(0).setPreferredWidth(45);
+		columnModel.getColumn(1).setPreferredWidth(350);
+		columnModel.getColumn(2).setPreferredWidth(220);
+		columnModel.getColumn(3).setPreferredWidth(155);
 
-        tableModel = (DefaultTableModel) getModel();
-    }
+		tableModel = (DefaultTableModel) getModel();
+	}
 
-    @Override
-    public boolean isCellEditable(int row, int column) {
-        return false;
-    }
+	@Override
+	public boolean isCellEditable(int row, int column) {
+		return false;
+	}
 
-    public ArrayList<Integer> searchWord(ArrayList<Book> books, int selectedBookIndex, String[] word){
-        ArrayList<Integer> bookIdList = new ArrayList<>();
+	public ArrayList<Integer> searchWord(ArrayList<Book> books, int selectedBookIndex, String[] word) {
+		ArrayList<Integer> bookIdList = new ArrayList<>();
 
-        int count = 1;
-        tableModel.setRowCount(0);
+		int count = 1;
+		tableModel.setRowCount(0);
 
-        if (selectedBookIndex == 0){ //search in all books
-            for (Book book : books){
-                ArrayList<Integer> idList;
-                for (int i = 0 ; i < word.length ; i++ ) {
-                    idList = addLocations
-                            (count, WordService.findWordInBooks(word[i], book.getId()), book);
-                    bookIdList.addAll(idList);
-                    count += idList.size();
-                }
-            }
-        } else {
-            for (int i = 0 ; i < word.length ; i++ ) {
-                bookIdList = addLocations
-                        (count, WordService.findWordInBooks(word[i], books.get(selectedBookIndex - 1).getId()),
-                                books.get(selectedBookIndex - 1));
-            }
-        }
+		if (selectedBookIndex == 0) { //search in all books
+			for (Book book : books) {
+				ArrayList<Integer> idList;
+				for (int i = 0; i < word.length; i++) {
+					idList = addLocations
+							(count, WordService.findWordInBooks(word[i], book.getId()), book);
+					bookIdList.addAll(idList);
+					count += idList.size();
+				}
+			}
+		} else {
+			for (int i = 0; i < word.length; i++) {
+				bookIdList = addLocations
+						(count, WordService.findWordInBooks(word[i], books.get(selectedBookIndex - 1).getId()),
+								books.get(selectedBookIndex - 1));
+			}
+		}
 
-        return bookIdList;
+		return bookIdList;
 
-    }
+	}
 
-    public ArrayList<Integer> addLocations(int count, List<WordLocation> locations, Book book) {
-        int index = count;
-        ArrayList<Integer> idList = new ArrayList<>();
+	public ArrayList<Integer> addLocations(int count, List<WordLocation> locations, Book book) {
+		int index = count;
+		ArrayList<Integer> idList = new ArrayList<>();
 
-        for (WordLocation location : locations) {
-            tableModel.addRow(new Object[]{index++ , book.getTitle(), book.getAuthor(),
-                    location.getLine(), location.getParagraph() });
-            idList.add( location.getBookId());
-        }
+		for (WordLocation location : locations) {
+			tableModel.addRow(new Object[]{index++, book.getTitle(), book.getAuthor(),
+					location.getLine(), location.getParagraph()});
+			idList.add(location.getBookId());
+		}
 
-        return idList;
-    }
+		return idList;
+	}
 
     /*
     public void searchPhrase(int phraseRow, int selectedBookIndex){
@@ -120,13 +117,13 @@ public class LocationsTableComponent extends JTable {
 
      */
 
-    public void clearTable(){
-        tableModel.setRowCount(0);
-    }
+	public void clearTable() {
+		tableModel.setRowCount(0);
+	}
 
-    public void addRow(Object[] data){
-        tableModel.addRow(data);
-    }
+	public void addRow(Object[] data) {
+		tableModel.addRow(data);
+	}
 
 
 }
