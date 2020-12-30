@@ -2,31 +2,24 @@ package gui;
 
 import model.Book;
 import service.FilesManager;
-import service.PreviewService;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class ShowWords extends JFrame {
-    private JPanel north, center, searchWords, chooseBook;
+    private JPanel searchDetailsPanel, searchButtonPanel, north, center, searchWords, chooseBook;
     private JButton search;
-    private JTextField enterWord;
-    private JLabel chooseBookLabel;
+    private JTextField wordTextField;
+    private JLabel enterWord, chooseBookLabel;
     private JComboBox<String> booksList;
-	private TextPreviewComponent context;
-    private JTable locationsTable;
-	private ArrayList<Integer> bookIdList;
+    private TextPreviewComponent context;
+    private LocationsTableComponent locationsTable;
+    private ArrayList<Integer> bookIdList;
     private ArrayList<Book> books;
-    private int selectedBookIndex, count;
     private String word;
-    private DefaultTableModel tableModel;
 
     final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
     private final Color DEFAULT = new Color(206, 200, 200, 2);
@@ -37,10 +30,11 @@ public class ShowWords extends JFrame {
 
         this.books = FilesManager.getInstance().getFiles();
         word = "";
-        selectedBookIndex = 0;
-	    bookIdList = new ArrayList<Integer>();
-        north = new JPanel();
+        bookIdList = new ArrayList<>();
 
+        north = new JPanel();
+        searchDetailsPanel = new JPanel();
+        searchButtonPanel = new JPanel();
         center = new JPanel();
         center.setLayout(new GridLayout(2,1,0,0));
         center.setBorder(BORDER);
@@ -55,20 +49,21 @@ public class ShowWords extends JFrame {
         search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-	            context.clearText();
-                word = enterWord.getText();
-                bookIdList = PreviewService.searchWord(books, booksList.getSelectedIndex(), new String[]{word}, tableModel);
+                context.clearText();
+                word = wordTextField.getText();
+                bookIdList = locationsTable.searchWord(books, booksList.getSelectedIndex(), new String[]{word});
             }
         });
 
-        enterWord = new JTextField("Enter a Word");
+        enterWord = new JLabel("Enter a word : ");
         enterWord.setFont(MY_FONT);
+        wordTextField = new JTextField("");
+        wordTextField.setColumns(15);
+        wordTextField.setFont(MY_FONT);
         chooseBookLabel = new JLabel("Choose a book");
         chooseBookLabel.setFont(MY_FONT);
 
-        locationsTable = PreviewService.createLocationsTable();
-        tableModel = (DefaultTableModel) locationsTable.getModel();
-
+        locationsTable = new LocationsTableComponent();
         JScrollPane tableSP=new JScrollPane(locationsTable);
         tableSP.setVisible(true);
 
@@ -78,7 +73,7 @@ public class ShowWords extends JFrame {
                 super.mousePressed(e);
 
                 int row = locationsTable.getSelectedRow();
-	            context.createPreview(new String[]{word}, bookIdList.get(row), (int) locationsTable.getValueAt(row, 4));
+                context.createPreview( new String[]{word}, bookIdList.get(row), (int)locationsTable.getValueAt(row, 4));
             }
         });
 
@@ -95,30 +90,21 @@ public class ShowWords extends JFrame {
             booksList = new JComboBox<>(booksArray);
         }
 
-	    context = new TextPreviewComponent(false);
+        context = new TextPreviewComponent(false);
 
-        /*
-        context = new JTextArea(14,150);
-        context.setEditable(false);
-        context.setLineWrap(true);
-        context.setWrapStyleWord(true);
-        TitledBorder title = BorderFactory.createTitledBorder
-                (BORDER, "Preview", 0, 0, new Font("Font", Font.BOLD,18));
-        title.setTitleJustification(TitledBorder.CENTER);
-        context.setBorder(title);
-        JScrollPane contextSP = new JScrollPane(context);
-
-         */
-
+        searchButtonPanel.add(search);
         searchWords.add(enterWord);
-        searchWords.add(search);
+        searchWords.add(wordTextField);
         chooseBook.add(chooseBookLabel);
         chooseBook.add(booksList);
-        north.add(searchWords);
-        north.add(chooseBook);
+        searchDetailsPanel.add(searchWords);
+        searchDetailsPanel.add(chooseBook);
+
+        north.add(searchDetailsPanel);
+        north.add(searchButtonPanel);
 
         center.add(tableSP);
-	    center.add(context);
+        center.add(context);
 
         add(north, BorderLayout.NORTH);
         add(center, BorderLayout.CENTER);

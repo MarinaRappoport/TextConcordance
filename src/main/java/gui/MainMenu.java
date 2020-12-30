@@ -285,7 +285,7 @@ public class MainMenu extends JFrame {
 
     public void updateFileDetails() {
         Book current = FilesManager.getInstance().getFiles().get(FilesManager.getInstance().getFiles().size()-1);
-        model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getDate(), current.getPath()});
+        model.addRow(new Object[]{current.getTitle(), current.getAuthor(),current.getTranslator(), current.getDate(), current.getPath()});
     }
 
 }
