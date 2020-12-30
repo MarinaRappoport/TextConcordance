@@ -14,6 +14,10 @@ public class BookService {
 			"chars_count,words_count,sentence_count,line_count,paragraph_count,path) " +
 			"VALUES (?,?,?,?,?,?,?,?,?,?)";
 
+	private final static String SQL_INSERT_BOOK_WITH_ID = "INSERT INTO book (title,author,translator,release_date," +
+			"chars_count,words_count,sentence_count,line_count,paragraph_count,path,book_id) " +
+			"VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+
 	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT * FROM book WHERE ";
 
 	private final static String SQL_FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
@@ -37,17 +41,7 @@ public class BookService {
 
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK,
 					Statement.RETURN_GENERATED_KEYS);
-			statement.setString(1, book.getTitle());
-			statement.setString(2, book.getAuthor());
-			statement.setString(3, book.getTranslator());
-			if (book.getReleaseDate() == null) statement.setDate(4, null);
-			else statement.setDate(4, new Date(book.getReleaseDate().getTime()));
-			statement.setInt(5, book.characterCount);
-			statement.setInt(6, book.wordCount);
-			statement.setInt(7, book.sentenceCount);
-			statement.setInt(8, book.lineCount);
-			statement.setInt(9, book.paragraphCount);
-			statement.setString(10, book.getPath());
+			fillTheParams(book, statement);
 
 			System.out.println(statement.toString());
 
@@ -151,5 +145,36 @@ public class BookService {
 			e.printStackTrace();
 		}
 		return books;
+	}
+
+	public static void insertBooks(List<Book> books) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK_WITH_ID);
+			for (Book book : books) {
+				fillTheParams(book, statement);
+				statement.setInt(11, book.getId());
+				statement.addBatch();
+				statement.clearParameters();
+			}
+			int[] results = statement.executeBatch();
+			System.out.println("Loaded " + results.length + " books");
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void fillTheParams(Book book, PreparedStatement statement) throws SQLException {
+		statement.setString(1, book.getTitle());
+		statement.setString(2, book.getAuthor());
+		statement.setString(3, book.getTranslator());
+		if (book.getReleaseDate() == null) statement.setDate(4, null);
+		else statement.setDate(4, new Date(book.getReleaseDate().getTime()));
+		statement.setInt(5, book.characterCount);
+		statement.setInt(6, book.wordCount);
+		statement.setInt(7, book.sentenceCount);
+		statement.setInt(8, book.lineCount);
+		statement.setInt(9, book.paragraphCount);
+		statement.setString(10, book.getPath());
 	}
 }

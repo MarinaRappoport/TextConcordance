@@ -1,5 +1,6 @@
 package service;
 
+import model.Word;
 import model.WordLocation;
 
 import java.sql.*;
@@ -16,6 +17,8 @@ public class WordService {
 			"(word_id,book_id,index,line,index_in_line,sentence,paragraph,is_quote_before,is_quote_after,punctuation_mark)" +
 			" VALUES (?,?,?,?,?,?,?,?,?,?)";
 
+	private final static String SQL_INSERT_WORDS = "INSERT INTO word (word_id, value) VALUES (?,?)";
+
 	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word_id IN (%s) ORDER by book_id, index";
 	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word_id IN (%s) AND book_id = ? ORDER by index";
 	private final static String SQL_FIND_WORD_BY_LOCATION = "SELECT value from word_in_book, word where word.word_id = word_in_book.word_id AND book_id = ? AND line = ? AND index_in_line = ?";
@@ -25,6 +28,7 @@ public class WordService {
 	private final static String SQL_FIND_WORDS_APPEARANCES = "SELECT DISTINCT lower(value) as lowercase_value, COUNT(value) from word, word_in_book where word.word_id = word_in_book.word_id GROUP BY lowercase_value ORDER by lowercase_value";
 	private final static String SQL_TOP_WORDS_APPEARANCES_IN_BOOKS = "SELECT DISTINCT lower(value) as lowercase_value, COUNT(value) as word_counter from word, word_in_book where book_id IN (%s) AND word.word_id = word_in_book.word_id GROUP BY lowercase_value ORDER by word_counter DESC LIMIT ?";
 	private final static String SQL_TOP_WORDS_APPEARANCES = "SELECT DISTINCT lower(value) as lowercase_value, COUNT(value) as word_counter from word, word_in_book where word.word_id = word_in_book.word_id GROUP BY lowercase_value ORDER by word_counter DESC LIMIT ?";
+	private static final String SQL_SELECT_ALL_WORD_LOCATIONS = "SELECT * FROM word_in_book";
 
 
 	public static int insertWord(String word) {
@@ -89,7 +93,7 @@ public class WordService {
 	}
 
 	public static Map<String, Integer> getAllWordsId() {
-		Map<String, Integer> words = new HashMap<>();
+		Map<String, Integer> words = new LinkedHashMap<>();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(SQL_SELECT_ALL_WORDS);
@@ -103,12 +107,25 @@ public class WordService {
 		return words;
 	}
 
-	public static void addWordLocationList(List<WordLocation> wordLocationList, int bookId) {
+	public static List<Word> getAllWords() {
+		List<Word> words = new ArrayList<>();
+		Map<String, Integer> wordsMap = getAllWordsId();
+		for (Map.Entry<String, Integer> entry : wordsMap.entrySet()) {
+			words.add(new Word(entry.getValue(), entry.getKey()));
+		}
+		return words;
+	}
+
+	public static List<WordLocation> getAllWordLocations() {
+		return getWordLocationList(SQL_SELECT_ALL_WORD_LOCATIONS);
+	}
+
+	public static void addWordLocationList(List<WordLocation> wordLocationList, Integer bookId) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_LOCATION);
 			for (WordLocation wordLocation : wordLocationList) {
 				statement.setInt(1, wordLocation.getWordId());
-				statement.setInt(2, bookId);
+				statement.setInt(2, bookId == null ? wordLocation.getBookId() : bookId);
 				statement.setInt(3, wordLocation.getIndex());
 				statement.setInt(4, wordLocation.getLine());
 				statement.setInt(5, wordLocation.getIndexInLine());
@@ -273,5 +290,41 @@ public class WordService {
 			e.printStackTrace();
 		}
 		return word;
+	}
+
+	public static List<WordLocation> getWordLocationList(String sql) {
+		List<WordLocation> wordLocationsAll = new ArrayList<>();
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				WordLocation location = new WordLocation(rs.getInt("word_id"), rs.getInt("index"), rs.getInt("line"),
+						rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
+				location.setBookId(rs.getInt("book_id"));
+				wordLocationsAll.add(location);
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wordLocationsAll;
+	}
+
+	public static void addWords(List<Word> words) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORDS);
+			for (Word word : words) {
+				statement.setInt(1, word.getId());
+				statement.setString(2, word.getValue());
+				statement.addBatch();
+				statement.clearParameters();
+			}
+			int[] results = statement.executeBatch();
+			System.out.println("Loaded " + results.length + " words");
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

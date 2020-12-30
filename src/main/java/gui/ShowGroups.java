@@ -43,7 +43,7 @@ public class ShowGroups extends JFrame {
         setTitle("Show Groups");
 
         books = FilesManager.getInstance().getFiles();
-        groups = GroupService.getAllGroups();
+	    groups = GroupService.getAllGroupsId();
 
         chooseBookPanel = new JPanel();
         groupsPanel = new JPanel();

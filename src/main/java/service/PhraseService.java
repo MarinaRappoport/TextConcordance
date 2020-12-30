@@ -131,7 +131,6 @@ public class PhraseService {
 	 * @return location of the first word in phrase
 	 */
 	public static List<WordLocation> findPhraseInBooks(Integer phraseId, Integer bookId) {
-		List<WordLocation> wordLocationsAll = new LinkedList<>();
 		List<Integer> wordList = getWordsInPhrase(phraseId);
 		StringJoiner joiner = new StringJoiner(",");
 		for (Integer id : wordList) {
@@ -144,20 +143,7 @@ public class PhraseService {
 		else
 			sql = String.format(SQL_FIND_POTENTIAL_PHRASES_IN_BOOK, wordIds, bookId, wordList.size(), wordIds);
 
-		try {
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				WordLocation location = new WordLocation(rs.getInt("word_id"), rs.getInt("index"), rs.getInt("line"),
-						rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
-				location.setBookId(rs.getInt("book_id"));
-				wordLocationsAll.add(location);
-			}
-			rs.close();
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		List<WordLocation> wordLocationsAll = WordService.getWordLocationList(sql);
 
 		List<WordLocation> listFiltered = new ArrayList<>();
 
