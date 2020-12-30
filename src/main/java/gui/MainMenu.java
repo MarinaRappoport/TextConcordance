@@ -214,6 +214,8 @@ public class MainMenu extends JFrame {
 						JOptionPane.showMessageDialog(null, "Failed to export to XML",
 								"Error", JOptionPane.WARNING_MESSAGE);
 					}
+					JOptionPane.showMessageDialog(null, "Done",
+							"Export to XML", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
