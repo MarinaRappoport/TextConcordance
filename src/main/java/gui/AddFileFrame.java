@@ -155,7 +155,7 @@ public class AddFileFrame extends JFrame {
 		ok.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				waitingFrame = new WaitingFrame();
+				waitingFrame = new WaitingFrame("Please wait for all files to be uploaded . . .");
 				waitingFrame.pack();
 				waitingFrame.setVisible(true);
 				dispose();

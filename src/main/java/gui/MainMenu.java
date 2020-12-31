@@ -25,6 +25,7 @@ import java.util.Map;
 
 //GUI of the main menu
 public class MainMenu extends JFrame {
+	private WaitingFrame waitingFrame;
 	private JTextArea statTextArea, common;
 	private JTable filesTable;
 	private DefaultTableModel model;
@@ -230,16 +231,26 @@ public class MainMenu extends JFrame {
 				jfc.setDialogTitle("Choose xml file to import:");
 				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				if (jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-					File xmlFile = jfc.getSelectedFile();
-					try {
-						XmlSerializer.importFromXml(xmlFile);
-					} catch (IOException e1) {
-						JOptionPane.showMessageDialog(null, "Failed to import from XML",
-								"Error", JOptionPane.WARNING_MESSAGE);
-					}
-					updateBookTable();
-					JOptionPane.showMessageDialog(null, "Done",
-							"Import from XML", JOptionPane.INFORMATION_MESSAGE);
+					waitingFrame = new WaitingFrame("Importing DB from XML file . . .");
+					waitingFrame.pack();
+					waitingFrame.setVisible(true);
+					Thread xmlImportThread = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							File xmlFile = jfc.getSelectedFile();
+							try {
+								XmlSerializer.importFromXml(xmlFile);
+							} catch (IOException e1) {
+								JOptionPane.showMessageDialog(null, "Failed to import from XML",
+										"Error", JOptionPane.WARNING_MESSAGE);
+							}
+							updateBookTable();
+							waitingFrame.dispose();
+							JOptionPane.showMessageDialog(null, "Done",
+									"Import from XML", JOptionPane.INFORMATION_MESSAGE);
+						}
+					});
+					xmlImportThread.start();
 				}
 			}
 		});
