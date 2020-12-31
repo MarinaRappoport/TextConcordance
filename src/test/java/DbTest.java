@@ -1,5 +1,4 @@
 import model.Book;
-import model.DbData;
 import model.WordLocation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -153,12 +152,8 @@ public class DbTest {
 	@Test
 	public void testXmlExportImport() throws IOException {
 		File folder = new File("C:\\Users\\Marina Rappoport\\Desktop\\text_books");
-//		XmlSerializer.exportToXml(folder);
-		DbData dbData1 = XmlSerializer.importFromXml(new File(folder, "concordanceDB.xml"));
-		DbConnection.getInstance().clearDB();
-		WordService.addWords(dbData1.getWords());
-		BookService.insertBooks(dbData1.getBooks());
-		WordService.addWordLocationList(dbData1.getWordLocations(), null);
+		XmlSerializer.exportToXml(folder);
+		XmlSerializer.importFromXml(new File(folder, "concordanceDB.xml"));
 		System.out.println("Done");
 	}
 }

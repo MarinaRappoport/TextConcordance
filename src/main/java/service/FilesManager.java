@@ -35,6 +35,10 @@ public class FilesManager {
 
 	//private constructor
 	private FilesManager() {
+		init();
+	}
+
+	public static void init() {
 		files = BookService.getAllBooks();
 		words = WordService.getAllWordsId();
 	}

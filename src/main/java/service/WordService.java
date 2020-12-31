@@ -10,14 +10,12 @@ public class WordService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
 	private final static String SQL_INSERT_WORD = "INSERT INTO word (value) VALUES (?)";
-	private final static String SQL_SELECT_ALL_WORDS = "SELECT value,word_id from word";
+	private final static String SQL_SELECT_ALL_WORDS = "SELECT value,word_id from word ORDER by word_id";
 	private final static String SQL_SELECT_BY_VALUE = "SELECT word_id from word WHERE value = ?";
 	private final static String SQL_SELECT_BY_VALUE_LOWERCASE = "SELECT word_id from word WHERE lower(value) = ?";
 	private final static String SQL_INSERT_WORD_LOCATION = "INSERT INTO word_in_book " +
 			"(word_id,book_id,index,line,index_in_line,sentence,paragraph,is_quote_before,is_quote_after,punctuation_mark)" +
 			" VALUES (?,?,?,?,?,?,?,?,?,?)";
-
-	private final static String SQL_INSERT_WORDS = "INSERT INTO word (word_id, value) VALUES (?,?)";
 
 	private final static String SQL_FIND_LOCATIONS_BY_WORD = "SELECT * from word_in_book where word_id IN (%s) ORDER by book_id, index";
 	private final static String SQL_FIND_LOCATIONS_BY_WORD_AND_BOOK = "SELECT * from word_in_book where word_id IN (%s) AND book_id = ? ORDER by index";
@@ -313,10 +311,9 @@ public class WordService {
 
 	public static void addWords(List<Word> words) {
 		try {
-			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORDS);
+			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD);
 			for (Word word : words) {
-				statement.setInt(1, word.getId());
-				statement.setString(2, word.getValue());
+				statement.setString(1, word.getValue());
 				statement.addBatch();
 				statement.clearParameters();
 			}

@@ -16,9 +16,18 @@ public class XmlSerializer {
 		XML_MAPPER.writerWithDefaultPrettyPrinter().writeValue(xmlFile, dbData);
 	}
 
-	public static DbData importFromXml(File xmlFile) throws IOException {
+	public static void importFromXml(File xmlFile) throws IOException {
 		String xml = inputStreamToString(new FileInputStream(xmlFile));
-		return XML_MAPPER.readValue(xml, DbData.class);
+		DbData dbData = XML_MAPPER.readValue(xml, DbData.class);
+		DbConnection.getInstance().clearDB();
+		WordService.addWords(dbData.getWords());
+		BookService.addBooks(dbData.getBooks());
+		WordService.addWordLocationList(dbData.getWordLocations(), null);
+		GroupService.addGroups(dbData.getGroups());
+		GroupService.addWordInGroupList(dbData.getWordInGroupList());
+		PhraseService.addPhraseIds(dbData.getPhrases());
+		PhraseService.addWordInPhraseList(dbData.getWordInPhraseList());
+		FilesManager.init();
 	}
 
 	private static String inputStreamToString(InputStream is) throws IOException {
