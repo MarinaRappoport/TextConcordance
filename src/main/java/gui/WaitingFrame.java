@@ -13,12 +13,12 @@ public class WaitingFrame extends JFrame {
     final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 35);
     final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,20);
 
-    public WaitingFrame(){
+	public WaitingFrame(String title) {
         panel = new JPanel();
         panel.setBorder(BORDER);
         panel.setLayout(new BorderLayout());
 
-        label = new JLabel("Please wait for all files to be uploaded . . . .");
+		label = new JLabel(title);
         label.setFont(MY_FONT);
 
         gifLabel = new JLabel();
@@ -35,7 +35,6 @@ public class WaitingFrame extends JFrame {
         panel.add(gifLabel, BorderLayout.CENTER);
 
         add(panel, BorderLayout.CENTER);
-
     }
 
 }

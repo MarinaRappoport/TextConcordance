@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import service.BookService;
 import service.GroupService;
+import service.PhraseService;
 import service.WordService;
 
 import java.util.List;
@@ -17,15 +18,25 @@ public class DbData {
 	@JacksonXmlProperty(localName = "word")
 	private List<Word> words;
 
-	@JacksonXmlElementWrapper(localName = "word_locations")
-	@JacksonXmlProperty(localName = "word_location")
+	@JacksonXmlElementWrapper(localName = "word_in_book_list")
+	@JacksonXmlProperty(localName = "word_in_book")
 	private List<WordLocation> wordLocations;
 
 	@JacksonXmlElementWrapper(localName = "groups")
 	@JacksonXmlProperty(localName = "group")
 	private List<Group> groups;
 
+	@JacksonXmlElementWrapper(localName = "word_in_group_list")
+	@JacksonXmlProperty(localName = "word_in_group")
+	private List<WordInGroup> wordInGroupList;
+
+	@JacksonXmlElementWrapper(localName = "phrases")
+	@JacksonXmlProperty(localName = "phrase_id")
 	private List<Integer> phrases;
+
+	@JacksonXmlElementWrapper(localName = "word_in_phrase_list")
+	@JacksonXmlProperty(localName = "word_in_phrase")
+	private List<WordInPhrase> wordInPhraseList;
 
 	public DbData() {
 	}
@@ -35,10 +46,9 @@ public class DbData {
 		words = WordService.getAllWords();
 		wordLocations = WordService.getAllWordLocations();
 		groups = GroupService.getAllGroups();
-	}
-
-	public DbData(List<Book> books) {
-		this.books = books;
+		wordInGroupList = GroupService.getAllWordInGroups();
+		phrases = PhraseService.getAllPhraseIds();
+		wordInPhraseList = PhraseService.getAllWordsInPhrases();
 	}
 
 	public List<Book> getBooks() {
@@ -79,5 +89,21 @@ public class DbData {
 
 	public void setPhrases(List<Integer> phrases) {
 		this.phrases = phrases;
+	}
+
+	public List<WordInGroup> getWordInGroupList() {
+		return wordInGroupList;
+	}
+
+	public void setWordInGroupList(List<WordInGroup> wordInGroupList) {
+		this.wordInGroupList = wordInGroupList;
+	}
+
+	public List<WordInPhrase> getWordInPhraseList() {
+		return wordInPhraseList;
+	}
+
+	public void setWordInPhraseList(List<WordInPhrase> wordInPhraseList) {
+		this.wordInPhraseList = wordInPhraseList;
 	}
 }
