@@ -23,7 +23,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-//GUI of the main menu
+/*
+GUI of the main menu
+Include buttons for all the options anf details view:
+- Details about chosen books
+- Statistics of chosen books
+- Top words of chosen books
+ */
 public class MainMenu extends JFrame {
 	private WaitingFrame waitingFrame;
 	private JTextArea statTextArea, common;
@@ -137,10 +143,10 @@ public class MainMenu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				AddFileFrame addFileFrame = new AddFileFrame();
-				addFileFrame.setSize(700, 580);
-				addFileFrame.setVisible(true);
-				addFileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				AddBook addBook = new AddBook();
+				addBook.setSize(700, 580);
+				addBook.setVisible(true);
+				addBook.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 		});
 

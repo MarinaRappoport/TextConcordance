@@ -18,6 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/*
+Window of find word by location
+And find book by details
+ */
 public class FindByDetails extends JFrame {
 	private JPanel findBook, wordSearchPanel, findWord, bookDetails, bookSearchPanel, wordDetails;
 	private JLabel findBookTitle, findWordTitle, title, author, translator, fromDate, toDate, dateFormatNote, nothing,
@@ -34,8 +38,6 @@ public class FindByDetails extends JFrame {
 	private final static Border SEPARATOR = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black);
 	private final static Font TITLE = new Font("Title", Font.BOLD, 18);
 	private final static Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT, 18);
-	private final static Color DEFAULT = new Color(206, 200, 200, 2);
-	private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
 	private final static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
 	public FindByDetails() {

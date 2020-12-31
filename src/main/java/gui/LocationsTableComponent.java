@@ -15,6 +15,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+This is a component that used for view locations in a table
+Used for searching word, phrase, or group
+ */
 public class LocationsTableComponent extends JTable {
     private DefaultTableModel tableModel;
 
