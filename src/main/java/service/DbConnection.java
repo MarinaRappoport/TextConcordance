@@ -105,7 +105,7 @@ public class DbConnection {
 	public void clearDB() {
 		try {
 			Statement stm = connection.createStatement();
-			stm.executeUpdate("TRUNCATE word_in_book, word_in_group, word_in_phrase, word, phrase, groups, book");
+			stm.executeUpdate("TRUNCATE word_in_book, word_in_group, word_in_phrase, word, phrase, groups, book RESTART IDENTITY CASCADE");
 			stm.close();
 		} catch (SQLException e) {
 			System.out.print("Failed to clear the DB data");

@@ -58,12 +58,10 @@ public class MainMenu extends JFrame {
 
 		filesTable.setRowHeight(40);
 		filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-		for (Book current : FilesManager.getInstance().getFiles()) {
-			((DefaultTableModel) filesTable.getModel()).addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getTranslator(), current.getDate(), current.getPath()});
-		}
-
 		model = (DefaultTableModel) filesTable.getModel();
+
+		updateBookTable();
+
 		TableColumnModel columnModel = filesTable.getColumnModel();
 		columnModel.getColumn(0).setPreferredWidth(280);
 		columnModel.getColumn(1).setPreferredWidth(220);
@@ -239,6 +237,9 @@ public class MainMenu extends JFrame {
 						JOptionPane.showMessageDialog(null, "Failed to import from XML",
 								"Error", JOptionPane.WARNING_MESSAGE);
 					}
+					updateBookTable();
+					JOptionPane.showMessageDialog(null, "Done",
+							"Import from XML", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
@@ -322,6 +323,16 @@ public class MainMenu extends JFrame {
 		} else
 			statTextArea.append("No statistics to show");
 
+	}
+
+	private void updateBookTable() {
+		int size = model.getRowCount();
+		for (int i = 0; i < size; i++) {
+			model.removeRow(0);
+		}
+		for (Book current : FilesManager.getInstance().getFiles()) {
+			model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getTranslator(), current.getDate(), current.getPath()});
+		}
 	}
 
 	public void updateFileDetails() {

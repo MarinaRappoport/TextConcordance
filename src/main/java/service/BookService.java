@@ -14,15 +14,11 @@ public class BookService {
 			"chars_count,words_count,sentence_count,line_count,paragraph_count,path) " +
 			"VALUES (?,?,?,?,?,?,?,?,?,?)";
 
-	private final static String SQL_INSERT_BOOK_WITH_ID = "INSERT INTO book (title,author,translator,release_date," +
-			"chars_count,words_count,sentence_count,line_count,paragraph_count,path,book_id) " +
-			"VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-
 	private final static String SQL_FIND_BOOK_BY_DETAILS_PREFIX = "SELECT * FROM book WHERE ";
 
 	private final static String SQL_FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
 
-	private final static String SQL_FIND_ALL_BOOKS = "SELECT * FROM book";
+	private final static String SQL_FIND_ALL_BOOKS = "SELECT * FROM book ORDER by book_id";
 
 	private final static String SQL_IF_BOOK_EXISTS = "SELECT COUNT(book_id) FROM book WHERE title = ? AND author = ?";
 
@@ -147,12 +143,11 @@ public class BookService {
 		return books;
 	}
 
-	public static void insertBooks(List<Book> books) {
+	public static void addBooks(List<Book> books) {
 		try {
-			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK_WITH_ID);
+			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK);
 			for (Book book : books) {
 				fillTheParams(book, statement);
-				statement.setInt(11, book.getId());
 				statement.addBatch();
 				statement.clearParameters();
 			}

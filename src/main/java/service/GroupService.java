@@ -1,6 +1,7 @@
 package service;
 
 import model.Group;
+import model.WordInGroup;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class GroupService {
 
 	private final static String SQL_CREATE_NEW_GROUP = "INSERT INTO groups (group_name) VALUES (?)";
 	private final static String SQL_FIND_ALL_GROUPS = "SELECT * from groups ORDER by group_name";
+	private final static String SQL_FIND_ALL_WORD_IN_GROUPS = "SELECT * from word_in_group ORDER by group_id";
 	private final static String SQL_INSERT_WORD_IN_GROUP = "INSERT INTO word_in_group (word_id,group_id) VALUES (?,?)";
 	private final static String SQL_FIND_WORDS_IN_GROUP = "SELECT value from word, word_in_group where group_id = ? AND word.word_id = word_in_group.word_id ORDER by word";
 
@@ -97,5 +99,52 @@ public class GroupService {
 			groups.add(new Group(entry.getKey(), entry.getValue()));
 		}
 		return groups;
+	}
+
+	public static List<WordInGroup> getAllWordInGroups() {
+		List<WordInGroup> wordInGroupList = new ArrayList<>();
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_WORD_IN_GROUPS);
+			while (rs.next())
+				wordInGroupList.add(new WordInGroup(rs.getInt("word_id"), rs.getInt("group_id")));
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wordInGroupList;
+	}
+
+	public static void addGroups(List<Group> groups) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(SQL_CREATE_NEW_GROUP);
+			for (Group group : groups) {
+				statement.setString(1, group.getName());
+				statement.addBatch();
+				statement.clearParameters();
+			}
+			int[] results = statement.executeBatch();
+			System.out.println("Loaded " + results.length + " groups");
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addWordInGroupList(List<WordInGroup> wordInGroupList) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_IN_GROUP);
+			for (WordInGroup wordInGroup : wordInGroupList) {
+				statement.setInt(1, wordInGroup.getWordId());
+				statement.setInt(2, wordInGroup.getGroupId());
+				statement.addBatch();
+				statement.clearParameters();
+			}
+			statement.executeBatch();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

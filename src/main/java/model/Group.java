@@ -43,6 +43,7 @@ public class Group {
 		this.name = name;
 	}
 
+	@JsonIgnore
 	public List<String> getWords() {
 		return words;
 	}

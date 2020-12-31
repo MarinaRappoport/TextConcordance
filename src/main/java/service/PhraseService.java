@@ -1,5 +1,6 @@
 package service;
 
+import model.WordInPhrase;
 import model.WordLocation;
 
 import java.sql.*;
@@ -8,8 +9,11 @@ import java.util.*;
 public class PhraseService {
 
 	private final static String SQL_CREATE_NEW_PHRASE = "INSERT INTO phrase DEFAULT VALUES";
+	private final static String SQL_ADD_PHRASE_ID = "INSERT INTO phrase (phrase_id) VALUES (?)";
 	private final static String SQL_SAVE_NEW_PHRASE = "INSERT INTO word_in_phrase (phrase_id, word_id, index_in_phrase) VALUES (?,?,?)";
 	private final static String SQL_FIND_ALL_PHRASES = "SELECT phrase_id, value, index_in_phrase from word_in_phrase, word where word.word_id = word_in_phrase.word_id ORDER by phrase_id, index_in_phrase";
+	private final static String SQL_FIND_ALL_PHRASES_SIMPLE = "SELECT phrase_id, word_id, index_in_phrase from word_in_phrase";
+	private final static String SQL_FIND_ALL_PHRASE_IDS = "SELECT phrase_id from phrase";
 	private final static String SQL_FIND_WORDS_IN_PHRASES = "SELECT word_id from word_in_phrase where phrase_id = ? ORDER by index_in_phrase";
 
 	private final static String SQL_FIND_POTENTIAL_PHRASES = "SELECT * FROM word_in_book WHERE(book_id,sentence) IN (" +
@@ -47,8 +51,6 @@ public class PhraseService {
 		return -1;
 	}
 
-	//TODO and check if phrase already exists
-
 	/**
 	 * Save new phrase in DB
 	 *
@@ -58,27 +60,20 @@ public class PhraseService {
 	public static int saveNewPhrase(String phrase) {
 		int id = createNewPhrase();
 		String[] words = phrase.split(" ");
+		List<WordInPhrase> wordInPhraseList = new ArrayList<>();
 		int ordinal = 1;
-		try {
-			PreparedStatement statement = connection.prepareStatement(SQL_SAVE_NEW_PHRASE);
-			for (String word : words) {
-				Integer wordId = FilesManager.getInstance().getWordId(word);
-				if (wordId == null) {
-					wordId = WordService.insertWord(word);
-					if (wordId == -1) return -1;
+		for (String word : words) {
+			Integer wordId = FilesManager.getInstance().getWordId(word);
+			if (wordId == null) {
+				wordId = WordService.insertWord(word);
+				if (wordId != -1) {
+					System.out.println("Failed to save phrase");
+					return -1;
 				}
-
-				statement.setInt(1, id);
-				statement.setInt(2, wordId);
-				statement.setInt(3, ordinal++);
-				statement.addBatch();
-				statement.clearParameters();
 			}
-			statement.executeBatch();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			wordInPhraseList.add(new WordInPhrase(wordId, id, ordinal++));
 		}
+		addWordInPhraseList(wordInPhraseList);
 		return id;
 	}
 
@@ -105,6 +100,37 @@ public class PhraseService {
 			e.printStackTrace();
 		}
 		return phrases;
+	}
+
+	public static List<Integer> getAllPhraseIds() {
+		List<Integer> phraseIds = new ArrayList<>();
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_PHRASE_IDS);
+			while (rs.next())
+				phraseIds.add(rs.getInt("phrase_id"));
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return phraseIds;
+	}
+
+	public static List<WordInPhrase> getAllWordsInPhrases() {
+		List<WordInPhrase> wordInPhraseList = new ArrayList<>();
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(SQL_FIND_ALL_PHRASES_SIMPLE);
+			while (rs.next())
+				wordInPhraseList.add(new WordInPhrase(rs.getInt("word_id"),
+						rs.getInt("phrase_id"), rs.getInt("index_in_phrase")));
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return wordInPhraseList;
 	}
 
 	private static List<Integer> getWordsInPhrase(int phraseId) {
@@ -167,5 +193,35 @@ public class PhraseService {
 			}
 		}
 		return listFiltered;
+	}
+
+	public static void addPhraseIds(List<Integer> phrases) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(SQL_CREATE_NEW_PHRASE);
+			for (int id : phrases) {
+				statement.addBatch();
+			}
+			statement.executeBatch();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void addWordInPhraseList(List<WordInPhrase> wordInPhraseList) {
+		try {
+			PreparedStatement statement = connection.prepareStatement(SQL_SAVE_NEW_PHRASE);
+			for (WordInPhrase wordInPhrase : wordInPhraseList) {
+				statement.setInt(1, wordInPhrase.getPhraseId());
+				statement.setInt(2, wordInPhrase.getWordId());
+				statement.setInt(3, wordInPhrase.getIndexInPhrase());
+				statement.addBatch();
+				statement.clearParameters();
+			}
+			statement.executeBatch();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

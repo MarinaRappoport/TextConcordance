@@ -56,7 +56,7 @@ public class ShowPhrases extends JFrame{
         newPhrase.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newPhrase = JOptionPane.showInputDialog("Enter new phrase");
+	            String newPhrase = JOptionPane.showInputDialog("Enter new phrase").trim();
 
                 if ( !allPhrases.containsValue(newPhrase) ) {
 	                if (newPhrase == null)
