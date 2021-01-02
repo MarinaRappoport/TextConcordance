@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/*
+/**
 this is component that used for view the text preview
 Used for searching word, phrase, or group
 with option to scroll to the next or previous paragraph

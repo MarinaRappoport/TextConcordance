@@ -9,6 +9,9 @@ import service.WordService;
 
 import java.util.List;
 
+/**
+ * Represents all data from DB, used for XML import-export
+ */
 public class DbData {
 	@JacksonXmlElementWrapper(localName = "books")
 	@JacksonXmlProperty(localName = "book")
@@ -38,9 +41,13 @@ public class DbData {
 	@JacksonXmlProperty(localName = "word_in_phrase")
 	private List<WordInPhrase> wordInPhraseList;
 
+	//empty constructor for XML parsing
 	public DbData() {
 	}
 
+	/**
+	 * Fill all the values from DB
+	 */
 	public void initFromDB() {
 		books = BookService.getAllBooks();
 		words = WordService.getAllWords();
@@ -51,6 +58,7 @@ public class DbData {
 		wordInPhraseList = PhraseService.getAllWordsInPhrases();
 	}
 
+	//getters & setters
 	public List<Book> getBooks() {
 		return books;
 	}

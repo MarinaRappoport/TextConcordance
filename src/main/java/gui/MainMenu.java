@@ -1,6 +1,7 @@
 package gui;
 
 import model.Book;
+import service.DbConnection;
 import service.FilesManager;
 import service.WordService;
 import service.XmlSerializer;
@@ -13,17 +14,14 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-/*
+/**
 GUI of the main menu
 Include buttons for all the options anf details view:
 - Details about chosen books
@@ -279,6 +277,12 @@ public class MainMenu extends JFrame {
 		add(buttons, BorderLayout.NORTH);
 		add(center, BorderLayout.CENTER);
 		add(bottomPanel, BorderLayout.SOUTH);
+
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				DbConnection.getInstance().closeConnection();
+			}
+		});
 	}
 
 	private void updateTopWords() {
@@ -347,13 +351,13 @@ public class MainMenu extends JFrame {
 		for (int i = 0; i < size; i++) {
 			model.removeRow(0);
 		}
-		for (Book current : FilesManager.getInstance().getFiles()) {
+		for (Book current : FilesManager.getInstance().getBooks()) {
 			model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getTranslator(), current.getDate(), current.getPath()});
 		}
 	}
 
 	public void updateFileDetails() {
-		Book current = FilesManager.getInstance().getFiles().get(FilesManager.getInstance().getFiles().size() - 1);
+		Book current = FilesManager.getInstance().getBooks().get(FilesManager.getInstance().getBooks().size() - 1);
 		model.addRow(new Object[]{current.getTitle(), current.getAuthor(), current.getTranslator(), current.getDate(), current.getPath()});
 	}
 

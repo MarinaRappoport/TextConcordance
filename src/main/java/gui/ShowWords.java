@@ -12,7 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-/*
+/**
 GUI class of word search options
 including searching a specific word - shows all locations of this word
 and view the paragraph that contains the word in each location.
@@ -36,7 +36,7 @@ public class ShowWords extends JFrame {
     public ShowWords(){
         setTitle("Show Words");
 
-        this.books = FilesManager.getInstance().getFiles();
+	    this.books = FilesManager.getInstance().getBooks();
         word = "";
 	    bookIdList = new ArrayList<>();
 

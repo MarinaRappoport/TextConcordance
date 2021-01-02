@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-GUI class of adding file window
+/**
+ GUI class of adding book window
  */
 public class AddBook extends JFrame {
 	private WaitingFrame waitingFrame;
@@ -43,6 +43,7 @@ public class AddBook extends JFrame {
 		bookMap = new HashMap<>();
 		filesManager = FilesManager.getInstance();
 		currBook = 0;
+		DATE_FORMAT.setLenient(false);
 
 		mainPanel = new JPanel();
 		mainPanel.setBorder(BORDER);
@@ -202,7 +203,6 @@ public class AddBook extends JFrame {
 	}
 
 	private boolean validateDate(JTextField dateTF) {
-		DATE_FORMAT.setLenient(false);
 		try {
 			DATE_FORMAT.parse(dateTF.getText());
 		} catch (ParseException e) {

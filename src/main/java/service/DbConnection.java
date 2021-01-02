@@ -11,6 +11,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Singleton class that stores connection to DB
+ */
 public class DbConnection {
 	// JDBC driver name and database URL
 	private static final String JDBC_DRIVER = "org.postgresql.Driver";
@@ -36,6 +39,9 @@ public class DbConnection {
 	}
 
 
+	/**
+	 * Init DB schema from sql script
+	 */
 	public static void initSchema() {
 		try {
 			Class.forName(JDBC_DRIVER);
@@ -70,10 +76,12 @@ public class DbConnection {
 		}
 	}
 
+	/**
+	 * @return connection to DB
+	 */
 	public Connection getConnection() {
 		return connection;
 	}
-
 
 	public static DbConnection getInstance() {
 		if (instance == null) {
@@ -90,6 +98,9 @@ public class DbConnection {
 		return instance;
 	}
 
+	/**
+	 * Close connection to DB
+	 */
 	public void closeConnection() {
 		if (instance != null) {
 			try {
@@ -102,6 +113,9 @@ public class DbConnection {
 	}
 
 
+	/**
+	 * Removes all data from DB and reset serials
+	 */
 	public void clearDB() {
 		try {
 			Statement stm = connection.createStatement();
@@ -110,6 +124,5 @@ public class DbConnection {
 		} catch (SQLException e) {
 			System.out.print("Failed to clear the DB data");
 		}
-
 	}
 }

@@ -6,10 +6,12 @@ import model.WordLocation;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Service for all SQL operation with table 'phrase' and 'word_in_phrase'
+ */
 public class PhraseService {
 
 	private final static String SQL_CREATE_NEW_PHRASE = "INSERT INTO phrase DEFAULT VALUES";
-	private final static String SQL_ADD_PHRASE_ID = "INSERT INTO phrase (phrase_id) VALUES (?)";
 	private final static String SQL_SAVE_NEW_PHRASE = "INSERT INTO word_in_phrase (phrase_id, word_id, index_in_phrase) VALUES (?,?,?)";
 	private final static String SQL_FIND_ALL_PHRASES = "SELECT phrase_id, value, index_in_phrase from word_in_phrase, word where word.word_id = word_in_phrase.word_id ORDER by phrase_id, index_in_phrase";
 	private final static String SQL_FIND_ALL_PHRASES_SIMPLE = "SELECT phrase_id, word_id, index_in_phrase from word_in_phrase";
@@ -195,6 +197,9 @@ public class PhraseService {
 		return listFiltered;
 	}
 
+	/**
+	 * insert list of phrase ids to DB in batch
+	 */
 	public static void addPhraseIds(List<Integer> phrases) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_CREATE_NEW_PHRASE);
@@ -208,6 +213,9 @@ public class PhraseService {
 		}
 	}
 
+	/**
+	 * insert list of word_in_phrase objects to DB in batch
+	 */
 	public static void addWordInPhraseList(List<WordInPhrase> wordInPhraseList) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_SAVE_NEW_PHRASE);

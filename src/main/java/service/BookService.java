@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Service for all SQL operation with table 'book'
+ */
 public class BookService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
@@ -22,6 +25,12 @@ public class BookService {
 
 	private final static String SQL_IF_BOOK_EXISTS = "SELECT COUNT(book_id) FROM book WHERE title = ? AND author = ?";
 
+	/**
+	 * Add new book to DB
+	 *
+	 * @param book book to instert
+	 * @return book id
+	 */
 	public static int insertBook(Book book) {
 		boolean isAlreadyExist = false;
 		try {
@@ -60,6 +69,15 @@ public class BookService {
 		return -1;
 	}
 
+	/**
+	 * Search book by details (also partly)
+	 * @param title title of the book or part of it
+	 * @param author author of the book or part of it
+	 * @param translator translator of the book or part of it
+	 * @param releaseFrom  release date minimum
+	 * @param releaseTo release date maximum
+	 * @return list or books (result of the search), could be empty
+	 */
 	public static List<Book> findBookByDetails(String title, String author, String translator, String releaseFrom, String releaseTo) {
 		List<Book> books = new LinkedList<>();
 		StringBuilder sb = new StringBuilder(SQL_FIND_BOOK_BY_DETAILS_PREFIX);
@@ -111,6 +129,9 @@ public class BookService {
 		return book;
 	}
 
+	/**
+	 * Search book by id
+	 */
 	public static Book findBookById(int id) {
 		Book book = null;
 		PreparedStatement statement = null;
@@ -128,6 +149,9 @@ public class BookService {
 		return book;
 	}
 
+	/**
+	 * @return all books from DB
+	 */
 	public static ArrayList<Book> getAllBooks() {
 		ArrayList<Book> books = new ArrayList<>();
 		try {
@@ -143,6 +167,9 @@ public class BookService {
 		return books;
 	}
 
+	/**
+	 * Insert several books to DB in batch
+	 */
 	public static void addBooks(List<Book> books) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_BOOK);

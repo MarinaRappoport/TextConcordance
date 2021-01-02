@@ -6,6 +6,9 @@ import model.WordLocation;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Service for all SQL operation with table 'word' and 'word_in_book'
+ */
 public class WordService {
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
@@ -29,6 +32,12 @@ public class WordService {
 	private static final String SQL_SELECT_ALL_WORD_LOCATIONS = "SELECT * FROM word_in_book";
 
 
+	/**
+	 * Add new word to DB
+	 *
+	 * @param word word to add
+	 * @return word id, or -1 if failed to add
+	 */
 	public static int insertWord(String word) {
 		int id = findWordIdByValue(word);
 		if (id > 0) return id;
@@ -56,6 +65,10 @@ public class WordService {
 		return -1;
 	}
 
+	/**
+	 * Get word id by word value
+	 * @return -1 in word not found
+	 */
 	public static int findWordIdByValue(String word) {
 		PreparedStatement statement = null;
 		int id = -1;
@@ -73,6 +86,9 @@ public class WordService {
 		return id;
 	}
 
+	/**
+	 * Find list of word id by word value case insensitive
+	 */
 	public static List<Integer> findWordIdByValueCaseInsensitive(String word) {
 		List<Integer> ids = new ArrayList<>();
 		PreparedStatement statement = null;
@@ -90,6 +106,9 @@ public class WordService {
 		return ids;
 	}
 
+	/**
+	 * @return map of pairs word value & id
+	 */
 	public static Map<String, Integer> getAllWordsId() {
 		Map<String, Integer> words = new LinkedHashMap<>();
 		try {
@@ -105,6 +124,9 @@ public class WordService {
 		return words;
 	}
 
+	/**
+	 * @return list of all word in DB
+	 */
 	public static List<Word> getAllWords() {
 		List<Word> words = new ArrayList<>();
 		Map<String, Integer> wordsMap = getAllWordsId();
@@ -114,10 +136,16 @@ public class WordService {
 		return words;
 	}
 
+	/**
+	 * @return list of all word locations from DB
+	 */
 	public static List<WordLocation> getAllWordLocations() {
 		return getWordLocationList(SQL_SELECT_ALL_WORD_LOCATIONS);
 	}
 
+	/**
+	 * insert list of word locations to DB in batch
+	 */
 	public static void addWordLocationList(List<WordLocation> wordLocationList, Integer bookId) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_LOCATION);
@@ -143,6 +171,12 @@ public class WordService {
 		}
 	}
 
+	/**
+	 * Search for word in book
+	 * @param word word to find
+	 * @param bookId use null to search in all books
+	 * @return list of word locations
+	 */
 	public static List<WordLocation> findWordInBooks(String word, Integer bookId) {
 		List<WordLocation> wordLocations = new LinkedList<>();
 		List<Integer> wordIds = findWordIdByValueCaseInsensitive(word);
@@ -175,6 +209,9 @@ public class WordService {
 		return wordLocations;
 	}
 
+	/**
+	 * Build preview - reconstruct specific paragraph of the book
+	 */
 	public static String buildPreview(int bookId, int paragraph) {
 		StringBuilder sb = new StringBuilder();
 		PreparedStatement statement = null;
@@ -290,6 +327,10 @@ public class WordService {
 		return word;
 	}
 
+	/**
+	 * @param sql query
+	 * @return list of word locations according to sql query
+	 */
 	public static List<WordLocation> getWordLocationList(String sql) {
 		List<WordLocation> wordLocationsAll = new ArrayList<>();
 		try {
@@ -309,6 +350,9 @@ public class WordService {
 		return wordLocationsAll;
 	}
 
+	/**
+	 * insert list of words to DB in batch
+	 */
 	public static void addWords(List<Word> words) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD);

@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
-public class DbTest {
+/**
+ * Application unit tests
+ */
+public class AppTests {
 
 	@Test
 	public void wordLoadTest() {
@@ -19,17 +22,10 @@ public class DbTest {
 		List<WordLocation> wordLocationList = new FileParser().parseFile(b);
 		BookService.insertBook(b);
 		Date start = new Date();
-//		Map<String, Long> words = WordService.getAllWordsId();
 		List<WordLocation> wordLocationListCopy = new LinkedList<>();
 		for (WordLocation wordLocation : wordLocationList) {
 			if (!wordLocation.getWord().isEmpty())
-//			Long wordId = words.get(wordLocation.getWord());
-//			if (wordId == null)
-//				wordId = WordService.insertWord(wordLocation.getWord());
-//			if (wordId > 0) {
-//				wordLocation.setWordId(wordId);
 				wordLocationListCopy.add(wordLocation);
-//			}
 		}
 		WordService.addWordLocationList(wordLocationListCopy, b.getId());
 		Date end = new Date();
@@ -65,7 +61,7 @@ public class DbTest {
 	@Test
 	public void testWordParsing() {
 		String word = "“without";
-		List<WordLocation> ws = new FileParser().addWordLocationToList(new Book(""), new String[]{word});
+		List<WordLocation> ws = new FileParser().addWordLocationsToList(new Book(""), new String[]{word});
 		WordLocation w = ws.get(0);
 		System.out.println((w.isQuoteBefore() ? "\"" : "") + w.getWord() + (w.isQuoteAfter() ? "\"" : "") +
 				(w.getPunctuationMark() == null ? "" : w.getPunctuationMark()));

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-/*
+/**
 GUI class of groups options
 including a list of groups, searching a specific group of words - shows all locations of this words
 and view the paragraph that contains the words in each location.
@@ -46,7 +46,7 @@ public class ShowGroups extends JFrame {
     public ShowGroups(){
         setTitle("Show Groups");
 
-        books = FilesManager.getInstance().getFiles();
+	    books = FilesManager.getInstance().getBooks();
 	    groups = GroupService.getAllGroupsId();
 
         chooseBookPanel = new JPanel();
