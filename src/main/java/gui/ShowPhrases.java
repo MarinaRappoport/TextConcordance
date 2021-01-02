@@ -19,7 +19,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/*
+GUI class of word search phrases
+including list of phrases and option to add new phrases.
+Shows all locations of each phrase and view the paragraph that
+contains the phrase in each location.
+ */
 public class ShowPhrases extends JFrame{
     private int phrasesIndex;
     private JLabel inBookLabel;
@@ -59,8 +67,16 @@ public class ShowPhrases extends JFrame{
 	            String newPhrase = JOptionPane.showInputDialog("Enter new phrase").trim();
 
                 if ( !allPhrases.containsValue(newPhrase) ) {
-	                if (newPhrase == null)
-		                return;
+                    //phrase validation checking
+	                if (newPhrase == null  || newPhrase.isEmpty() || onlyDigitsAndWhiteSpaces(newPhrase) ){
+                        JOptionPane.showMessageDialog(null, "Invalid phrase", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+	                if (!newPhrase.trim().contains(" ")) {
+                        JOptionPane.showMessageDialog(null, "Phrase should contain more than one word", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
                     int newId = PhraseService.saveNewPhrase(newPhrase);
                     allPhrases.put(newId, newPhrase);
                     addNewPhrase(newPhrase);
@@ -212,6 +228,21 @@ public class ShowPhrases extends JFrame{
             bookIdList.add( location.getBookId());
         }
     }
+
+    private boolean onlyDigitsAndWhiteSpaces(String str)
+    {
+        String regex = "[0-9 ]+";
+
+        Pattern p = Pattern.compile(regex);
+
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+
+        return m.matches();
+    }
+
 
 
 }

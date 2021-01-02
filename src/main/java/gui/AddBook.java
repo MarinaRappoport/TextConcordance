@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//GUI of adding file window
-public class AddFileFrame extends JFrame {
+/*
+GUI class of adding file window
+ */
+public class AddBook extends JFrame {
 	private WaitingFrame waitingFrame;
 	private JButton addFile, ok, prev, next;
 	private int currBook;
@@ -31,14 +33,11 @@ public class AddFileFrame extends JFrame {
 	private Map<Book, List<WordLocation>> bookMap;
 	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMMM dd, yyyy");
 
-	//final Font TITLE_FONT = new Font("Title", Font.TRUETYPE_FONT,22);
 	private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT, 20);
-	private static final Color PRIMARY_COLOR = new Color(18, 163, 134, 99);
-	private static final Color SECONDARY_COLOR = new Color(18, 163, 134, 190);
 	private static final Color DEFAULT = new Color(206, 200, 200, 2);
 	private static final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 35);
 
-	public AddFileFrame() {
+	public AddBook() {
 		setTitle("Add Book");
 
 		bookMap = new HashMap<>();

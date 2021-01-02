@@ -4,6 +4,10 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+/*
+Waiting frame is used when uploading new books to data base
+including message and sand clock animation
+*/
 public class WaitingFrame extends JFrame {
     JLabel label, gifLabel;
     JPanel panel;
