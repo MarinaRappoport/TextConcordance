@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Util for parsing the text file (book)
+ */
 public class FileParser {
 
 	private final static String TITLE = "Title:";
@@ -22,8 +25,13 @@ public class FileParser {
 	private final static String END_OF_BOOK = "End of the Project Gutenberg EBook";
 	private static final String EMPTY = "";
 
-	//Parse file to words
-	//Counting words, lines, sentences and paragraph
+	/**
+	 * Parse file to words
+	 * Counting words, lines, sentences and paragraph
+	 *
+	 * @param book book to parse
+	 * @return list of word locations
+	 */
 	public List<WordLocation> parseFile(Book book) {
 		//init
 		book.paragraphCount = 1;
@@ -62,7 +70,7 @@ public class FileParser {
 						String[] wordList = currentLine.split("\\s+");
 
 						// Add word location to the list
-						wordLocationList.addAll(addWordLocationToList(book, wordList));
+						wordLocationList.addAll(addWordLocationsToList(book, wordList));
 
 						// [!?.:]+ is the sentence delimiter in java
 						String[] sentenceList = currentLine.split("[!?.:]+");
@@ -93,7 +101,7 @@ public class FileParser {
 			return null;
 		}
 
-		//TEST
+		//all stats
 		System.out.println("Total word count = " + book.wordCount + "\n");
 		System.out.println("Total number of sentences = " + book.sentenceCount + "\n");
 		System.out.println("Total number of characters = " + book.characterCount + "\n");
@@ -103,16 +111,23 @@ public class FileParser {
 		return wordLocationList;
 	}
 
-	public List<WordLocation> addWordLocationToList(Book book, String[] wordList) {
+	/**
+	 * Process words from array and add result to word location list
+	 *
+	 * @param book  book we are parsing
+	 * @param words words to process
+	 * @return word location list
+	 */
+	public List<WordLocation> addWordLocationsToList(Book book, String[] words) {
 		List<WordLocation> wordLocationList = new LinkedList<>();
-		for (int i = 0; i < wordList.length; i++) {
-			if (!wordList[i].isEmpty()) {
+		for (int i = 0; i < words.length; i++) {
+			if (!words[i].isEmpty()) {
 				String word = null;
 				boolean isQuoteBefore = false;
 				boolean isQuoteAfter = false;
 				String punctuationMark = null;
 				try {
-					Matcher matcher = Pattern.compile("(\\W*)?([0-9a-zA-Z'’-]+)(\\W*)").matcher(wordList[i].replaceAll("_", ""));
+					Matcher matcher = Pattern.compile("(\\W*)?([0-9a-zA-Z'’-]+)(\\W*)").matcher(words[i].replaceAll("_", ""));
 					if (matcher.find() && matcher.groupCount() == 3) {
 						if (!matcher.group(1).isEmpty())
 							isQuoteBefore = "\"“\'".contains(matcher.group(1));

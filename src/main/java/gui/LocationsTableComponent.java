@@ -2,9 +2,6 @@ package gui;
 
 import model.Book;
 import model.WordLocation;
-import service.BookService;
-import service.FilesManager;
-import service.PhraseService;
 import service.WordService;
 
 import javax.swing.*;
@@ -15,7 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
+/**
 This is a component that used for view locations in a table
 Used for searching word, phrase, or group
  */

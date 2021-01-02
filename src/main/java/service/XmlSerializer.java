@@ -5,10 +5,19 @@ import model.DbData;
 
 import java.io.*;
 
+/**
+ * Util for export to XML and import from XML
+ */
 public class XmlSerializer {
 	private final static XmlMapper XML_MAPPER = new XmlMapper();
 	private final static String XML_NAME = "concordanceDB.xml";
 
+	/**
+	 * Export DB data to XML
+	 *
+	 * @param folder where to save the xml file
+	 * @throws IOException in case of failure
+	 */
 	public static void exportToXml(File folder) throws IOException {
 		File xmlFile = new File(folder, XML_NAME);
 		DbData dbData = new DbData();
@@ -16,6 +25,11 @@ public class XmlSerializer {
 		XML_MAPPER.writerWithDefaultPrettyPrinter().writeValue(xmlFile, dbData);
 	}
 
+	/**
+	 * Import data to DB from xml file
+	 * @param xmlFile file to use
+	 * @throws IOException in case of failure
+	 */
 	public static void importFromXml(File xmlFile) throws IOException {
 		String xml = inputStreamToString(new FileInputStream(xmlFile));
 		DbData dbData = XML_MAPPER.readValue(xml, DbData.class);

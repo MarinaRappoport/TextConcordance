@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/*
+/**
 Window of find word by location
 And find book by details
  */
@@ -43,7 +43,7 @@ public class FindByDetails extends JFrame {
 	public FindByDetails() {
 		bookListResult = new ArrayList<>();
 		setTitle("Find By Details");
-		books = FilesManager.getInstance().getFiles();
+		books = FilesManager.getInstance().getBooks();
 
 		dateFormatNote = new JLabel("Expected date : dd/mm/yyyy");
 		nothing = new JLabel("");

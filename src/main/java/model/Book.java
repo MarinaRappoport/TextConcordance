@@ -32,14 +32,15 @@ public class Book {
 			date = DATE_FORMAT.format(releaseDate);
 	}
 
-	//empty constructor for XML parsing
-	public Book() {
-	}
-
 	public Book(String path) {
 		this.path = path;
 	}
 
+	//empty constructor for XML parsing
+	public Book() {
+	}
+
+	//getters & setters
 	public int getId() {
 		return id;
 	}

@@ -2,6 +2,9 @@ package model;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
+/**
+ * Represents table 'word'
+ */
 public class Word {
 	@JacksonXmlProperty(isAttribute = true)
 	private int id;
@@ -11,11 +14,15 @@ public class Word {
 	public Word() {
 	}
 
+	/**
+	 * Main Constructor
+	 */
 	public Word(int id, String value) {
 		this.id = id;
 		this.value = value;
 	}
 
+	//getters & setters
 	public int getId() {
 		return id;
 	}

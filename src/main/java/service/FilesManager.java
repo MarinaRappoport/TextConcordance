@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Singleton class for handling files
+ * Singleton class for handling books
  */
 public class FilesManager {
-	private static ArrayList<Book> files;
+	private static ArrayList<Book> books;
 	private static Map<String, Integer> words;
 	private static MainMenu menu = null;
 	private static FilesManager single_instance = null;
@@ -38,12 +38,17 @@ public class FilesManager {
 		init();
 	}
 
+	/**
+	 * Init books and words from DB
+	 */
 	public static void init() {
-		files = BookService.getAllBooks();
+		books = BookService.getAllBooks();
 		words = WordService.getAllWordsId();
 	}
 
-	//Add only new file. We cannot add the same file twice.
+	/**
+	 * Add only new file. We cannot add the same file twice.
+	 */
 	public void addFile(Book book, List<WordLocation> wordLocationList) {
 		int id = BookService.insertBook(book);
 		if (id > 0) {
@@ -57,20 +62,25 @@ public class FilesManager {
 				}
 			}
 			WordService.addWordLocationList(wordLocationList, id);
-			files.add(book);
+			books.add(book);
 			menu.updateFileDetails();
 		} else {
 			JOptionPane.showMessageDialog(null, "Book already exists", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
-	public static Book getFile(String name) {
+	/**
+	 * Get book file by title
+	 *
+	 * @return null if file not found
+	 */
+	public static Book getFile(String title) {
 		Book file;
 
-		Iterator<Book> iter = files.iterator();
+		Iterator<Book> iter = books.iterator();
 		while (iter.hasNext()) {
 			Book current = iter.next();
-			if (current.getTitle().equals(name)) {
+			if (current.getTitle().equals(title)) {
 				file = current;
 				return file;
 			}
@@ -78,13 +88,16 @@ public class FilesManager {
 
 		//if file name not found
 		return null;
-
 	}
 
+	/**
+	 * Get book file by id
+	 * @return null if file not found
+	 */
 	public static Book getFile(long id) {
 		Book file;
 
-		Iterator<Book> iter = files.iterator();
+		Iterator<Book> iter = books.iterator();
 		while (iter.hasNext()) {
 			Book current = iter.next();
 			if (current.getId() == id) {
@@ -95,15 +108,20 @@ public class FilesManager {
 
 		//if file name not found
 		return null;
-
 	}
 
 
+	/**
+	 * found word id by its value
+	 */
 	public Integer getWordId(String word) {
 		return words.get(word);
 	}
 
-	public ArrayList<Book> getFiles() {
-		return files;
+	/**
+	 * @return list of all books
+	 */
+	public ArrayList<Book> getBooks() {
+		return books;
 	}
 }

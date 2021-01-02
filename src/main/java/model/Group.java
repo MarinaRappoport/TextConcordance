@@ -1,23 +1,18 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Represents table 'groups'
+ */
 public class Group {
 	@JacksonXmlProperty(isAttribute = true)
 	private int id;
 	private String name;
-	@JsonIgnore
-	private List<String> words;
 
-	public Group(String name) {
-		this.name = name;
-		words = new ArrayList<>();
-	}
-
+	/**
+	 * Main Constructor
+	 */
 	public Group(String name, int id) {
 		this.name = name;
 		this.id = id;
@@ -27,6 +22,7 @@ public class Group {
 	public Group() {
 	}
 
+	//getters & setters
 	public String getName() {
 		return name;
 	}
@@ -43,18 +39,9 @@ public class Group {
 		this.name = name;
 	}
 
-	@JsonIgnore
-	public List<String> getWords() {
-		return words;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		Group group = (Group) obj;
 		return (name.equals(group.name));
-	}
-
-	public void addWord(String word) {
-		words.add(word);
 	}
 }

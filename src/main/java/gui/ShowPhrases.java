@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
+/**
 GUI class of word search phrases
 including list of phrases and option to add new phrases.
 Shows all locations of each phrase and view the paragraph that
@@ -53,7 +53,7 @@ public class ShowPhrases extends JFrame{
         setTitle("Show Phrases");
 
         phrasesIndex = 1;
-        books = FilesManager.getInstance().getFiles();
+	    books = FilesManager.getInstance().getBooks();
 	    bookIdList = new ArrayList<>();
 
         inBookLabel = new JLabel("In Book :");

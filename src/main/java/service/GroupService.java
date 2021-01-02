@@ -9,6 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Service for all SQL operation with table 'group' and 'word_in_group'
+ */
 public class GroupService {
 
 	private final static String SQL_CREATE_NEW_GROUP = "INSERT INTO groups (group_name) VALUES (?)";
@@ -19,6 +22,12 @@ public class GroupService {
 
 	private final static Connection connection = DbConnection.getInstance().getConnection();
 
+	/**
+	 * Insert new group
+	 *
+	 * @param name name of the group
+	 * @return group id, or -1 if failed to add
+	 */
 	public static int createNewGroup(String name) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_CREATE_NEW_GROUP,
@@ -44,6 +53,9 @@ public class GroupService {
 		return -1;
 	}
 
+	/**
+	 * @return map of pairs group name & id
+	 */
 	public static Map<String, Integer> getAllGroupsId() {
 		Map<String, Integer> groups = new LinkedHashMap<>();
 		try {
@@ -59,6 +71,11 @@ public class GroupService {
 		return groups;
 	}
 
+	/**
+	 * Add word to group
+	 * @param word word to add
+	 * @param groupId where to add
+	 */
 	public static void addWordToGroup(String word, int groupId) {
 		Integer wordId = FilesManager.getInstance().getWordId(word);
 		if (wordId == null)
@@ -76,6 +93,9 @@ public class GroupService {
 		}
 	}
 
+	/**
+	 * Return list of words in the group
+	 */
 	public static List<String> getAllWordsForGroup(int groupId) {
 		List<String> words = new ArrayList<>();
 		try {
@@ -92,6 +112,9 @@ public class GroupService {
 		return words;
 	}
 
+	/**
+	 * @return list of groups
+	 */
 	public static List<Group> getAllGroups() {
 		List<Group> groups = new ArrayList<>();
 		Map<String, Integer> groupMap = getAllGroupsId();
@@ -101,6 +124,9 @@ public class GroupService {
 		return groups;
 	}
 
+	/**
+	 * @return list of word_in_group objects
+	 */
 	public static List<WordInGroup> getAllWordInGroups() {
 		List<WordInGroup> wordInGroupList = new ArrayList<>();
 		try {
@@ -116,6 +142,9 @@ public class GroupService {
 		return wordInGroupList;
 	}
 
+	/**
+	 * insert list of groups to DB in batch
+	 */
 	public static void addGroups(List<Group> groups) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_CREATE_NEW_GROUP);
@@ -132,6 +161,9 @@ public class GroupService {
 		}
 	}
 
+	/**
+	 * insert list of word_in_group objects to DB in batch
+	 */
 	public static void addWordInGroupList(List<WordInGroup> wordInGroupList) {
 		try {
 			PreparedStatement statement = connection.prepareStatement(SQL_INSERT_WORD_IN_GROUP);

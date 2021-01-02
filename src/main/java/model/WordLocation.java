@@ -2,6 +2,9 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * Represents table 'word_in_book'
+ */
 public class WordLocation {
 	private int wordId;
 	@JsonIgnore
@@ -16,7 +19,9 @@ public class WordLocation {
 	private boolean isQuoteAfter;
 	private String punctuationMark;
 
-
+	/**
+	 * Constructor using string value of word
+	 */
 	public WordLocation(String wrd, int index, int line, int indexInLine, int sentence, int paragraph) {
 		this.word = wrd;
 		this.index = index;
@@ -26,6 +31,9 @@ public class WordLocation {
 		this.paragraph = paragraph;
 	}
 
+	/**
+	 * Constructor using word id (for parsing from DB row)
+	 */
 	public WordLocation(int wordId, int index, int line, int indexInLine, int sentence, int paragraph) {
 		this.wordId = wordId;
 		this.index = index;
@@ -39,6 +47,7 @@ public class WordLocation {
 	public WordLocation() {
 	}
 
+	//getters & setters
 	@JsonIgnore
 	public String getWord() {
 		return word;
@@ -97,6 +106,7 @@ public class WordLocation {
 	}
 
 	public void setPunctuationMark(String punctuationMark) {
+		if (punctuationMark.isEmpty()) this.punctuationMark = null;
 		this.punctuationMark = punctuationMark;
 	}
 
