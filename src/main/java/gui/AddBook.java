@@ -33,10 +33,6 @@ public class AddBook extends JFrame {
 	private Map<Book, List<WordLocation>> bookMap;
 	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMMM dd, yyyy");
 
-	private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT, 20);
-	private static final Color DEFAULT = new Color(206, 200, 200, 2);
-	private static final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 35);
-
 	public AddBook() {
 		setTitle("Add Book");
 
@@ -46,32 +42,32 @@ public class AddBook extends JFrame {
 		DATE_FORMAT.setLenient(false);
 
 		mainPanel = new JPanel();
-		mainPanel.setBorder(BORDER);
+		mainPanel.setBorder(GuiConstants.BORDER);
 		mainPanel.setLayout(new GridLayout(6, 2, 20, 20));
 
 		bottomPanel = new JPanel();
-		bottomPanel.setBorder(BORDER);
+		bottomPanel.setBorder(GuiConstants.BORDER);
 		bottomPanel.setLayout(new BorderLayout());
 
 		okPanel = new JPanel();
-		okPanel.setBorder(BorderFactory.createMatteBorder(1, 90, 1, 90, DEFAULT));
+		okPanel.setBorder(BorderFactory.createMatteBorder(1, 90, 1, 90, GuiConstants.DEFAULT));
 
 		pagesPanel = new JPanel();
-		pagesPanel.setBorder(BORDER);
+		pagesPanel.setBorder(GuiConstants.BORDER);
 		pagesPanel.setLayout(new GridLayout(1, 3, 30, 15));
 
 		//Create labels and text fields in the main panel :
 
 		title = new JLabel("Title");
-		title.setFont(MY_FONT);
+		title.setFont(GuiConstants.MY_FONT);
 		author = new JLabel("Author");
-		author.setFont(MY_FONT);
+		author.setFont(GuiConstants.MY_FONT);
 		translator = new JLabel("Translator");
-		translator.setFont(MY_FONT);
+		translator.setFont(GuiConstants.MY_FONT);
 		releaseDate = new JLabel("Release date");
-		releaseDate.setFont(MY_FONT);
+		releaseDate.setFont(GuiConstants.MY_FONT);
 		chooseFile = new JLabel("Choose files");
-		chooseFile.setFont(MY_FONT);
+		chooseFile.setFont(GuiConstants.MY_FONT);
 		note = new JLabel("*Press enter to save changes");
 
 		//Choose file with JFileChooser
@@ -193,7 +189,7 @@ public class AddBook extends JFrame {
 		pagesPanel.add(prev);
 		pagesPanel.add(currPage);
 		pagesPanel.add(next);
-		pagesPanel.setBorder(BORDER);
+		pagesPanel.setBorder(GuiConstants.BORDER);
 
 		bottomPanel.add(pagesPanel, BorderLayout.CENTER);
 		bottomPanel.add(okPanel, BorderLayout.SOUTH);

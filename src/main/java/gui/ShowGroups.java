@@ -5,7 +5,6 @@ import service.FilesManager;
 import service.GroupService;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
@@ -39,10 +38,6 @@ public class ShowGroups extends JFrame {
 	private LocationsTableComponent locationsTable;
 	private JTable wordsTable;
 
-	private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
-    private static final Color DEFAULT = new Color(206, 200, 200, 2);
-    private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
-
     public ShowGroups(){
         setTitle("Show Groups");
 
@@ -68,7 +63,7 @@ public class ShowGroups extends JFrame {
         center.setLayout( new GridLayout(2,1,0,2));
 
         selectBook = new JLabel("Select a Book");
-        selectBook.setFont(MY_FONT);
+        selectBook.setFont(GuiConstants.MY_FONT);
 
         if (books.size() == 0){
             booksList = new JComboBox<>(new String[]{"No books to show"});
@@ -82,10 +77,10 @@ public class ShowGroups extends JFrame {
             }
             booksList = new JComboBox<>(booksArray);
         }
-        booksList.setFont(MY_FONT);
+        booksList.setFont(GuiConstants.MY_FONT);
 
         selectGroup = new JLabel("Select a Group");
-        selectGroup.setFont(MY_FONT);
+        selectGroup.setFont(GuiConstants.MY_FONT);
 
         if (groups.size() == 0){
             groupsList = new JComboBox<>(new String[]{"      "});
@@ -102,7 +97,7 @@ public class ShowGroups extends JFrame {
 
             groupsList = new JComboBox<>(groupsArray);
         }
-        groupsList.setFont(MY_FONT);
+        groupsList.setFont(GuiConstants.MY_FONT);
         groupsList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,9 +108,9 @@ public class ShowGroups extends JFrame {
         });
 
         enterGroup = new JTextField("New Group");
-        enterGroup.setFont(MY_FONT);
+        enterGroup.setFont(GuiConstants.MY_FONT);
         addGroup = new JButton("Add New Group");
-        addGroup.setFont(MY_FONT);
+        addGroup.setFont(GuiConstants.MY_FONT);
 
         addGroup.addActionListener(new ActionListener() {
             @Override
@@ -143,9 +138,9 @@ public class ShowGroups extends JFrame {
 
         enterWord = new JTextField("");
         enterWord.setColumns(20);
-        enterWord.setFont(MY_FONT);
+        enterWord.setFont(GuiConstants.MY_FONT);
         addWord = new JLabel("Add Word To Group : ");
-        addWord.setFont(MY_FONT);
+        addWord.setFont(GuiConstants.MY_FONT);
 
         enterWord.addActionListener(new ActionListener() {
             @Override
@@ -189,7 +184,7 @@ public class ShowGroups extends JFrame {
                 return false;
             }
         });
-        wordsTable.setFont(MY_FONT);
+        wordsTable.setFont(GuiConstants.MY_FONT);
 
         wordsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         wordsTable.setRowHeight(40);
@@ -201,7 +196,7 @@ public class ShowGroups extends JFrame {
         wordsTableSP.setVisible(true);
 
         showResult = new JButton("Show Result");
-        showResult.setFont(MY_FONT);
+        showResult.setFont(GuiConstants.MY_FONT);
         showResult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

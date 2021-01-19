@@ -5,10 +5,8 @@ import model.WordLocation;
 import service.WordService;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +17,11 @@ Used for searching word, phrase, or group
 public class LocationsTableComponent extends JTable {
     private DefaultTableModel tableModel;
 
-    final static Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
-    private final static Color DEFAULT = new Color(206, 200, 200, 2);
-    private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
-
     public LocationsTableComponent(){
         super(new DefaultTableModel(
                 (new String[]{" ", "Title", "Author", "Line", "Paragraph"}),0));
 
-        setFont(MY_FONT);
+        setFont(GuiConstants.MY_FONT);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setRowHeight(40);
