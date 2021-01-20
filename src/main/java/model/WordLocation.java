@@ -106,8 +106,8 @@ public class WordLocation {
 	}
 
 	public void setPunctuationMark(String punctuationMark) {
-		if (punctuationMark.isEmpty()) this.punctuationMark = null;
-		this.punctuationMark = punctuationMark;
+		if (punctuationMark != null && !punctuationMark.isEmpty())
+			this.punctuationMark = punctuationMark;
 	}
 
 	public void setBookId(int bookId) {

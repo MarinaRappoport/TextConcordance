@@ -6,6 +6,7 @@ import javax.swing.*;
 
 /**
  * Main class - enter point for the application
+ * @author Marina Rappoport & Gitit Kurbet
  */
 public class Main {
 	static FilesManager filesManager;

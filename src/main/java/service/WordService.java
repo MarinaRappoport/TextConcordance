@@ -340,6 +340,9 @@ public class WordService {
 				WordLocation location = new WordLocation(rs.getInt("word_id"), rs.getInt("index"), rs.getInt("line"),
 						rs.getInt("index_in_line"), rs.getInt("sentence"), rs.getInt("paragraph"));
 				location.setBookId(rs.getInt("book_id"));
+				location.setPunctuationMark(rs.getString("punctuation_mark"));
+				location.setQuoteBefore(rs.getBoolean("is_quote_before"));
+				location.setQuoteAfter(rs.getBoolean("is_quote_after"));
 				wordLocationsAll.add(location);
 			}
 			rs.close();

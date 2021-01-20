@@ -6,7 +6,6 @@ import service.FileParser;
 import service.FilesManager;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
