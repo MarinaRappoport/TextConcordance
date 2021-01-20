@@ -5,7 +5,6 @@ import service.FilesManager;
 import service.WordService;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
@@ -27,10 +26,6 @@ public class TextPreviewComponent extends JPanel {
 	private FilesManager filesManager;
 	private String[] currentSearch;
 
-	final static Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT, 18);
-	private final static Color DEFAULT = new Color(206, 200, 200, 2);
-	private final static Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
-
 	public TextPreviewComponent(boolean isPhrase) {
 		buttons = new JPanel();
 
@@ -43,7 +38,7 @@ public class TextPreviewComponent extends JPanel {
 		preview.setLineWrap(true);
 		preview.setWrapStyleWord(true);
 		TitledBorder title = BorderFactory.createTitledBorder
-				(BORDER, "Preview", 0, 0, new Font("Font", Font.BOLD, 18));
+				(GuiConstants.BORDER, "Preview", 0, 0, new Font("Font", Font.BOLD, 18));
 		title.setTitleJustification(TitledBorder.CENTER);
 		preview.setBorder(title);
 		JScrollPane contextSP = new JScrollPane(preview);

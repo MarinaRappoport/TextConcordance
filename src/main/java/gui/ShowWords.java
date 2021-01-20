@@ -29,9 +29,7 @@ public class ShowWords extends JFrame {
     private ArrayList<Book> books;
     private String word;
 
-    final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
-    private final Color DEFAULT = new Color(206, 200, 200, 2);
-    private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
+    private final Border BORDER = BorderFactory.createLineBorder(GuiConstants.DEFAULT, 2);
 
     public ShowWords(){
         setTitle("Show Words");
@@ -52,7 +50,7 @@ public class ShowWords extends JFrame {
         chooseBook.setBorder(BORDER);
 
         search = new JButton("Search");
-        search.setFont(MY_FONT);
+        search.setFont(GuiConstants.MY_FONT);
 
         search.addActionListener(new ActionListener() {
             @Override
@@ -64,12 +62,12 @@ public class ShowWords extends JFrame {
         });
 
 	    enterWord = new JLabel("Enter a word : ");
-        enterWord.setFont(MY_FONT);
+        enterWord.setFont(GuiConstants.MY_FONT);
 	    wordTextField = new JTextField("");
 	    wordTextField.setColumns(15);
-	    wordTextField.setFont(MY_FONT);
+	    wordTextField.setFont(GuiConstants.MY_FONT);
         chooseBookLabel = new JLabel("Choose a book");
-        chooseBookLabel.setFont(MY_FONT);
+        chooseBookLabel.setFont(GuiConstants.MY_FONT);
 
 	    locationsTable = new LocationsTableComponent();
         JScrollPane tableSP=new JScrollPane(locationsTable);

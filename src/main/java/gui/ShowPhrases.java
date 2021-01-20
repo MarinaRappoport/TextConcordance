@@ -7,7 +7,6 @@ import service.FilesManager;
 import service.PhraseService;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
@@ -43,10 +42,6 @@ public class ShowPhrases extends JFrame{
 	private List<Integer> bookIdList;
     private String currentPhrase;
 
-    private static final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT,18);
-    private static final Color DEFAULT = new Color(206, 200, 200, 2);
-    private final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
-
     public ShowPhrases(){
         Iterator itr;
         allPhrases = PhraseService.getAllPhrases();
@@ -57,10 +52,10 @@ public class ShowPhrases extends JFrame{
 	    bookIdList = new ArrayList<>();
 
         inBookLabel = new JLabel("In Book :");
-        inBookLabel.setFont(MY_FONT);
+        inBookLabel.setFont(GuiConstants.MY_FONT);
 
         newPhrase = new JButton("Add New Phrase");
-        newPhrase.setFont(MY_FONT);
+        newPhrase.setFont(GuiConstants.MY_FONT);
         newPhrase.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,7 +106,7 @@ public class ShowPhrases extends JFrame{
             }
         });
 
-        phrasesTable.setFont(MY_FONT);
+        phrasesTable.setFont(GuiConstants.MY_FONT);
         phrasesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         phrasesTable.setRowHeight(40);

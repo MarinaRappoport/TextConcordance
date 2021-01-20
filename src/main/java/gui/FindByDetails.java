@@ -37,7 +37,6 @@ public class FindByDetails extends JFrame {
 
 	private final static Border SEPARATOR = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black);
 	private final static Font TITLE = new Font("Title", Font.BOLD, 18);
-	private final static Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT, 18);
 	private final static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
 	public FindByDetails() {
@@ -73,37 +72,37 @@ public class FindByDetails extends JFrame {
 
 
 		title = new JLabel("Title : ");
-		title.setFont(MY_FONT);
+		title.setFont(GuiConstants.MY_FONT);
 		author = new JLabel("Author : ");
-		author.setFont(MY_FONT);
+		author.setFont(GuiConstants.MY_FONT);
 		translator = new JLabel("Translator : ");
-		translator.setFont(MY_FONT);
+		translator.setFont(GuiConstants.MY_FONT);
 		fromDate = new JLabel("Release Date From : ");
-		fromDate.setFont(MY_FONT);
+		fromDate.setFont(GuiConstants.MY_FONT);
 		toDate = new JLabel("To : ");
-		toDate.setFont(MY_FONT);
+		toDate.setFont(GuiConstants.MY_FONT);
 
 		titleField = new JTextField();
-		titleField.setFont(MY_FONT);
+		titleField.setFont(GuiConstants.MY_FONT);
 		titleField.setColumns(10);
 		titleField.setMinimumSize(titleField.getPreferredSize());
 		authorField = new JTextField();
-		authorField.setFont(MY_FONT);
+		authorField.setFont(GuiConstants.MY_FONT);
 		authorField.setColumns(10);
 		translatorField = new JTextField();
-		translatorField.setFont(MY_FONT);
+		translatorField.setFont(GuiConstants.MY_FONT);
 		translatorField.setColumns(10);
 		fromDateField = new JTextField();
-		fromDateField.setFont(MY_FONT);
+		fromDateField.setFont(GuiConstants.MY_FONT);
 		fromDateField.setColumns(10);
 		toDateField = new JTextField();
-		toDateField.setFont(MY_FONT);
+		toDateField.setFont(GuiConstants.MY_FONT);
 		toDateField.setColumns(10);
 
 		clearToDate = new JButton("Clear");
-		clearToDate.setFont(MY_FONT);
+		clearToDate.setFont(GuiConstants.MY_FONT);
 		clearFromDate = new JButton("Clear");
-		clearFromDate.setFont(MY_FONT);
+		clearFromDate.setFont(GuiConstants.MY_FONT);
 
 		clearFromDate.addActionListener(new ActionListener() {
 			@Override
@@ -120,7 +119,7 @@ public class FindByDetails extends JFrame {
 		});
 
 		searchBook = new JButton("Search Book");
-		searchBook.setFont(MY_FONT);
+		searchBook.setFont(GuiConstants.MY_FONT);
 		searchBook.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -165,21 +164,21 @@ public class FindByDetails extends JFrame {
 		});
 
 		line = new JLabel("Line Number : ");
-		line.setFont(MY_FONT);
+		line.setFont(GuiConstants.MY_FONT);
 		index = new JLabel("Index Number : ");
-		index.setFont(MY_FONT);
+		index.setFont(GuiConstants.MY_FONT);
 		wordResult = new JLabel("Result : ");
-		wordResult.setFont(MY_FONT);
+		wordResult.setFont(GuiConstants.MY_FONT);
 		inBook = new JLabel("In Book : ");
-		inBook.setFont(MY_FONT);
+		inBook.setFont(GuiConstants.MY_FONT);
 
 		lineField = new JTextField();
-		lineField.setFont(MY_FONT);
+		lineField.setFont(GuiConstants.MY_FONT);
 		indexField = new JTextField();
-		indexField.setFont(MY_FONT);
+		indexField.setFont(GuiConstants.MY_FONT);
 
 		searchWord = new JButton("Search Word");
-		searchWord.setFont(MY_FONT);
+		searchWord.setFont(GuiConstants.MY_FONT);
 		searchWord.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

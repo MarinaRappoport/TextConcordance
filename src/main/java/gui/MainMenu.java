@@ -7,7 +7,6 @@ import service.WordService;
 import service.XmlSerializer;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -39,11 +38,6 @@ public class MainMenu extends JFrame {
 	private ArrayList<Book> selectedBooks;
 	private ArrayList<Integer> selectedBooksId;
 
-	final Color DEFAULT = new Color(206, 200, 200, 2);
-	final Color PRIMARY = new Color(250, 160, 38);
-	final Font MY_FONT = new Font("Font", Font.TRUETYPE_FONT, 18);
-	final Border BORDER = BorderFactory.createLineBorder(DEFAULT, 2);
-
 	public MainMenu() {
 		setTitle("Main Menu");
 
@@ -59,7 +53,7 @@ public class MainMenu extends JFrame {
 				return false;//all cells are not editable
 			}
 		});
-		filesTable.setFont(MY_FONT);
+		filesTable.setFont(GuiConstants.MY_FONT);
 
 		filesTable.setRowHeight(40);
 		filesTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -103,7 +97,7 @@ public class MainMenu extends JFrame {
 		common.setColumns(20);
 		common.setRows(7);
 		TitledBorder commonTitle = BorderFactory.createTitledBorder
-				(BORDER, "Top 50 Words", 0, 0, new Font("Font", Font.BOLD, 18));
+				(GuiConstants.BORDER, "Top 50 Words", 0, 0, new Font("Font", Font.BOLD, 18));
 		commonTitle.setTitleJustification(TitledBorder.CENTER);
 		common.setBorder(commonTitle);
 		JScrollPane commonSP = new JScrollPane(common);
@@ -114,7 +108,7 @@ public class MainMenu extends JFrame {
 		statTextArea.setColumns(20);
 		statTextArea.setRows(7);
 		TitledBorder statTitle = BorderFactory.createTitledBorder
-				(BORDER, "Statistics", 0, 0, new Font("Font", Font.BOLD, 18));
+				(GuiConstants.BORDER, "Statistics", 0, 0, new Font("Font", Font.BOLD, 18));
 		statTitle.setTitleJustification(TitledBorder.CENTER);
 		statTextArea.setBorder(statTitle);
 		JScrollPane statSP = new JScrollPane(statTextArea);
@@ -127,14 +121,14 @@ public class MainMenu extends JFrame {
 
 		//create buttons panels
 		buttons = new JPanel();
-		buttons.setBorder(BorderFactory.createMatteBorder(20, 100, 15, 100, DEFAULT));
+		buttons.setBorder(BorderFactory.createMatteBorder(20, 100, 15, 100, GuiConstants.DEFAULT));
 
 		bottomPanel = new JPanel();
-		bottomPanel.setBorder(BorderFactory.createMatteBorder(15, 100, 20, 100, DEFAULT));
+		bottomPanel.setBorder(BorderFactory.createMatteBorder(15, 100, 20, 100, GuiConstants.DEFAULT));
 
 		//create buttons
 		loadFile = new JButton("Load New Files");
-		loadFile.setFont(MY_FONT);
+		loadFile.setFont(GuiConstants.MY_FONT);
 		loadFile.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		loadFile.addActionListener(new ActionListener() {
@@ -149,20 +143,20 @@ public class MainMenu extends JFrame {
 		});
 
 		showWords = new JButton("Show Words");
-		showWords.setFont(MY_FONT);
+		showWords.setFont(GuiConstants.MY_FONT);
 		showWords.setAlignmentX(Component.CENTER_ALIGNMENT);
 		showWords.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ShowWords showWords = new ShowWords();
-				showWords.setSize(900, 650);
+				showWords.setSize(930, 650);
 				showWords.setVisible(true);
 				showWords.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			}
 		});
 
 		showExp = new JButton("Show Phrases");
-		showExp.setFont(MY_FONT);
+		showExp.setFont(GuiConstants.MY_FONT);
 		showExp.setAlignmentX(Component.CENTER_ALIGNMENT);
 		showExp.addActionListener(new ActionListener() {
 			@Override
@@ -175,7 +169,7 @@ public class MainMenu extends JFrame {
 		});
 
 		showGroups = new JButton("Show Groups");
-		showGroups.setFont(MY_FONT);
+		showGroups.setFont(GuiConstants.MY_FONT);
 		showGroups.setAlignmentX(Component.CENTER_ALIGNMENT);
 		showGroups.addActionListener(new ActionListener() {
 			@Override
@@ -188,7 +182,7 @@ public class MainMenu extends JFrame {
 		});
 
 		findBook = new JButton("Find By Details");
-		findBook.setFont(MY_FONT);
+		findBook.setFont(GuiConstants.MY_FONT);
 		findBook.setAlignmentX(Component.CENTER_ALIGNMENT);
 		findBook.addActionListener(new ActionListener() {
 			@Override
@@ -201,7 +195,7 @@ public class MainMenu extends JFrame {
 		});
 
 		extractToXML = new JButton("Extract To XML");
-		extractToXML.setFont(MY_FONT);
+		extractToXML.setFont(GuiConstants.MY_FONT);
 		extractToXML.setAlignmentX(Component.CENTER_ALIGNMENT);
 		extractToXML.addActionListener(new ActionListener() {
 			@Override
@@ -224,7 +218,7 @@ public class MainMenu extends JFrame {
 		});
 
 		importFromXML = new JButton("Import From XML");
-		importFromXML.setFont(MY_FONT);
+		importFromXML.setFont(GuiConstants.MY_FONT);
 		importFromXML.setAlignmentX(Component.CENTER_ALIGNMENT);
 		importFromXML.addActionListener(new ActionListener() {
 			@Override
