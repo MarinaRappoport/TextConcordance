@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Represents table 'book'
@@ -20,7 +21,7 @@ public class Book {
 	private String translator;
 	private Date releaseDate;
 	public int wordCount, lineCount, sentenceCount, paragraphCount, characterCount;
-	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMMM dd, yyyy");
+	private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
 
 	// constructors
 	public Book(String title, String author, String translator, Date releaseDate) {
