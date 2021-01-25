@@ -68,7 +68,7 @@ public class PhraseService {
 			Integer wordId = FilesManager.getInstance().getWordId(word);
 			if (wordId == null) {
 				wordId = WordService.insertWord(word);
-				if (wordId != -1) {
+				if (wordId == -1) {
 					System.out.println("Failed to save phrase");
 					return -1;
 				}
