@@ -124,6 +124,7 @@ public class ShowPhrases extends JFrame{
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
+                context.clearText();
                 searchPhrase();
             }
         });
