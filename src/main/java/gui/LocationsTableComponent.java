@@ -59,9 +59,10 @@ public class LocationsTableComponent extends JTable {
             }
         } else {
             for (int i = 0 ; i < word.length ; i++ ) {
-                bookIdList = addLocations
+                bookIdList.addAll(addLocations
                         (count, WordService.findWordInBooks(word[i], books.get(selectedBookIndex - 1).getId()),
-                                books.get(selectedBookIndex - 1));
+                                books.get(selectedBookIndex - 1)));
+                count += bookIdList.size();
             }
         }
 

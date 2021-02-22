@@ -103,6 +103,8 @@ public class ShowGroups extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if ( groupsList.getItemCount() == 0 )
                     return;
+                context.clearText();
+                locationsTable.clearTable();
                  updateWords();
             }
         });
